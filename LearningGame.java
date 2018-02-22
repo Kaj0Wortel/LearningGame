@@ -1,5 +1,3 @@
-
-
 package learningGame;
 
 // Own packages
@@ -19,6 +17,10 @@ import javax.swing.SwingUtilities;
 
 
 public class LearningGame extends JFrame {
+    
+    /**
+     * The String appName contains the name of our final application.
+     */
     final public static String appName = "application name";
     
     public LearningGame() {
