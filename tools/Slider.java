@@ -10,8 +10,8 @@ package learningGame.tools;
 
 
 // Own packages
-import tools.LoadImages2;
-import tools.ImageTools;
+import learningGame.tools.LoadImages2;
+import learningGame.tools.ImageTools;
 
 
 // Java packages
