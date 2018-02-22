@@ -1,5 +1,3 @@
-
-
 package learningGame;
 
 // Own packages
@@ -17,8 +15,12 @@ import java.awt.event.ComponentListener;
 import javax.swing.SwingUtilities;
 
 
-
+// Testing to upload.
 public class LearningGame extends JFrame {
+    
+    /**
+     * The String appName contains the name of our final application.
+     */
     final public static String appName = "application name";
     
     public LearningGame() {
