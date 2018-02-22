@@ -10,6 +10,7 @@ package learningGame.tools;
 
 
 // Own packages
+import learningGame.LearningGame;
 import learningGame.tools.ImageTools;
 import learningGame.tools.LoadImages2;
 
@@ -33,6 +34,7 @@ import javax.swing.JLabel;
 
 
 public class Button2 extends AbstractButton {
+    final protected static String imgLoc = LearningGame.workingDir + "img\\";
     final private Button2 thisButton = this;
     
     final public static int NORMAL = 0;
@@ -63,6 +65,9 @@ public class Button2 extends AbstractButton {
     private JLabel label;
     private Image image;
     
+    // Font for the label
+    private Font font = new Font(Font.DIALOG, Font.BOLD, 12);
+    
     // Used for storing the current button state
     private boolean enabled = true;
     private boolean mouseIsOverButton = false;
@@ -76,7 +81,7 @@ public class Button2 extends AbstractButton {
     public Button2(int sizeX, int sizeY, int barSize, boolean resizable) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
-                 (System.getProperty("user.dir") + "\\tools\\button2_img_TYPE_001.png", 16, 16),
+                 (imgLoc + "button2_img_TYPE_001.png", 16, 16),
              Button2.TYPE_TURNED, resizable, Image.SCALE_SMOOTH);
     }
     
@@ -87,7 +92,7 @@ public class Button2 extends AbstractButton {
     public Button2(int sizeX, int sizeY, int barSize, boolean resizable, String text) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
-                 (System.getProperty("user.dir") + "\\tools\\button2_img_TYPE_001.png", 16, 16),
+                 (imgLoc + "button2_img_TYPE_001.png", 16, 16),
              Button2.TYPE_TURNED, resizable, Image.SCALE_SMOOTH, text);
     }
     
@@ -281,7 +286,8 @@ public class Button2 extends AbstractButton {
      */
     public void setTextSize(int size) {
         if (label == null) return;
-        label.setFont(new Font(Font.DIALOG, Font.BOLD, size));
+        font = font.deriveFont(size);
+        label.setFont(font);
     }
     
     /* 
@@ -390,19 +396,25 @@ public class Button2 extends AbstractButton {
      * @throws UnsupportedOperationException if the button was initialized as not-resizable.
      */
     public void setBarAndBounds(int bz, int x, int y, int width, int height) {
-        if (originalImages != null) {
-            if (barSize != bz || width != this.getWidth() || height != this.getHeight()) {
-                super.setBounds(x, y, width, height);
-                barSize = bz;
-                generateNewImages(originalImages);
-                
-                updateLabel();
-                
-            } else if (x != this.getX() || y != this.getY()) {
-                super.setBounds(x, y, width, height);
-            }
+        if (this.barSize == bz && this.getWidth() == width && this.getHeight() == height) {
+            super.setBounds(x, y, width, height);
+            
         } else {
-            throw new UnsupportedOperationException("Button2 was initialized as not-resizable.");
+            if (originalImages != null) {
+                if (barSize != bz || width != this.getWidth() || height != this.getHeight()) {
+                    super.setBounds(x, y, width, height);
+                    barSize = bz;
+                    
+                    generateNewImages(originalImages);
+                    
+                    updateLabel();
+                    
+                } else if (x != this.getX() || y != this.getY()) {
+                    super.setBounds(x, y, width, height);
+                }
+            } else {
+                throw new UnsupportedOperationException("Button2 was initialized as not-resizable.");
+            }
         }
     }
     
@@ -569,7 +581,6 @@ public class Button2 extends AbstractButton {
                     g2d1.dispose();
                     
                     if (i == 0 || i == 2) {
-                    //if (true) {
                         images[1][i][j] = ImageTools.simpleAction(images[1][i][j], sa);
                         
                     } else {
@@ -599,6 +610,8 @@ public class Button2 extends AbstractButton {
      * Updates the size and location of the label.
      */
     public void updateLabel() {
+        if (label == null) return;
+        
         if ((int) (this.getWidth() - barSize * 2) > 0 && (int) (this.getHeight() - barSize * 2) > 0) {
             label.setSize((int) (this.getWidth() - barSize * 2), (int) (this.getHeight() - barSize * 2));
             label.setLocation((int) (barSize * 1), (int) (barSize * 1));
@@ -780,7 +793,6 @@ public class Button2 extends AbstractButton {
                         null);
             
             // Borders
-            
             g.drawImage(images[1][i][type],
                         (i == 0 || i == 2 ? barSize : (i == 1 ? this.getWidth() - barSize : 0)),
                         (i == 1 || i == 3 ? barSize : (i == 2 ? this.getHeight() - barSize : 0)),

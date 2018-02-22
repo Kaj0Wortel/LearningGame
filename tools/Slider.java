@@ -10,6 +10,7 @@ package learningGame.tools;
 
 
 // Own packages
+import learningGame.LearningGame;
 import learningGame.tools.LoadImages2;
 import learningGame.tools.ImageTools;
 
@@ -37,7 +38,7 @@ import javax.swing.JPanel;
 
 
 public class Slider extends JPanel{
-    public static String workingPath = System.getProperty("user.dir") + "\\tools\\";
+    public static String workingPath = LearningGame.workingDir + "img\\";
     private static double SPACING_FACTOR = 0.25;
     private int spacing = 0;
     
@@ -360,63 +361,6 @@ public class Slider extends JPanel{
         }
     }
     
-    /*
-    // tmp
-    public static void main(String[] args) {
-        try {
-            JFrame frame = new JFrame("test");
-            frame.setLayout(null);
-            frame.setSize(500, 500);
-            
-            Slider s = new Slider();
-            s.setBounds(50, 50, 200, 25);
-            frame.add(s);
-            frame.getContentPane().setBackground(Color.RED);
-            
-            //s.setMinValue(0);
-            //s.setMaxValue(100);
-            //s.setValue(25);
-            
-            //System.out.println(s.getMinValue());
-            //System.out.println(s.getValue());
-            //System.out.println(s.getMaxValue());
-            s.setMinValue(0);
-            s.setMaxValue(100);
-            s.setValue(50);
-            s.repaint();
-            s.setValue(0);
-            s.repaint();
-            
-            
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
-            
-            long timeStart = System.currentTimeMillis();
-            for (int i = 0; i < 30; i++) {
-                //s.setBounds(50, 50, 200 + 5*i, 50);
-            }
-            long timeEnd = System.currentTimeMillis();
-            
-            System.out.println(timeEnd - timeStart);
-            
-            int i = 0;
-            while(true) {
-                i++;
-                try {
-                    Thread.sleep(100);
-                    s.setValue(i);
-                    s.repaint();
-                    
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 }
 
 

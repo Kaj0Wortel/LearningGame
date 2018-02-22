@@ -10,6 +10,7 @@ package learningGame.tools;
 
 
 // Own packages
+import learningGame.LearningGame;
 import learningGame.tools.ImageTools;
 import learningGame.log.Log2;
 import learningGame.tools.LoadImages2;
@@ -33,7 +34,7 @@ import javax.swing.SwingUtilities;
 
 public class Button extends AbstractButton {
     final private Button thisButton = this;
-    final protected static String imgLoc = System.getProperty("user.dir") + "\\tools\\";
+    final protected static String imgLoc = LearningGame.workingDir + "img\\";
     
     // Borders
     final private Image upperBorder;

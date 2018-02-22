@@ -38,12 +38,6 @@ public class LoadImages2 {
      * The images are created from (startX, startY) and upto and including with (endX, endY).
      * Each image in this range has size (width, height).
      * 
-     * File file, String name,
-                                              int startX, int startY,
-                                              int endX, int endY,
-                                              int width, int height)
-     * 
-     * 
      * @param fileName the path of the image file.
      * @param file image file.
      * @param startX the pixel x-coordinate of the start location in the image.

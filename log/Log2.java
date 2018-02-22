@@ -9,6 +9,7 @@
 package learningGame.log;
 
 // Own packages
+import learningGame.LearningGame;
 import learningGame.tools.TerminalErrorMessage;
 
 // Java packages
@@ -32,7 +33,7 @@ public class Log2 {
     final public static int ERROR = 2;
     final public static int DEBUG = 3;
     
-    private static File logFile = new File(System.getProperty("user.dir") + "\\learningGame\\log\\log.txt");
+    private static File logFile = new File(LearningGame.workingDir + "log\\log.log");
     private static boolean useTimeStamp = true;
     private static boolean useFull = true;
     private static volatile Object writeTextLock = new Object();
