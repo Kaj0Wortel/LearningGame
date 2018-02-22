@@ -15,7 +15,7 @@ import java.awt.event.ComponentListener;
 import javax.swing.SwingUtilities;
 
 
-// Hello, did I upload?? :O
+// Testing to upload.
 public class LearningGame extends JFrame {
     
     /**
