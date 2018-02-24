@@ -215,7 +215,6 @@ public class Button2 extends AbstractButton {
                 fireActionEvents(Integer.toString(e.getButton()) + ";pressed",
                                  e.getWhen(),
                                  e.getModifiers());
-                thisButton.repaint();
             }
         }
         
@@ -227,7 +226,6 @@ public class Button2 extends AbstractButton {
                 fireActionEvents(Integer.toString(e.getButton()) + ";released",
                                  e.getWhen(),
                                  e.getModifiers());
-                thisButton.repaint();
             }
         }
     };
@@ -260,6 +258,7 @@ public class Button2 extends AbstractButton {
      */
     private void fireActionEvents(final String command, final long when, final int modifiers) {
         new Thread("tools.Button2 ActionEvent") {
+            @Override
             public void run() {
                 ActionListener[] als = thisButton.getListeners(ActionListener.class);
                 ActionEvent e = new ActionEvent(thisButton,
@@ -269,6 +268,10 @@ public class Button2 extends AbstractButton {
                 for (int i = 0; i < als.length; i++) {
                     als[i].actionPerformed(e);
                 }
+                
+                mouseIsOverButton = false;
+                mouseIsPressed = false;
+                thisButton.repaint();
             }
         }.start();
     }
