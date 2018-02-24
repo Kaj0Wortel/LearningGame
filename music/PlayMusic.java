@@ -45,8 +45,11 @@ public class PlayMusic {
      */
     /* 
      * Creates a single playable clip.
+     * 
+     * @param fileName the location of the music file. Must be a wav file format.
+     * @return the created clip.
      */
-    private static Clip createClip(String fileName) {
+    public static Clip createClip(String fileName) {
         Clip clip = null;
         
         try {
@@ -71,8 +74,11 @@ public class PlayMusic {
     
     /* 
      * Plays a music file.
+     * If there was no clip of the file, create a clip.
+     * 
+     * @param fileName the location of the music file. Must be a wav file format.
      */
-    public static void playClip(String fileName) {
+    public static void play(String fileName) {
         if (!clipTable.contains(fileName)) {
             createClip(fileName);
         }
@@ -81,7 +87,11 @@ public class PlayMusic {
     }
     
     /* 
-     * Adjust the volume of the background music.
+     * Adjust the volume of the given clip.
+     * 
+     * @param clip determines which clip should be affected by the volume change.
+     * @param gain determines the volume that the clip should be played.
+     *     It must hold that 0.0 <= gain <= 1.0.
      * 
      * TODO not working correctly when the music is already playing.
      */
@@ -111,7 +121,7 @@ public class PlayMusic {
     }
     
     /* 
-     * Stops all music.
+     * Stops all clips from playing.
      */
     public static void stopAllMusic() {
         for (Enumeration<Clip> e = clipTable.elements(); e.hasMoreElements();) {

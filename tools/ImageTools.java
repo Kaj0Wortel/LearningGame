@@ -2,7 +2,7 @@
 /* * * * * * * * * * * * *
  * Created by Kaj Wortel *
  *     Last modified:    *
- *       05-02-2018      *
+ *       24-02-2018      *
  *      (dd-mm-yyyy)     *
  * * * * * * * * * * * * */
 
@@ -15,14 +15,6 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-
-// tmp
-import java.awt.Graphics;
-
-import java.io.IOException;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 
 public class ImageTools {
@@ -57,7 +49,6 @@ public class ImageTools {
         int[] rgb = new int[width * height];
         int[] newRgb = new int[width * height];
         
-        /*
         // tmp
         long time1 = System.currentTimeMillis();
         // Get the abgr raster and manipulate it.
@@ -65,7 +56,6 @@ public class ImageTools {
         long time2 = System.currentTimeMillis();
         long time3 = 0;
         long time4 = 0;
-        */
         
         if (rotationType == SimpleAction.ROTATE_90_RIGHT) {
             biOut = new BufferedImage(height, width, type);
@@ -75,13 +65,11 @@ public class ImageTools {
                     newRgb[x * height + (height - 1 - y)] = rgb[x + y * width];
                 }
             }
-            
-            /*
             // tmp
             time3 = System.currentTimeMillis();
             biOut.setRGB(0, 0, height, width, newRgb, 0, height);
             time4 = System.currentTimeMillis();
-            */
+            
         } else if (rotationType == SimpleAction.ROTATE_90_LEFT) {
             biOut = new BufferedImage(height, width, type);
             
@@ -167,7 +155,48 @@ public class ImageTools {
      * 
      * @return a new BufferedImage containing the rotated image of biIn without corner-loss.
      *     The size of the image depends both on the size of the biIn and the angle.
-     *//*
+     */
+    public static BufferedImage rotateImage(BufferedImage biIn, double angle, int type) {
+        int width  = biIn.getWidth();
+        int height = biIn.getHeight();
+        int newWidth  = (int) (width * Math.abs(Math.cos(angle)) + height * Math.abs(Math.sin(angle)) + 0.5);
+        int newHeight = (int) (width * Math.abs(Math.sin(angle)) + height * Math.abs(Math.cos(angle)) + 0.5);
+        int usedWidth  = (width  >= newWidth  ? width  : newWidth );
+        int usedHeight = (height >= newHeight ? height : newHeight);
+        
+        BufferedImage biNew = new BufferedImage(usedWidth, usedHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        
+        Graphics2D g2d = biNew.createGraphics();
+        g2d.drawImage(biIn, (usedWidth - width) / 2, (usedHeight - height) / 2, null);
+        g2d.dispose();
+        
+        BufferedImage turnedImage = new AffineTransformOp
+            (AffineTransform.getRotateInstance
+                 (angle, usedWidth/2, usedHeight/2), type
+            ).filter(biNew, null);
+        
+        if (newWidth == usedWidth && newHeight == usedHeight) {
+            return turnedImage;
+            
+        } else {
+            BufferedImage biOut = new BufferedImage(newWidth , newHeight , BufferedImage.TYPE_4BYTE_ABGR);
+            Graphics2D g2dFinal = biOut.createGraphics();
+            g2dFinal.drawImage(turnedImage, -(usedWidth - newWidth) / 2, -(usedHeight - newHeight) / 2, null);
+            /*
+            g2dFinal.setStroke(new BasicStroke(5));
+            g2dFinal.drawLine(0       , 0        , newWidth, 0        );
+            g2dFinal.drawLine(0       , 0        , 0       , newHeight);
+            g2dFinal.drawLine(newWidth, 0        , newWidth, newHeight);
+            g2dFinal.drawLine(0       , newHeight, newWidth, newHeight);
+            */
+            
+            //g2dFinal.drawImage(turnedImage, 0, 0, null);
+            g2dFinal.dispose();
+            
+            return biOut;
+        }
+    }
+    /*
     public static BufferedImage rotateImage(BufferedImage biIn, double angle, int type) {
         int width  = biIn.getWidth();
         int height = biIn.getHeight();
@@ -242,6 +271,7 @@ public class ImageTools {
             return biOut;
         }*//*
     }*/
+
     
     
     /* 
@@ -249,30 +279,40 @@ public class ImageTools {
      * If image == null, return null.
      * If image is an instance of BufferedImage, simply class cast it to BufferedImage
      * Otherwise make a deep copy of it.
+     * 
+     * @param img the image to be converted
+     * @param type the new image type iff a new {@code BufferedImage} object is created.
+     * @return if {@code img == null}, {@code null}, else if img stanceof BufferedImage, the same object
+     *     casted to {@code BufferedImage}, else creat a new {@code BufferedImage} from {@code img} using
+     *     {@code imageDeepCopy(Image, int)}.
      */
     public static BufferedImage toBufferedImage(Image img) {
         return toBufferedImage(img, BufferedImage.TYPE_4BYTE_ABGR);
     }
     
     public static BufferedImage toBufferedImage(Image img, int type) {
-        if (img == null) {
-            return null;
-            
-        } else if (img instanceof BufferedImage) {
-            return (BufferedImage) img;
-            
-        } else {
-            return imageDeepCopy(img);
-        }
+        if (img == null)  return null;
+        if (img instanceof BufferedImage)  return (BufferedImage) img; 
+        return imageDeepCopy(img, type);
     }
     
     /* 
      * Makes a deep copy of an image.
      * Use this to ensure that the given Image object
-     * is not the same as the returned BufferedImage object.
+     * Note that {@code source != imageDeepCopy(source)} always holds for any source != null.
+     * 
+     * @param source the image to be converted
+     * @param type the type of the new BufferedImage
+     * @return a new BufferedImage of the source
      */
     public static BufferedImage imageDeepCopy(Image source) {
-        BufferedImage clone = new BufferedImage(source.getWidth(null), source.getHeight(null), BufferedImage.TYPE_4BYTE_ABGR);
+        return imageDeepCopy(source, BufferedImage.TYPE_4BYTE_ABGR);
+    }
+    
+    public static BufferedImage imageDeepCopy(Image source, int type) {
+        if (source == null) return null;
+        
+        BufferedImage clone = new BufferedImage(source.getWidth(null), source.getHeight(null), type);
         Graphics2D g2d = clone.createGraphics();
         g2d.drawImage(source, 0, 0, null);
         g2d.dispose();
@@ -306,22 +346,11 @@ public class ImageTools {
                 super.paintComponent(g);
                 
                 try {
-                    BufferedImage img1 = LoadImages2.ensureLoadedAndGetImage(image, "testImage")[0][0];/*
+                    BufferedImage img1 = LoadImages2.ensureLoadedAndGetImage(image, "testImage")[0][0];
                     BufferedImage img2 = LoadImages2.ensureLoadedAndGetImage(image, "testImage")[0][0];
                     
-                    img2 = new AffineTransformOp
-                        (AffineTransform.getRotateInstance
-                             (Math.toRadians(100), 0, img2.getHeight()), AffineTransformOp.TYPE_BICUBIC
-                        ).filter(img2, null);
-                    //System.out.println("img2: " + img2.getWidth() + ", " + img2.getHeight());
-                    *//*
-                    
-                    img1 = ImageTools.rotateImage(img1, Math.toRadians(100), AffineTransformOp.TYPE_BICUBIC);
-                    g.drawImage(img1, 0, 0, null);
-                    //g.drawImage(img2, 300, 0, null);
-                    
                     //BufferedImage img2 = simpleAction(LoadImages2.ensureLoadedAndGetImage(image, "testImage")[0][0], SimpleAction.ROTATE_90_RIGHT);
-                    /*
+                    
                     long time1 = System.currentTimeMillis();
                     BufferedImage img3 = simpleAction(img1, SimpleAction.ROTATE_90_RIGHT);
                     g.drawImage(img3, 0, 0, null);
@@ -329,13 +358,13 @@ public class ImageTools {
                     BufferedImage img4 = rotateImage(img2, Math.toRadians(90), AffineTransformOp.TYPE_BILINEAR);
                     g.drawImage(img4, img3.getWidth() + 10, 0, null);
                     long time3 = System.currentTimeMillis();
-                    */
+                    
                     //System.out.println((time2 - time1) + ", " + (time3 - time2));
                     //System.out.println(time1 + ", " + time2 + ", " + time3);
                     
                     
                     //g.drawImage(img2, 0, 0, null);
-                    /*
+                    
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -348,7 +377,6 @@ public class ImageTools {
         
         mainFrame.setVisible(true);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        System.out.println("HEEEEEY");
         mainFrame.repaint();
     }
     

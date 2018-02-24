@@ -3,9 +3,10 @@ package learningGame;
 
 // Own packages
 import learningGame.log.Log2;
+
+import learningGame.music.PlayMusic;
+
 import learningGame.tools.TerminalErrorMessage;
-
-
 import learningGame.tools.Slider;
 import learningGame.tools.Button;
 import learningGame.tools.Button2;
@@ -35,9 +36,10 @@ public class LearningGame extends JFrame {
     public LearningGame() {
         super(appName);
         
-        //SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             createGUI();
-        //});
+            PlayMusic.play(workingDir + "music\\test.wav");
+        });
     }
     
     private void createGUI() {
