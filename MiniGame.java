@@ -8,22 +8,26 @@ import learningGame.tools.KeyDetector;
 
 
 // Java packages
-import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JPanel;
+
 
 public abstract class MiniGame extends JPanel implements MouseMotionListener, MouseListener {
-    final protected LearningGame lg;
+    // The action that is executed after the minigame has ended.
+    final private Runnable r;
     final private KeyDetector kd = new KeyDetector();
+    final protected LearningGame lg;
+    
     protected boolean started = false;
     
-    public MiniGame(LearningGame lg) {
+    public MiniGame(LearningGame lg, Runnable r) {
         super(null);
         this.lg = lg;
+        this.r = r;
         createGUI();
-        addListeners();
     }
     
     /* 
@@ -64,8 +68,9 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      */
     public void start() {
         if (!started) {
-            started = true;
             kd.clear();
+            started = true;
+            addListeners();
         }
     }
     
@@ -77,6 +82,13 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
             kd.update();
             update(kd.getKeysPressed());
         }
+    }
+    
+    /* 
+     * This method is called when the mini game is finished.
+     */
+    public void finish() {
+        r.run();
     }
     
     abstract protected void createGUI();

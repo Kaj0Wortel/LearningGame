@@ -7,12 +7,16 @@ import learningGame.log.Log2;
 import learningGame.music.PlayMusic;
 
 import learningGame.tools.Button2;
+import learningGame.tools.MultiTool;
 import learningGame.tools.TerminalErrorMessage;
+import learningGame.tools.TimerTool;
 
 
 // Java packages
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -27,6 +31,13 @@ import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+
+//import java.util.ArrayList;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.io.File;
 
 
 public class LearningGame extends JFrame {
@@ -48,6 +59,20 @@ public class LearningGame extends JFrame {
     // Whether the current frame is in full screen.
     private boolean fullScreen = false;
     
+    // The game timer
+    private TimerTool timer;
+    
+    // Array containing all different MiniGame classes.
+    final private Class<? extends MiniGame>[] miniGames = listMiniGameClasses();
+    
+    // Array containing a random shuffle of all MiniGame classes.
+    private Class<? extends MiniGame>[] miniGameOrder;
+    // The next MiniGame that will be played according to {@code miniGameOrder}.
+    private int nextGame = 0;
+    
+    // GUI
+    private Button2 startButton;
+    
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
@@ -62,6 +87,9 @@ public class LearningGame extends JFrame {
             addListeners();
             
             
+            // test
+            startMiniGames();
+            
             
             //---------------------------------------------------------------------------------------------------------
             // Music examples:
@@ -73,13 +101,13 @@ public class LearningGame extends JFrame {
             
             /* Only play a clip *//*
             PlayMusic.play(clipFileName);
-            // or
+            /* or *//*
             PlayMusic.play(clip);
             
             /* Play a clip with adjusted volume *//*
             PlayMusic.setVolume(clip, 0.5f);
             PlayMusic.play(clipFileName);
-            // or
+            /* or *//*
             PlayMusic.setVolume(clip, 0.5f);
             PlayMusic.play(clip);
             
@@ -88,7 +116,7 @@ public class LearningGame extends JFrame {
             
             /* Repeat a clip continuously *//*
             PlayMusic.loop(clip, -1);
-            // or
+            /* or */
             PlayMusic.loop(clip, Clip.LOOP_CONTINUOUSLY);
             
             /* Play a(nother) clip after another clip has stopped */
@@ -98,7 +126,6 @@ public class LearningGame extends JFrame {
             PlayMusic.play(clip);
             /**/
             //---------------------------------------------------------------------------------------------------------
-            
         });
     }
     
@@ -106,6 +133,14 @@ public class LearningGame extends JFrame {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
+    /* 
+     * Adds the listeners to the frame.
+     */
+    protected void addListeners() {
+        this.addWindowListener(wl);
+        this.addComponentListener(cl);
+    }
+    
     /* 
      * Creates the GUI of the application.
      */
@@ -115,12 +150,20 @@ public class LearningGame extends JFrame {
         this.setSize(500, 500);
         
         try {
-            Button2 button = new Button2(100, 25, 10, true, "test full screen");
-            this.add(button);
+            Button2 tmpFullScreenButton = new Button2(100, 25, 10, true, "test full screen");
+            this.add(tmpFullScreenButton);
             
-            button.setSize(200, 50);
-            button.setLocation(100, 100);
-            button.addActionListener((e) -> setFullScreen(!fullScreen));
+            tmpFullScreenButton.setSize(200, 50);
+            tmpFullScreenButton.setLocation(100, 100);
+            tmpFullScreenButton.addActionListener((e) -> setFullScreen(!fullScreen));
+            
+            
+            startButton = new Button2(100, 25, 10, true, "Start");
+            this.add(startButton);
+            
+            startButton.setSize(200, 50);
+            startButton.setLocation(350, 100);
+            startButton.addActionListener((e) -> startMiniGames());
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,12 +175,67 @@ public class LearningGame extends JFrame {
     }
     
     /* 
-     * Adds the listeners to the frame.
+     * Returns an array containing all classes in the folder "learningGame.miniGame".
      */
-    protected void addListeners() {
-        this.addWindowListener(wl);
-        this.addComponentListener(cl);
+    @SuppressWarnings("unchecked") // For the cast from Object[] to Class[]
+    final private Class<? extends MiniGame>[] listMiniGameClasses() {
+        // List all java classes in the package folder.
+        File[] files = new File(workingDir + "miniGame\\")
+            .listFiles((File dir, String name) -> {
+            return name.endsWith(".java");
+        });
+        
+        // Create return object.
+        Class<? extends MiniGame>[] miniGames
+            = (Class<? extends MiniGame>[]) new Class[files.length];
+        
+        // Iterate over the files and put each class in the array
+        for (int i = 0; i < files.length; i++) {
+            String fileName = files[i].getName();
+            String className = fileName.substring(0, fileName.length() - 5); // ".java".length == 5
+            
+            try {
+                miniGames[i] = (Class<? extends MiniGame>) Class.forName("learningGame.miniGame." + className);
+                     
+            } catch (Exception e) {
+                Log2.write(e);
+            }
+        }
+        
+        return miniGames;
     }
+    
+    /* 
+     * Creates a MiniGame of a certain class, with a certain terminate action.
+     * 
+     * @param miniGame the class of the object that will be created.
+     * @param r the action that will run when the MiniGame is finished.
+     * @return a new instance of the given MiniGame class.
+     */
+    private <V extends MiniGame> V createMiniGame(Class<V> miniGame, Runnable r) {
+        try {
+            return miniGame.getConstructor(new Class<?>[] {this.getClass(), Runnable.class}).newInstance(this, r);
+            
+        } catch (Exception e) {
+            Log2.write(e);
+        }
+        
+        return null;
+    }
+    
+    
+    /* 
+     * Begins the serie of MiniGames.
+     */
+    @SuppressWarnings("unchecked") // For the cast from Object[] to Class[]
+    private void startMiniGames() {
+        miniGameOrder = (Class<? extends MiniGame>[]) MultiTool.shuffleArray(MultiTool.copyArray(miniGames));
+        MiniGame game = createMiniGame(miniGameOrder[nextGame = 0], r);
+        
+        
+    }
+    
+    
     
     /* 
      * Sets the frame to full screen or restores it to it's previous window state.
@@ -179,6 +277,7 @@ public class LearningGame extends JFrame {
     }
     
     
+    
     /* 
      * Sets the size and location of the JFrame.
      * setSize and setLocation both call this method.
@@ -202,7 +301,7 @@ public class LearningGame extends JFrame {
     
     
     /* ----------------------------------------------------------------------------------------------------------------
-     * Listeners
+     * Listeners and Runners
      * ----------------------------------------------------------------------------------------------------------------
      */
     WindowListener wl = new WindowAdapter() {
@@ -220,6 +319,13 @@ public class LearningGame extends JFrame {
         public void componentResized(ComponentEvent e) {
             // Do resize stuff.
             Log2.write("Window resized", Log2.INFO);
+        }
+    };
+    
+    Runnable r = new Runnable() {
+        @Override
+        public void run() {
+            
         }
     };
     

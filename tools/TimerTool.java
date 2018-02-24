@@ -48,7 +48,7 @@ public class TimerTool {
         this.interval = interval;
         
         // Initialize the timer. Also checks if the interval is not equal to null
-        // If so, set the interval to 10 ms
+        // If so, set the timer to non-repeating/non-deamon.
         // NOTE that this.interval still equals null!
         if (interval != null) {
             timer = new Timer(true);

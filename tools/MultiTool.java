@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class MultiTool {
@@ -417,4 +418,41 @@ public class MultiTool {
         if (obj == null) return false;
         return obj.getClass().isArray();
     }
+    
+    /* 
+     * Randomly shuffles an array.
+     * 
+     * @param in the input array.
+     * @param rnd the used Random object.
+     * 
+     * Copy-pasted from:
+     * "http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8u40-b25/java/util/Collections.java#Collections.shuffle%28java.util.List%2Cjava.util.Random%29"
+     */
+    public static Object[] shuffleArray(Object[] in) {
+        return shuffleArray(in, new Random());
+    }
+    
+    public static <A> A[] shuffleArray(A[] in, Random rnd) {
+        for (int i = in.length; i > 1; i--) {
+            swap(in, i - 1, rnd.nextInt(i));
+        }
+        
+        return in;
+    }
+    
+    /* 
+     * Performs a swap between two elements of an array.
+     * 
+     * @param arr the array where the swap occurs.
+     * @param i the first element of the swap.
+     * @param j the second element of the swap.
+     * @return arr, but then with the elements i and j swapped.
+     */
+    public static Object[] swap(Object[] arr, int i, int j) {
+        Object tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+        return arr;
+    }
+    
 }

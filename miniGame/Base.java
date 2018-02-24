@@ -20,18 +20,13 @@ import learningGame.tools.TimerTool;
 
 
 public class Base extends MiniGame {
-    public Base(LearningGame lg) {
-        super(lg);
+    public Base(LearningGame lg, Runnable r) {
+        super(lg, r);
+        System.out.println("SUCCES!");
     }
     
     @Override
     protected void createGUI() {
-        
-    }
-    
-    
-    @Override
-    public void attatch() {
         
     }
     
