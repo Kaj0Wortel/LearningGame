@@ -202,6 +202,41 @@ public class MultiTool {
         return array;
     }
     
+    /* 
+     * Makes a copy of an arrayList.
+     * 
+     * @param list ArrayList to copy
+     */
+    public static <T> ArrayList<T> copyArrayList(ArrayList<T> list) {
+        if (list == null) return null;
+        
+        ArrayList<T> newList = new ArrayList<T>(list.size());
+        
+        for (int i = 0; i < list.size(); i++) {
+            newList.add(list.get(i));
+        }
+        
+        return newList;
+    }
+    
+    /* 
+     * Makes a copy of an array.
+     * 
+     * @param array array to copy.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] copyArray(T[] array) {
+        if (array == null) return null;
+        
+        T[] newArray = (T[]) new Object[array.length];
+        
+        for (int i = 0; i < array.length; i++) {
+            newArray[i] = array[i];
+        }
+        
+        return newArray;
+    }
+    
     /*
      * Sleeps the current thread.
      * Mainly used to avoid the annoying catch statement.

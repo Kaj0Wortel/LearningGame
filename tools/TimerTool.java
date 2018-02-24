@@ -34,20 +34,25 @@ public class TimerTool {
         RUNNING, PAUSED, CANCELED
     }
     
-    // --------------------------------------------------------------------------------------------------------
-    // Constructor
+    /* --------------------------------------------------------------------------------------------------------
+     * Constructor
+     * 
+     * @param r the action that will be executed when the timer ends.
+     * @param delay the time in ms before the first exectution of {@code r.run()}.
+     * @param interval the time in ms which is between two executions of {@code r.run()}.
+     */
     public TimerTool(Runnable r, Long delay, Long interval) {
         // Update the values to the values in this class
         this.task = r;
         this.delay = delay;
         this.interval = interval;
         
-        // Initialize the timer. Also checks if the interval is not equal to 'null'
+        // Initialize the timer. Also checks if the interval is not equal to null
         // If so, set the interval to 10 ms
         // NOTE that this.interval still equals null!
         if (interval != null) {
             timer = new Timer(true);
-        
+            
         } else {
             timer = new Timer(false);
         }
@@ -63,13 +68,16 @@ public class TimerTool {
         // with the pause/resume functions if the timer is still in the initial delay.
         if (interval != null) {
             startTime = System.currentTimeMillis() + delay  - interval;
+            
         } else {
             startTime = System.currentTimeMillis() + delay;
         }
     }
     
-    // --------------------------------------------------------------------------------------------------------
-    // Functions
+    /* --------------------------------------------------------------------------------------------------------
+     * Functions
+     * --------------------------------------------------------------------------------------------------------
+     */
     
     /* 
      * Create a new timer task from the given runnable.

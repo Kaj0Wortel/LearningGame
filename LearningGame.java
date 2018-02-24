@@ -6,10 +6,8 @@ import learningGame.log.Log2;
 
 import learningGame.music.PlayMusic;
 
-import learningGame.tools.TerminalErrorMessage;
-import learningGame.tools.Slider;
-import learningGame.tools.Button;
 import learningGame.tools.Button2;
+import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
@@ -59,20 +57,20 @@ public class LearningGame extends JFrame {
         
         SwingUtilities.invokeLater(() -> {
             // Set image
-            /*
-            mainFrame.setIconImage(new ImageIcon(this.getClass().getClassLoader()
-                                                     .getResource("encryption/data_encryption.png")).getImage());
-                                                     */
             this.setIconImage(new ImageIcon(appIconFile).getImage());
             createGUI();
+            addListeners();
             
+            
+            
+            //---------------------------------------------------------------------------------------------------------
             // Music examples:
             
             /** DONT EVER USE ANY METHODS FROM THE "Clip" CLASS! **/
             
             String clipFileName = workingDir + "music\\test.wav";
-            
             Clip clip = PlayMusic.createClip(clipFileName);
+            
             /* Only play a clip *//*
             PlayMusic.play(clipFileName);
             // or
@@ -99,7 +97,7 @@ public class LearningGame extends JFrame {
                                 null, () -> PlayMusic.play(clip)); // start/stop clip
             PlayMusic.play(clip);
             /**/
-                                
+            //---------------------------------------------------------------------------------------------------------
             
         });
     }
@@ -111,7 +109,7 @@ public class LearningGame extends JFrame {
     /* 
      * Creates the GUI of the application.
      */
-    private void createGUI() {
+    protected void createGUI() {
         this.setLayout(null);
         this.setLocation(500, 100);
         this.setSize(500, 500);
@@ -128,16 +126,18 @@ public class LearningGame extends JFrame {
             e.printStackTrace();
         }
         
-        // Add listeners
-        this.addWindowListener(wl);
-        this.addComponentListener(cl);
-        
         // Set default close operation and make the frame visible
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
     
-    
+    /* 
+     * Adds the listeners to the frame.
+     */
+    protected void addListeners() {
+        this.addWindowListener(wl);
+        this.addComponentListener(cl);
+    }
     
     /* 
      * Sets the frame to full screen or restores it to it's previous window state.

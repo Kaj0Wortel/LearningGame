@@ -230,8 +230,7 @@ public class Button2 extends AbstractButton {
         }
     };
     
-    /*
-     * ---------------------------------------------------------------------------------
+    /*---------------------------------------------------------------------------------
      * Private functions
      * ---------------------------------------------------------------------------------
      */
@@ -256,7 +255,7 @@ public class Button2 extends AbstractButton {
      * @param when the time (in ms) when the event occured.
      * @param modifiers the modifiers that are given for the events.
      */
-    private void fireActionEvents(final String command, final long when, final int modifiers) {
+    private void fireActionEvents(final String command, final long when, final int modifiers) {/*
         new Thread("tools.Button2 ActionEvent") {
             @Override
             public void run() {
@@ -269,15 +268,30 @@ public class Button2 extends AbstractButton {
                     als[i].actionPerformed(e);
                 }
                 
+                fireActionPerformed
+                    (new ActionEvent(thisButton,
+                                     ActionEvent.ACTION_PERFORMED,
+                                     command, when, modifiers));
+                
                 mouseIsOverButton = false;
                 mouseIsPressed = false;
                 thisButton.repaint();
             }
-        }.start();
+            }.start();*/
+        
+        fireActionPerformed
+            (new ActionEvent
+                 (thisButton,
+                  ActionEvent.ACTION_PERFORMED,
+                  command, when, modifiers)
+            );
+        
+        mouseIsOverButton = false;
+        mouseIsPressed = false;
+        thisButton.repaint();
     }
     
-    /*
-     * ---------------------------------------------------------------------------------
+    /* ---------------------------------------------------------------------------------
      * Set functions
      * ---------------------------------------------------------------------------------
      */
