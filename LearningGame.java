@@ -50,7 +50,6 @@ public class LearningGame extends JFrame {
     // Whether the current frame is in full screen.
     private boolean fullScreen = false;
     
-    
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
@@ -137,6 +136,8 @@ public class LearningGame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
+    
+    
     
     /* 
      * Sets the frame to full screen or restores it to it's previous window state.
