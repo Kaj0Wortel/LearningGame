@@ -22,6 +22,8 @@ import java.awt.event.WindowListener;
 
 import java.io.IOException;
 
+import javax.sound.sampled.Clip;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -38,17 +40,55 @@ public class LearningGame extends JFrame {
         
         SwingUtilities.invokeLater(() -> {
             createGUI();
-            PlayMusic.play(workingDir + "music\\test.wav");
+            
+            // Music examples:
+            
+            /** DONT EVER USE ANY METHODS FROM THE "Clip" CLASS! **/
+            
+            String clipFileName = workingDir + "music\\test.wav";
+            
+            Clip clip = PlayMusic.createClip(clipFileName);
+            /* Only play a clip *//*
+            PlayMusic.play(clipFileName);
+            // or
+            PlayMusic.play(clip);
+            
+            /* Play a clip with adjusted volume *//*
+            PlayMusic.setVolume(clip, 0.9f);
+            PlayMusic.play(clipFileName);
+            // or
+            PlayMusic.setVolume(clip, 0.9f);
+            PlayMusic.play(clip);
+            
+            /* Repeats a clip 5 times *//*
+            PlayMusic.loop(clip, 5);
+            
+            /* Repeat a clip continuously *//*
+            PlayMusic.loop(clip, -1);
+            // or
+            PlayMusic.loop(clip, Clip.LOOP_CONTINUOUSLY);
+            
+            /* Play a(nother) clip after another clip has stopped */
+            PlayMusic.addAction(clip,
+                                null, null, // open/close file
+                                null, () -> PlayMusic.play(clip)); // start/stop clip
+            PlayMusic.play(clip);
+            /**/
+                                
+            
         });
     }
     
+    /* 
+     * Creates the GUI of the application.
+     */
     private void createGUI() {
         this.setLayout(null);
         this.setLocation(500, 100);
         this.setSize(500, 500);
         
         try {
-            Button2 sl = new Button2(100, 25, 5, true, "test");
+            Button2 sl = new Button2(100, 25, 10, true, "test");
             this.add(sl);
             
             sl.setSize(200, 50);
@@ -68,12 +108,21 @@ public class LearningGame extends JFrame {
     }
     
     
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        boolean resized = width != getWidth() || height != getHeight();
+        
+        if (resized) {
+            // Do stuff
+        }
+    }
+    
     
     WindowListener wl = new WindowAdapter() {
         // Called when the user attempts to close the window
         @Override
         public void windowClosing(WindowEvent e) {
-            // Add closing operation stuff.
+            // Do closing operation stuff.
             Log2.write(" === Closing application === ", Log2.INFO);
         }
     };
@@ -82,7 +131,7 @@ public class LearningGame extends JFrame {
         // Called when the windows was resized.
         @Override
         public void componentResized(ComponentEvent e) {
-            // Add stuff
+            // Do stuff
             Log2.write("Window resized", Log2.INFO);
             repaint();
         }

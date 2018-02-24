@@ -11,6 +11,7 @@ import learningGame.log.Log2;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -24,23 +25,30 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 
-/* 
- * TODO: comments
- */
 public class PlayMusic {
+    // Working directory for the music files.
     final protected static String workingDir = LearningGame.workingDir + "music\\";
-    private static Hashtable<String, Clip> clipTable = new Hashtable<String, Clip>();
+    
+    // Table containing all file names which correspond to a currently created clips.
+    protected static Hashtable<String, Clip> clipTable = new Hashtable<String, Clip>();
+    
+    // Table containing all LineListeners for each clip.
+    protected static Hashtable<Clip, ArrayList<LineListener>> listenerTable
+        = new Hashtable<Clip, ArrayList<LineListener>>();
     
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
+    /* 
+     * This is a singleton class. No instances should be made.
+     */
     @Deprecated
     private PlayMusic() { }
     
     /* ----------------------------------------------------------------------------------------------------------------
-     * Private fuctions
+     * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
@@ -50,7 +58,10 @@ public class PlayMusic {
      * @return the created clip.
      */
     public static Clip createClip(String fileName) {
-        Clip clip = null;
+        Clip clip;
+        if ((clip = clipTable.get(fileName)) != null) {
+            return clip;
+        }
         
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(fileName));
@@ -68,6 +79,8 @@ public class PlayMusic {
         }
         
         clipTable.put(fileName, clip);
+        listenerTable.put(clip, new ArrayList<LineListener>());
+        
         
         return clip;
     }
@@ -75,15 +88,87 @@ public class PlayMusic {
     /* 
      * Plays a music file.
      * If there was no clip of the file, create a clip.
+     * Uses the function play(Clip) to play the clip.
      * 
      * @param fileName the location of the music file. Must be a wav file format.
      */
     public static void play(String fileName) {
-        if (!clipTable.contains(fileName)) {
-            createClip(fileName);
+        Clip clip;
+        
+        if ((clip = clipTable.get(fileName)) == null) {
+            clip = createClip(fileName);
         }
         
-        clipTable.get(fileName).start();
+        play(clip);
+    }
+    
+    /* 
+     * Plays a clip.
+     * 
+     * IMPORTANT: NEVER USE THE Clip.start() FUNCTION ELSEWHERE!
+     * 
+     * @param clip clip to be played.
+     */
+    public static void play(Clip clip) {
+        clip.setFramePosition(0);
+        clip.start();
+    }
+    
+    /* 
+     * Stops a music file from playing
+     * If there was no clip of the file, ignore the action.
+     * Uses the function stop(Clip) to play the clip.
+     * 
+     * @param fileName the location of the music file. Must be a wav file format.
+     */
+    public static void stop(String fileName) {
+        Clip clip;
+        
+        // If the clip does not exist, do nothing.
+        if ((clip = clipTable.get(fileName)) == null) {
+            return;
+        }
+        
+        stop(clip);
+    }
+    
+    /* 
+     * Stops a clip.
+     * 
+     * IMPORTANT: NEVER USE THE Clip.stop() FUNCTION ELSEWHERE!
+     * 
+     * @param clip clip to be played.
+     */
+    public static void stop(Clip clip) {
+        clip.stop();
+    }
+    
+    /* 
+     * Resumes a music file from where it was stopped.
+     * If there was no clip of the file, create a new clip and play it using the function play(Clip).
+     * Otherwise uses the function resume(Clip) to play the clip.
+     * 
+     * @param fileName the location of the music file. Must be a wav file format.
+     */
+    public static void resume(String fileName) {
+        Clip clip;
+        
+        if ((clip = clipTable.get(fileName)) == null) {
+            clip = createClip(fileName);
+            play(clip);
+            
+        } else {
+            resume(clip);
+        }
+    }
+    
+    /* 
+     * Resumes a clip from where it was stopped.
+     * 
+     * @param clip clip to be resumed.
+     */
+    public static void resume(Clip clip) {
+        clip.start();
     }
     
     /* 
@@ -99,16 +184,16 @@ public class PlayMusic {
         if (gain > 1.0F) gain = 1.0F;
         if (gain < 0.0F) gain = 0.0F;
         
-        if (gain < 0.0F) {
-            Math.log10(gain * 0.9F + 1F);
-            
-        } else {
-            Math.log10(gain * 10);
-        }
+        //if (gain < 0.0F) {
+            Math.log10(gain * 0.9F);
+        //    
+        //} else {
+        //    Math.log10(gain * 10);
+        //}
         
         boolean isRunning = clip.isRunning();
         
-        if (isRunning) clip.stop();
+        if (isRunning) stop(clip);
         FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         
         float max = control.getMaximum();
@@ -117,7 +202,7 @@ public class PlayMusic {
         System.out.println(min);
         
         control.setValue(min + (max-min) * gain);
-        if (isRunning) clip.start();
+        if (isRunning) play(clip);
     }
     
     /* 
@@ -125,10 +210,60 @@ public class PlayMusic {
      */
     public static void stopAllMusic() {
         for (Enumeration<Clip> e = clipTable.elements(); e.hasMoreElements();) {
-            e.nextElement().stop();
+            stop(e.nextElement());
         }
     }
     
+    /* 
+     * Adds the given actions to the current clip.
+     * 
+     * @param clip determines which clip is affected.
+     * @param open action that is executed when the stream from the file is opened.
+     * @param close action that is executed when the stream from the file is closed.
+     * @param start action that is exectued when the clip is started.
+     * @param stop action that is exectued when the clip is stopped.
+     */
+    public static void addAction(final Clip clip, final Runnable open,  final Runnable close,
+                                 final Runnable start, final Runnable stop) {
+        clip.addLineListener(e -> {
+            if (e.getType() == LineEvent.Type.OPEN) {
+                if (open != null) open.run();
+                
+            } else if (e.getType() == LineEvent.Type.CLOSE) {
+                if (close != null) close.run();
+                
+            } else if (e.getType() == LineEvent.Type.START) {
+                if (start != null) start.run();
+                
+            } else if (e.getType() == LineEvent.Type.STOP) {
+                if (stop != null) stop.run();
+            }
+        });
+    }
     
+    /* 
+     * Removes all LineListeners that were added via this class to the given clip.
+     * 
+     * @param clip denotes the clip of which the LineListeners have to be removed.
+     */
+    public static void removeAllActions(Clip clip) {
+        ArrayList<LineListener> list = listenerTable.get(clip);
+        for (LineListener listener : list) {
+            clip.removeLineListener(listener);
+        }
+        
+        list.clear();
+    }
+    
+    /* 
+     * Loops a clip a number of times.
+     * 
+     * @param clip clip to be looped.
+     * @param loopCount the number of loops the clip has to play.
+     *     Use Clip.LOOP_CONTINUOUSLY or -1 for loopCount to loop continuously.
+     */
+    public static void loop(Clip clip, int loopCount) {
+        clip.loop(loopCount);
+    }
     
 }

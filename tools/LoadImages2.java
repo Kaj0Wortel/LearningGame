@@ -30,8 +30,11 @@ import javax.imageio.IIOException;
 public class LoadImages2 {
     public static Hashtable<String, BufferedImage[][]> images = new Hashtable<String, BufferedImage[][]>();
     
+    /* 
+     * This is a singleton class. No instances should be made.
+     */
     @Deprecated
-    public LoadImages2() {}
+    private LoadImages2() {}
     
     /* 
      * Loads an image from a given file(-name) and converts it into separate pieces.

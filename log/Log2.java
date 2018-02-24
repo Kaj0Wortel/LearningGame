@@ -38,8 +38,11 @@ public class Log2 {
     private static boolean useFull = true;
     private static volatile Object writeTextLock = new Object();
     
+    /* 
+     * This is a singleton class. No instances should be made.
+     */
     @Deprecated
-    private Log2() {}
+    private Log2() { }
     
     /* 
      * Logs an exception.
