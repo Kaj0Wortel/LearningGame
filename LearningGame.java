@@ -80,10 +80,10 @@ public class LearningGame extends JFrame {
             PlayMusic.play(clip);
             
             /* Play a clip with adjusted volume *//*
-            PlayMusic.setVolume(clip, 0.9f);
+            PlayMusic.setVolume(clip, 0.5f);
             PlayMusic.play(clipFileName);
             // or
-            PlayMusic.setVolume(clip, 0.9f);
+            PlayMusic.setVolume(clip, 0.5f);
             PlayMusic.play(clip);
             
             /* Repeats a clip 5 times *//*
@@ -118,7 +118,7 @@ public class LearningGame extends JFrame {
         this.setSize(500, 500);
         
         try {
-            Button2 button = new Button2(100, 25, 10, true, "test");
+            Button2 button = new Button2(100, 25, 10, true, "test full screen");
             this.add(button);
             
             button.setSize(200, 50);

@@ -175,21 +175,17 @@ public class PlayMusic {
      * Adjust the volume of the given clip.
      * 
      * @param clip determines which clip should be affected by the volume change.
-     * @param gain determines the volume that the clip should be played.
-     *     It must hold that 0.0 <= gain <= 1.0.
+     * @param volume determines the volume that the clip should be played.
+     *     It must hold that 0.0 <= volume <= 1.0.
      * 
      * TODO not working correctly when the music is already playing.
      */
-    public static void setVolume(Clip clip, float gain) {
-        if (gain > 1.0F) gain = 1.0F;
-        if (gain < 0.0F) gain = 0.0F;
+    public static void setVolume(Clip clip, float volume) {
+        if (volume > 1.0F) volume = 1.0F;
+        if (volume < 0.0F) volume = 0.0F;
         
-        //if (gain < 0.0F) {
-            Math.log10(gain * 0.9F);
-        //    
-        //} else {
-        //    Math.log10(gain * 10);
-        //}
+        // To factor in the logarithmic effects of sound.
+        volume = (float) (Math.log(49*volume + 1) / Math.log(50.0));
         
         boolean isRunning = clip.isRunning();
         
@@ -198,10 +194,8 @@ public class PlayMusic {
         
         float max = control.getMaximum();
         float min = control.getMinimum();
-        System.out.println(max);
-        System.out.println(min);
         
-        control.setValue(min + (max-min) * gain);
+        control.setValue(min + (max-min) * volume);
         if (isRunning) play(clip);
     }
     
@@ -264,6 +258,10 @@ public class PlayMusic {
      */
     public static void loop(Clip clip, int loopCount) {
         clip.loop(loopCount);
+    }
+    
+    public static void main(String[] args) {
+        new LearningGame();
     }
     
 }
