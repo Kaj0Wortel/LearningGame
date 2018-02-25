@@ -32,22 +32,17 @@ public class Base extends MiniGame {
     }
     
     @Override
-    public void start() {
+    public void update(Key[] keys) {
         
     }
     
     @Override
-    public void update(Key[] keys) {
+    public void cleanUp() {
         
     }
     
     @Override
     public Score getScore() {
         return null;
-    }
-    
-    @Override
-    public void cleanUp() {
-        
     }
 }

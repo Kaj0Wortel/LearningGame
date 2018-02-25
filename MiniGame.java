@@ -78,7 +78,7 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     /* 
      * Starts the current minigame.
      */
-    public void start() {
+    final public void start() {
         if (!started && !stopped) {
             started = true;
             createGUI();
