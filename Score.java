@@ -15,5 +15,5 @@ public class Score {
      * Prints the current score. Todo.
      */
     @Overrides
-    public void toString() {}
+    public String toString() {}
 }
