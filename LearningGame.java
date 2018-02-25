@@ -395,7 +395,10 @@ public class LearningGame extends JFrame {
         }
         
         if (++curMiniGameNum < miniGameOrder.length) {
+            remove(curMiniGame);
+            
             curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum], () -> endMiniGame());
+            add(curMiniGame);
             curMiniGame.start();
             
         } else {
