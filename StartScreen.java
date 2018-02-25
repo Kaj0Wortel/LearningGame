@@ -84,17 +84,20 @@ public class StartScreen extends JPanel {
             startButton.setSize(getWidth() / 3, getHeight() / 4);
             startButton.setLocation(getWidth() / 3, getHeight() / 3);
             
-            try {
-                // Load, copy and resize the backgroundimage.
-                background = ImageTools.toBufferedImage
-                    (ImageTools.imageDeepCopy
-                         (LoadImages2.ensureLoadedAndGetImage
-                              (backgroundLoc)[0][0])
-                         .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
-                
-            } catch (IOException e) {
-                Log2.write(e);
+            if (getWidth() != 0 && getHeight() != 0) {
+                try {
+                    // Load, copy and resize the backgroundimage.
+                    background = ImageTools.toBufferedImage
+                        (ImageTools.imageDeepCopy
+                             (LoadImages2.ensureLoadedAndGetImage
+                                  (backgroundLoc)[0][0])
+                             .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
+                    
+                } catch (IOException e) {
+                    Log2.write(e);
+                }
             }
+            
         }
     }
     

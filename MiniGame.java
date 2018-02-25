@@ -183,7 +183,9 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      */
     @Override
     public void setBounds(int x, int y, int width, int height) {
-        boolean resized = width != getWidth() || height != getHeight();
+        boolean resized = ((width != getWidth() || getWidth() == 0) ||
+                           (height != getHeight() || getHeight() == 0)
+                          ) && (width != 0 && height != 0);
         super.setBounds(x, y, width, height);
         
         if (resized) {
