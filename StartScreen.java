@@ -10,12 +10,14 @@ import learningGame.tools.LoadImages2;
 
 // Java packages
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException;
 
 import javax.swing.JPanel;
+
 
 
 public class StartScreen extends JPanel {
@@ -64,9 +66,15 @@ public class StartScreen extends JPanel {
      */
     @Override
     public void setBounds(int x, int y, int width, int height) {
+        boolean resized = width != getWidth() || height != getHeight();
         super.setBounds(x, y, width, height);
         
-        
+        if (resized) {
+            Insets in = this.getInsets();
+            
+            startButton.setSize(getWidth() / 3, getHeight() / 4);
+            startButton.setLocation(getWidth() / 3, getHeight() / 3);
+        }
     }
     
     /* 
