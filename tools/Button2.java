@@ -302,7 +302,7 @@ public class Button2 extends AbstractButton {
      * 
      * @param size the new size of the text.
      */
-    public void setTextSize(int size) {
+    public void setTextSize(float size) {
         if (label == null) return;
         font = font.deriveFont(size);
         label.setFont(font);

@@ -3,6 +3,7 @@ package learningGame;
 
 
 // Own packages
+import learningGame.font.FontLoader;
 import learningGame.log.Log2;
 import learningGame.tools.Button2;
 import learningGame.tools.LoadImages2;
@@ -17,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JPanel;
-
 
 
 public class StartScreen extends JPanel {
@@ -38,15 +38,16 @@ public class StartScreen extends JPanel {
     }
     
     /* 
-     *Creates the GUI of the application. 
+     * Creates the GUI of the application. 
      */
     private void createGUI() {
         try {
             startButton = new Button2(100, 25, 10, true, "Start");
             this.add(startButton);
-            
             startButton.setSize(200, 50);
             startButton.setLocation(250, 170);
+            startButton.setFont(FontLoader.Cousine);
+            startButton.setTextSize(30);
             startButton.addActionListener((e) -> {
                 if (r != null) r.run();
             }); // todo.
