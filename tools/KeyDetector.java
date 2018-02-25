@@ -13,6 +13,7 @@ package learningGame.tools;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class KeyDetector extends KeyAdapter {
@@ -68,7 +69,7 @@ public class KeyDetector extends KeyAdapter {
      * Returns all keys that were pressed between the two last updates.
      */
     public Key[] getKeysPressed() {
-        return MultiTool.toArray(keysPressedHistory);
+        return (Key[]) keysPressedHistory.toArray(new Key[keysPressedHistory.size()]);
     }
     
     /* 

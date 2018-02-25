@@ -28,7 +28,6 @@ public class MultiTool {
      * @return a String containing the 32 based representation of {@code dHex}.
      */
     public static String dHexToString(int dHex) throws NumberFormatException {
-        
         if (dHex < 0) throw new NumberFormatException();
         
         String answer = "";
@@ -188,25 +187,6 @@ public class MultiTool {
     }
     
     /* 
-     * Converts an array to an ArrayList
-     * 
-     * @param list the list to be converted.
-     * @return an array containing every element {@code list} and in the same order.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T[] toArray(ArrayList<T> list) {
-        if (list == null) return null;
-        
-        T[] array = (T[]) new Object[list.size()];
-        
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
-        }
-        
-        return array;
-    }
-    
-    /* 
      * Makes a copy of an arrayList.
      * 
      * @param list ArrayList to copy
@@ -235,10 +215,10 @@ public class MultiTool {
         T[] newArray = (T[]) new Object[array.length];
         
         for (int i = 0; i < array.length; i++) {
-            newArray[i] = array[i];
+            newArray[i] = (T) array[i];
         }
         
-        return newArray;
+        return (T[]) newArray;
     }
     
     /*

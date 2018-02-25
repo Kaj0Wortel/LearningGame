@@ -4,14 +4,18 @@ package learningGame;
 
 // Own packages
 import learningGame.Score;
+import learningGame.tools.ImageTools;
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
 
 
 // Java packages
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -19,11 +23,22 @@ import javax.swing.JPanel;
 public abstract class MiniGame extends JPanel implements MouseMotionListener, MouseListener {
     // The action that is executed after the minigame has ended.
     final private Runnable r;
+    
+    // The KeyDetector used to detect the key presses between updates.
     final private KeyDetector kd = new KeyDetector();
+    
+    // Instance of the parent.
     final protected LearningGame lg;
     
+    // Denotes whether the application has started.
     private boolean started = false;
+    // Deonotes whether the application has ended.
     private boolean stopped = false;
+    
+    // The background image that is shown.
+    protected BufferedImage background;
+    private BufferedImage backgroundResized;
+    
     
     public MiniGame(LearningGame lg, Runnable r) {
         super(null);
@@ -88,6 +103,7 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     
     /* 
      * This method is called when the mini game is finished.
+     * Calling this method prevents future calls to both the finish() and stop() method.
      */
     final public void finish() {
         if (!stopped) {
@@ -99,7 +115,8 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     
     /* 
      * This method is called when the MiniGame is interrupted in it's normal behaviour.
-     * Calling this method prevents the finish method from being called.
+     * Calling this method prevents future calls to both the finish() and stop() method.
+     * Also ignores the final action that is executed when the MiniGame ends from running.
      */
     final public void stop() {
         if (!stopped) {
@@ -137,6 +154,8 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     
     /* 
      * The update method. Put all time based stuff in here.
+     * 
+     * @param keys the keys that were pressed since the previous update.
      */
     abstract protected void update(Key[] keys);
     
@@ -150,4 +169,44 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      * Note: perhaps let it return a Score object.
      */
     abstract public Score getScore(); // todo: determine score object
+    
+    /* 
+     * This method is called when the MiniGame is resized.
+     * 
+     * @param width the new width of the MiniGame.
+     * @param height the new height of the MiniGame.
+     */
+    abstract public void resized(int width, int height);
+    
+    /* 
+     * This method is called when the MiniGame is resized/relocated.
+     */
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        boolean resized = width != getWidth() || height != getHeight();
+        super.setBounds(x, y, width, height);
+        
+        if (resized) {
+            if (background != null) {
+                // Load, copy and resize the image.
+                backgroundResized = ImageTools.toBufferedImage
+                    (ImageTools.imageDeepCopy
+                         (background)
+                         .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
+            }
+            
+            resized(width, height);
+        }
+    }
+    
+    /* 
+     * This method is called when the panel is repainted.
+     */
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        if (backgroundResized != null) g.drawImage(backgroundResized, 0, 0, null);
+    }
+    
 }

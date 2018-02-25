@@ -3,9 +3,11 @@ package learningGame;
 
 
 // Own packages
+import learningGame.LearningGame;
 import learningGame.font.FontLoader;
 import learningGame.log.Log2;
 import learningGame.tools.Button2;
+import learningGame.tools.ImageTools;
 import learningGame.tools.LoadImages2;
 
 
@@ -26,6 +28,10 @@ public class StartScreen extends JPanel {
     
     // GUI
     Button2 startButton;
+    
+    // Background image and file location.
+    private BufferedImage background;
+    final private static String backgroundLoc = LearningGame.workingDir + "img\\blue_dot.png";
     
     
     /* 
@@ -50,7 +56,7 @@ public class StartScreen extends JPanel {
             startButton.setTextSize(30);
             startButton.addActionListener((e) -> {
                 if (r != null) r.run();
-            }); // todo.
+            });
             
         } catch (IOException e) {
             Log2.write(e);
@@ -77,6 +83,18 @@ public class StartScreen extends JPanel {
             
             startButton.setSize(getWidth() / 3, getHeight() / 4);
             startButton.setLocation(getWidth() / 3, getHeight() / 3);
+            
+            try {
+                // Load, copy and resize the backgroundimage.
+                background = ImageTools.toBufferedImage
+                    (ImageTools.imageDeepCopy
+                         (LoadImages2.ensureLoadedAndGetImage
+                              (backgroundLoc)[0][0])
+                         .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
+                
+            } catch (IOException e) {
+                Log2.write(e);
+            }
         }
     }
     
@@ -86,6 +104,8 @@ public class StartScreen extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        if (background != null) g.drawImage(background, 0, 0, null);
     }
 }
 

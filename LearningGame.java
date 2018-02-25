@@ -88,7 +88,7 @@ public class LearningGame extends JFrame {
         super(appName);
         
         SwingUtilities.invokeLater(() -> {
-            // Set image
+            // Set application image
             this.setIconImage(new ImageIcon(appIconFile).getImage());
             
             createGUI();
@@ -96,6 +96,7 @@ public class LearningGame extends JFrame {
             // Create and add the StartScreen
             startScreen = new StartScreen(() -> {
                 remove(startScreen);
+                startScreen = null;
                 startMiniGames();
             });
             
@@ -283,7 +284,7 @@ public class LearningGame extends JFrame {
         
         curMiniGameNum = -1; // To start MiniGame at [0]
         curMiniGame = null;  // For not fetching weird scores
-        endMiniGame();
+        endMiniGame(); // Setup the MiniGame to be played and play it.
     }
     
     /* 
@@ -359,7 +360,6 @@ public class LearningGame extends JFrame {
         }
     }
     
-    
     /* ----------------------------------------------------------------------------------------------------------------
      * Listeners and Runners
      * ----------------------------------------------------------------------------------------------------------------
@@ -395,10 +395,17 @@ public class LearningGame extends JFrame {
         }
         
         if (++curMiniGameNum < miniGameOrder.length) {
-            remove(curMiniGame);
+            // Remove old MiniGame from frame
+            if (curMiniGame != null) remove(curMiniGame);
             
+            // Create new MiniGame
             curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum], () -> endMiniGame());
+            // Add new MiniGame to frame
             add(curMiniGame);
+            // Update the size of the MiniGame.
+            updateSizeChildren();
+            
+            // Start the MiniGame
             curMiniGame.start();
             
         } else {

@@ -340,7 +340,33 @@ public class LoadImages2 {
                 return getImage(name);
                 
             } else {
-                throw new NoSuchFieldException("Image \"" + name + "\" does not exist.");
+                throw new NoSuchFieldException("Image sheet \"" + name + "\" does not exist.");
+            }
+        }
+    }
+    
+    /* 
+     * Resizes an earlier stored image.
+     * Do not use this method every time you need to resize the image, but only once (or perhaps twice)
+     * per image sheet to prevent de-pixelizing. Use an instance of these images instead.
+     * 
+     * @param name the name of the image that will be retrieved.
+     * @width the new width of the images.
+     * @height the new height of the images.
+     * @hint the used hint for resizing the images.
+     * @throws NoSuchFieldException if this image does not exist.
+     */
+    public static void resizeImages(String name, int width, int height, int hint) throws NoSuchFieldException {
+        synchronized(images) {
+            if (images.containsKey(name)) {
+                for (BufferedImage[] imgArr : images.get(name)) {
+                    for (BufferedImage img : imgArr) {
+                        img = ImageTools.toBufferedImage(img.getScaledInstance(width, height, hint));
+                    }
+                }
+                
+            } else {
+                throw new NoSuchFieldException("Image sheet \"" + name + "\" does not exist.");
             }
         }
     }

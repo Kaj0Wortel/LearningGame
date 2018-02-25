@@ -13,17 +13,23 @@ import learningGame.music.PlayMusic;
 
 import learningGame.tools.Key;
 import learningGame.tools.LoadImages2;
-import learningGame.tools.TimerTool;
 
 
 // Java packages
-
+import java.io.IOException;
 
 
 public class Base extends MiniGame {
     public Base(LearningGame lg, Runnable r) {
         super(lg, r);
+        
+        // tmp
         System.out.println("SUCCES!");
+        try {
+            background = LoadImages2.ensureLoadedAndGetImage(LearningGame.workingDir + "img\\green_dot.png")[0][0];
+        } catch (IOException e) {
+            Log2.write(e);
+        }
     }
     
     @Override
@@ -33,6 +39,11 @@ public class Base extends MiniGame {
     
     @Override
     public void update(Key[] keys) {
+        
+    }
+    
+    @Override
+    public void resized(int width, int height) {
         
     }
     
