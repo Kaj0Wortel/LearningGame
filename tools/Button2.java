@@ -31,6 +31,7 @@ import java.io.IOException;
 
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 
 public class Button2 extends AbstractButton {
@@ -413,12 +414,12 @@ public class Button2 extends AbstractButton {
      * @throws UnsupportedOperationException if the button was initialized as not-resizable.
      */
     public void setBarAndBounds(int bz, int x, int y, int width, int height) {
-        if (this.barSize == bz && this.getWidth() == width && this.getHeight() == height) {
+        if (barSize == bz && getWidth() == width && getHeight() == height) {
             super.setBounds(x, y, width, height);
             
         } else {
             if (originalImages != null) {
-                if (barSize != bz || width != this.getWidth() || height != this.getHeight()) {
+                if (barSize != bz || width != getWidth() || height != getHeight()) {
                     super.setBounds(x, y, width, height);
                     barSize = bz;
                     
@@ -426,7 +427,7 @@ public class Button2 extends AbstractButton {
                     
                     updateLabel();
                     
-                } else if (x != this.getX() || y != this.getY()) {
+                } else if (x != getX() || y != getY()) {
                     super.setBounds(x, y, width, height);
                 }
             } else {

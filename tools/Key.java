@@ -8,82 +8,87 @@
 
 package learningGame.tools;
 
+
+// Java packages
+import javax.swing.KeyStroke;
+
+
 public class Key {
     // Alphabet
-    final public static int A = 65;
-    final public static int B = 66;
-    final public static int C = 67;
-    final public static int D = 68;
-    final public static int E = 69;
-    final public static int F = 70;
-    final public static int G = 71;
-    final public static int H = 72;
-    final public static int I = 73;
-    final public static int J = 74;
-    final public static int K = 75;
-    final public static int L = 76;
-    final public static int M = 77;
-    final public static int N = 78;
-    final public static int O = 79;
-    final public static int P = 80;
-    final public static int Q = 81;
-    final public static int R = 82;
-    final public static int S = 83;
-    final public static int T = 84;
-    final public static int U = 85;
-    final public static int V = 86;
-    final public static int W = 87;
-    final public static int X = 88;
-    final public static int Y = 89;
-    final public static int Z = 90;
+    final public static Key A = new Key(65);
+    final public static Key B = new Key(66);
+    final public static Key C = new Key(67);
+    final public static Key D = new Key(68);
+    final public static Key E = new Key(69);
+    final public static Key F = new Key(70);
+    final public static Key G = new Key(71);
+    final public static Key H = new Key(72);
+    final public static Key I = new Key(73);
+    final public static Key J = new Key(74);
+    final public static Key K = new Key(75);
+    final public static Key L = new Key(76);
+    final public static Key M = new Key(77);
+    final public static Key N = new Key(78);
+    final public static Key O = new Key(79);
+    final public static Key P = new Key(80);
+    final public static Key Q = new Key(81);
+    final public static Key R = new Key(82);
+    final public static Key S = new Key(83);
+    final public static Key T = new Key(84);
+    final public static Key U = new Key(85);
+    final public static Key V = new Key(86);
+    final public static Key W = new Key(87);
+    final public static Key X = new Key(88);
+    final public static Key Y = new Key(89);
+    final public static Key Z = new Key(90);
     
     // Numbers
-    final public static int N_0 = 48;
-    final public static int N_1 = 49;
-    final public static int N_2 = 50;
-    final public static int N_3 = 51;
-    final public static int N_4 = 52;
-    final public static int N_5 = 53;
-    final public static int N_6 = 54;
-    final public static int N_7 = 55;
-    final public static int N_8 = 56;
-    final public static int N_9 = 57;
+    final public static Key N_0 = new Key(48);
+    final public static Key N_1 = new Key(49);
+    final public static Key N_2 = new Key(50);
+    final public static Key N_3 = new Key(51);
+    final public static Key N_4 = new Key(52);
+    final public static Key N_5 = new Key(53);
+    final public static Key N_6 = new Key(54);
+    final public static Key N_7 = new Key(55);
+    final public static Key N_8 = new Key(56);
+    final public static Key N_9 = new Key(57);
     
     // Arrow keys
-    final public static int LEFT = 37;
-    final public static int UP = 38;
-    final public static int RIGHT = 39;
-    final public static int DOWN = 40;
+    final public static Key LEFT  = new Key(37);
+    final public static Key UP    = new Key(38);
+    final public static Key RIGHT = new Key(39);
+    final public static Key DOWN  = new Key(40);
     
     // Function keys
-    final public static int F1 = 112;
-    final public static int F2 = 113;
-    final public static int F3 = 114;
-    final public static int F4 = 115;
-    final public static int F5 = 116;
-    final public static int F6 = 117;
-    final public static int F7 = 118;
-    final public static int F8 = 119;
-    final public static int F9 = 120;
-    final public static int F10 = 121;
-    final public static int F11 = 122;
-    final public static int F12 = 123;
+    final public static Key F1  = new Key(112);
+    final public static Key F2  = new Key(113);
+    final public static Key F3  = new Key(114);
+    final public static Key F4  = new Key(115);
+    final public static Key F5  = new Key(116);
+    final public static Key F6  = new Key(117);
+    final public static Key F7  = new Key(118);
+    final public static Key F8  = new Key(119);
+    final public static Key F9  = new Key(120);
+    final public static Key F10 = new Key(121);
+    final public static Key F11 = new Key(122);
+    final public static Key F12 = new Key(123);
     
     // Other keys
-    final public static int ENTER = 10;
-    final public static int SPACE = 32;
-    final public static int SHIFT = 16;
-    final public static int CTRL = 46;
-    final public static int WINDOWS = 524;
-    final public static int DOT = 46;
-    final public static int COMMA = 44;
-    final public static int SLASH = 47;
-    final public static int BSLASH = 92;
-    final public static int DEL = 127;
-    final public static int ESC = 27;
-    final public static int BACKSPACE = 8;
-    final public static int MINUS = 45;
-    final public static int EQUAL = 61;
+    final public static Key ENTER   = new Key(10);
+    final public static Key SPACE   = new Key(32);
+    final public static Key SHIFT   = new Key(16);
+    final public static Key CTRL    = new Key(46);
+    final public static Key WINDOWS = new Key(524);
+    final public static Key DOT     = new Key(46);
+    final public static Key COMMA   = new Key(44);
+    final public static Key SLASH   = new Key(47);
+    final public static Key BSLASH  = new Key(92);
+    final public static Key DEL     = new Key(127);
+    final public static Key ESC     = new Key(27);
+    final public static Key BACKSPACE = new Key(8);
+    final public static Key MINUS   = new Key(45);
+    final public static Key EQUAL   = new Key(61);
     
     // Stores the key value.
     final private Integer key;
@@ -98,12 +103,20 @@ public class Key {
     }
     
     /* 
-     * Returns the key value.
+     * @return the key value.
      */
     public int getKey() {
         return key;
     }
     
+    public KeyStroke toKeyStroke() {
+        return KeyStroke.getKeyStroke((char) (int) key, 0);
+    }
+    
+    /* 
+     * Checks if two keys are equal. If just a number is given, compare the number with
+     * the key value of the Key object
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Key) {
@@ -111,6 +124,9 @@ public class Key {
             
         } else if (obj instanceof Number) {
             return key.equals((Integer) obj);
+            
+        } else if (obj instanceof KeyStroke) {
+            return KeyStroke.getKeyStroke((char) (int) key).equals((KeyStroke) obj);
             
         } else {
             return false;

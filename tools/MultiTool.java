@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
+import java.lang.reflect.GenericDeclaration;
+
+
 public class MultiTool {
     /* 
      * Converts a decimal integer to a 32 based number String.
@@ -428,17 +431,36 @@ public class MultiTool {
      * Copy-pasted from:
      * "http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8u40-b25/java/util/Collections.java#Collections.shuffle%28java.util.List%2Cjava.util.Random%29"
      */
-    public static Object[] shuffleArray(Object[] in) {
+    public static <V> V[] shuffleArray(V[] in) {
         return shuffleArray(in, new Random());
     }
     
-    public static <A> A[] shuffleArray(A[] in, Random rnd) {
+    public static <V> V[] shuffleArray(V[] in, Random rnd) {
         for (int i = in.length; i > 1; i--) {
             swap(in, i - 1, rnd.nextInt(i));
         }
         
         return in;
     }
+    
+    /* 
+     * Makes a copy of a Class array, keeping the type variable.
+     * 
+     * @param array Class array with type to copy.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T>[] copyArray(Class<T>[] array) {
+        if (array == null) return null;
+        
+        Class<T>[] newArray = (Class<T>[]) new Class[array.length];
+        
+        for (int i = 0; i < array.length; i++) {
+            newArray[i] = array[i];
+        }
+        
+        return newArray;
+    }
+    
     
     /* 
      * Performs a swap between two elements of an array.
@@ -448,11 +470,11 @@ public class MultiTool {
      * @param j the second element of the swap.
      * @return arr, but then with the elements i and j swapped.
      */
-    public static Object[] swap(Object[] arr, int i, int j) {
-        Object tmp = arr[i];
+    public static <V> V[] swap(V[] arr, int i, int j) {
+        V tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
-        return arr;
+        return (V[]) arr;
     }
     
 }
