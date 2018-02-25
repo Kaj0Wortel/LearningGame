@@ -276,7 +276,7 @@ public class LearningGame extends JFrame {
     private void startMiniGames() {
         miniGameOrder = (Class<MiniGame>[]) MultiTool.shuffleArray
             ((Class<MiniGame>[]) MultiTool.copyArray(miniGames));
-        curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum = 0], r);
+        curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum = 0], () -> endMiniGame());
         
         
     }
@@ -379,13 +379,14 @@ public class LearningGame extends JFrame {
         }
     };
     
-    Runnable r = new Runnable() {
-        @Override
-        public void run() {
-            // Todo
-            // Write here code about what will happen after a MiniGame has ended.
-        }
-    };
+    
+    /* 
+     * This method is called at the and of a MiniGame
+     */
+    private void endMiniGame() {
+        // Todo
+        // Write here code about what will happen after a MiniGame has ended.
+    }
     
     
     public static void main(String[] args) {
