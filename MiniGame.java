@@ -3,6 +3,7 @@ package learningGame;
 
 
 // Own packages
+import learningGame.Score;
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
 
@@ -52,6 +53,8 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     
     /* 
      * MouseMotionListener overrides.
+     * These are supposed to be overridden by the child child class.
+     * They are here for easy access.
      */
     @Override
     public void mouseDragged(MouseEvent e) { }
@@ -130,5 +133,5 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      * This method returns the score
      * Note: perhaps let it return a Score object.
      */
-    abstract public void getScore(); // todo: determine score object
+    abstract public Score getScore(); // todo: determine score object
 }

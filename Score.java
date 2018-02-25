@@ -1,5 +1,5 @@
 
-package learninGame;
+package learningGame;
 
 // Own packages
 
@@ -14,6 +14,8 @@ public class Score {
     /*
      * Prints the current score. Todo.
      */
-    @Overrides
-    public void toString() {}
+    @Override
+    public String toString() {
+        return "";
+    }
 }
