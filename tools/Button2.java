@@ -46,8 +46,9 @@ public class Button2 extends AbstractButton {
     final public static int TYPE_TURNED = 0;
     final public static int TYPE_MIRRORED = 1;
     
-    protected BufferedImage[][][] images;
     protected Image[][] originalImages;
+    protected Thread generateImagesThread = null;
+    protected BufferedImage[] buttonImages = new BufferedImage[4];
     final private int imageType;
     final private int scaleType;
     
@@ -528,100 +529,89 @@ public class Button2 extends AbstractButton {
      * ---------------------------------------------------------------------------------
      */
     /* 
-     * Generates the images for the background, given the images in img.
+     * Generates the background image for all four types, given the images in img.
      * img must have the same constraints as the images described in the constructor.
+     * Is executed on another thread to improve speed. This thread is interrupted when
+     * it is still calculating and the a new image generation request is done.
      * 
      * @param img see constructor for detailed info.
      */
-    private void generateNewImages(Image[][] img) {
-        // Generate the new images.
-        if (imageType == TYPE_TURNED || imageType == TYPE_MIRRORED) {
-            images = new BufferedImage[][][] {new BufferedImage[4][4], new BufferedImage[4][4], new BufferedImage[1][4]};
-            
-            Image corner = img[0][0].getScaledInstance(barSize, barSize, scaleType);
-            Image[] cornerBackground = new Image[] {
-                img[0][1].getScaledInstance(barSize, barSize, scaleType),
-                    img[0][2].getScaledInstance(barSize, barSize, scaleType),
-                    img[0][3].getScaledInstance(barSize, barSize, scaleType),
-                    img[0][4].getScaledInstance(barSize, barSize, scaleType)
-            };
-            
-            Image border = img[1][0].getScaledInstance(this.getWidth() - 2*barSize, barSize, scaleType);
-            Image[] borderBackground = new Image[] {
-                img[1][1].getScaledInstance(this.getWidth() - 2*barSize, barSize, scaleType),
-                    img[1][2].getScaledInstance(this.getWidth() - 2*barSize, barSize, scaleType),
-                    img[1][3].getScaledInstance(this.getWidth() - 2*barSize, barSize, scaleType),
-                    img[1][4].getScaledInstance(this.getWidth() - 2*barSize, barSize, scaleType)
-            };
-            
-            Image center = img[2][0].getScaledInstance(this.getWidth() - 2*barSize, this.getHeight() - 2*barSize, scaleType);
-            Image[] centerBackground = new Image[] {
-                img[2][1].getScaledInstance(this.getWidth() - 2*barSize, this.getHeight() - 2*barSize, scaleType),
-                    img[2][2].getScaledInstance(this.getWidth() - 2*barSize, this.getHeight() - 2*barSize, scaleType),
-                    img[2][3].getScaledInstance(this.getWidth() - 2*barSize, this.getHeight() - 2*barSize, scaleType),
-                    img[2][4].getScaledInstance(this.getWidth() - 2*barSize, this.getHeight() - 2*barSize, scaleType)
-            };
-            
-            for (int i = 0; i < images[0].length; i++) {
-                for (int j = 0; j < images[0][i].length; j++) {
-                    ImageTools.SimpleAction sa;
-                    if (i == 1) {
-                        sa = (imageType == TYPE_TURNED
-                                  ? ImageTools.SimpleAction.ROTATE_90_RIGHT
-                                  : ImageTools.SimpleAction.MIRROR_VERTICAL);
-                        
-                    } else if (i == 2) {
-                        sa = (imageType == TYPE_TURNED
-                                  ? ImageTools.SimpleAction.ROTATE_180
-                                  : ImageTools.SimpleAction.MIRROR_DIAGONAL_2);
-                        
-                    } else if (i == 3) {
-                        sa = (imageType == TYPE_TURNED
-                                  ? ImageTools.SimpleAction.ROTATE_90_LEFT
-                                  : ImageTools.SimpleAction.MIRROR_HORIZONTAL);
-                        
-                    } else {
-                        sa = null;
-                    }
-                    
-                    // Corners
-                    images[0][i][j] = ImageTools.imageDeepCopy(cornerBackground[j]);
-                    Graphics2D g2d0 = images[0][i][j].createGraphics();
-                    g2d0.drawImage(corner, 0, 0, null);
-                    g2d0.dispose();
-                    
-                    images[0][i][j] = ImageTools.simpleAction(images[0][i][j], sa);
-                    
-                    // Borders
-                    images[1][i][j] = ImageTools.imageDeepCopy(borderBackground[j]);
-                    Graphics2D g2d1 = images[1][i][j].createGraphics();
-                    g2d1.drawImage(border, 0, 0, null);
-                    g2d1.dispose();
-                    
-                    if (i == 0 || i == 2) {
-                        images[1][i][j] = ImageTools.simpleAction(images[1][i][j], sa);
-                        
-                    } else {
-                        images[1][i][j] = ImageTools.toBufferedImage
-                            (ImageTools.simpleAction(images[1][i][j], sa)
-                                 .getScaledInstance(barSize, this.getHeight() - 2*barSize, scaleType)
-                            );
+    private void generateNewImages(Image[][] imgs) {
+        if (getWidth() == 0 || getHeight() == 0) return;
+        
+        if (generateImagesThread != null) {
+            generateImagesThread.interrupt();
+        }
+        
+        generateImagesThread = new Thread() {
+            @Override
+            public void run() {
+                Image[][] scaledImages = new Image[4][5];
+                
+                // Scale each of the images to the right size
+                for (int i = 0; i < scaledImages.length; i++) {
+                    for (int j = 0; j < scaledImages[i].length; j++) {
+                        if (i == 0) { // Corner
+                            scaledImages[i][j] = imgs[i][j]
+                                .getScaledInstance(barSize, barSize, scaleType);
+                            
+                        } else if (i == 1) { // Horizontal bars
+                            if (getWidth() - 2*barSize > 0) {
+                                scaledImages[i][j] = imgs[i][j]
+                                    .getScaledInstance(getWidth() - 2*barSize, barSize, scaleType);
+                            }
+                            
+                        } else if (i == 2) { // Vertical bars
+                            if (getHeight() - 2*barSize > 0) {
+                                scaledImages[i][j] = imgs[i-1][j]
+                                    .getScaledInstance(getHeight() - 2*barSize, barSize, scaleType);
+                            }
+                            
+                        } else if (i == 3) { // Center
+                            if (getWidth() - 2*barSize > 0 && getHeight() - 2*barSize > 0) {
+                                scaledImages[i][j] = imgs[i-1][j]
+                                    .getScaledInstance(getWidth() - 2*barSize, getHeight() - 2*barSize, scaleType);
+                            }
+                        }
                     }
                 }
+                
+                for (int i = 0; i < buttonImages.length; i++) {
+                    buttonImages[i] = new BufferedImage(getWidth(),
+                                                        getHeight(),
+                                                        BufferedImage.TYPE_4BYTE_ABGR);
+                    
+                    Graphics2D g2d = buttonImages[i].createGraphics();
+                    
+                    if (getWidth() - 2*barSize > 0 && getHeight() - 2*barSize > 0) {
+                        g2d.drawImage(scaledImages[3][i+1], barSize, barSize, null); // Draw center background
+                    }
+                    
+                    // Todo: add TYPE_MIRRORED
+                    for (int j = 0; j < 4; j++) { // Repeat all 4 times.
+                        g2d.drawImage(scaledImages[0][i+1], 0, 0, null); // Draw corner background
+                        g2d.drawImage(scaledImages[0][0], 0, 0, null); // Draw corner
+                        
+                        if ((i % 2 == 0 && getWidth() - 2*barSize > 0) ||
+                            (i % 2 == 1 && getHeight() - 2*barSize > 0))
+                        {
+                            g2d.drawImage(scaledImages[(j % 2 == 0 ? 1 : 2)][i+1], barSize, 0, null); // Draw edge background
+                            g2d.drawImage(scaledImages[(j % 2 == 0 ? 1 : 2)][0], barSize, 0, null); // Draw edge
+                        }
+                        
+                        
+                        g2d.rotate(0.5 * Math.PI);
+                        g2d.translate(0, (j % 2 == 0 ? -getWidth() : -getHeight()));
+                    }
+                    
+                    g2d.dispose();
+                }
+                
+                generateImagesThread = null;
             }
-            
-            for (int i = 0; i < images[2][0].length; i++) {
-                // Background
-                images[2][0][i] = ImageTools.imageDeepCopy(centerBackground[i]);
-                Graphics2D g2d2 = images[2][0][i].createGraphics();
-                g2d2.drawImage(center, 0, 0, null);
-                g2d2.dispose();
-            }
-            
-        } else {
-            images = null;
-            originalImages = null;
-        }
+        };
+        
+        generateImagesThread.start();
     }
     
     /* 
@@ -658,8 +648,7 @@ public class Button2 extends AbstractButton {
                   0,    // no modifiers
                   0, 0, // click occured at (0,0) relative to source
                   1,    // 1 click
-                  false, button
-                 )
+                  false, button)
             );
     }
     
@@ -681,8 +670,7 @@ public class Button2 extends AbstractButton {
                   0,    // no modifiers
                   0, 0, // click occured at (0,0) relative to source
                   1,    // 1 click
-                  false, button
-                 )
+                  false, button)
             );
     }
     
@@ -704,8 +692,7 @@ public class Button2 extends AbstractButton {
                   0,    // no modifiers
                   0, 0, // click occured at (0,0) relative to source
                   1,    // 1 click
-                  false, button
-                 )
+                  false, button)
             );
     }
     
@@ -727,8 +714,7 @@ public class Button2 extends AbstractButton {
                   0, // no modifiers
                   0, 0, // click occured at (0,0) relative to source
                   1, // 1 click
-                  false, button
-                 )
+                  false, button)
             );
     }
 
@@ -799,22 +785,8 @@ public class Button2 extends AbstractButton {
         super.paintComponent(g);
         
         int type = calculateType();
-        
-        // Background
-        g.drawImage(images[2][0][type], barSize, barSize, null);
-        
-        for (int i = 0; i < 4; i++) {
-            // Corners
-            g.drawImage(images[0][i][type],
-                        (i == 0 || i == 3 ? 0 : this.getWidth() - barSize),
-                        (i == 0 || i == 1 ? 0 : this.getHeight() - barSize),
-                        null);
-            
-            // Borders
-            g.drawImage(images[1][i][type],
-                        (i == 0 || i == 2 ? barSize : (i == 1 ? this.getWidth() - barSize : 0)),
-                        (i == 1 || i == 3 ? barSize : (i == 2 ? this.getHeight() - barSize : 0)),
-                        null);
+        if (buttonImages != null && buttonImages != null) {
+            g.drawImage(buttonImages[type], 0, 0, null);
         }
         
         // Contents
