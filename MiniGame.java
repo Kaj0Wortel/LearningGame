@@ -29,8 +29,6 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
         super(null);
         this.lg = lg;
         this.r = r;
-        createGUI();
-        addListeners();
     }
     /* 
      * Adds all nessesary listeners.
@@ -81,9 +79,9 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      * Starts the current minigame.
      */
     public void start() {
-        if (!started) {
-            kd.clear();
+        if (!started && !stopped) {
             started = true;
+            createGUI();
             addListeners();
         }
     }
@@ -93,10 +91,9 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      */
     final public void finish() {
         if (!stopped) {
-            started = false;
             stopped = true;
             cleanUp();
-            r.run();
+            if (r != null) r.run();
         }
     }
     
@@ -106,12 +103,31 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      */
     final public void stop() {
         if (!stopped) {
-            started = false;
             stopped = true;
             cleanUp();
         }
     }
     
+    /* 
+     * @return whether the current MiniGame was started.
+     */
+    final public boolean isStarted() {
+        return started;
+    }
+    
+    /* 
+     * @return whether the current MiniGame is running.
+     */
+    final public boolean isRunning() {
+        return started && !stopped;
+    }
+    
+    /* 
+     * @return whether the current MiniGame was stopped.
+     */
+    final public boolean isStopped() {
+        return stopped;
+    }
     
     /* 
      * This method is called to create the GUI of the application.

@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 //import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+//import java.lang.reflect.InvocationTargetException;
 
 import javax.sound.sampled.Clip;
 
@@ -94,7 +94,11 @@ public class LearningGame extends JFrame {
             createGUI();
             
             // Create and add the StartScreen
-            startScreen = new StartScreen(() -> {});
+            startScreen = new StartScreen(() -> {
+                remove(startScreen);
+                startMiniGames();
+            });
+            
             this.add(startScreen);
             
             addKeyBindings();
@@ -106,7 +110,7 @@ public class LearningGame extends JFrame {
             
             
             // test
-            startMiniGames();
+            //startMiniGames();
             
             
             //---------------------------------------------------------------------------------------------------------
@@ -276,9 +280,10 @@ public class LearningGame extends JFrame {
     private void startMiniGames() {
         miniGameOrder = (Class<MiniGame>[]) MultiTool.shuffleArray
             ((Class<MiniGame>[]) MultiTool.copyArray(miniGames));
-        curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum = 0], () -> endMiniGame());
         
-        
+        curMiniGameNum = -1; // To start MiniGame at [0]
+        curMiniGame = null;  // For not fetching weird scores
+        endMiniGame();
     }
     
     /* 
@@ -381,11 +386,23 @@ public class LearningGame extends JFrame {
     
     
     /* 
-     * This method is called at the and of a MiniGame
+     * This method is called at the and of a MiniGame.
      */
     private void endMiniGame() {
-        // Todo
-        // Write here code about what will happen after a MiniGame has ended.
+        if (curMiniGame != null) {
+            Score score = curMiniGame.getScore();
+            // Todo: do something with the score.
+        }
+        
+        if (++curMiniGameNum < miniGameOrder.length) {
+            curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum], () -> endMiniGame());
+            curMiniGame.start();
+            
+        } else {
+            System.out.println("DONE");
+            // Todo: show result screen
+        }
+        
     }
     
     

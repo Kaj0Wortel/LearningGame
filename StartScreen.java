@@ -47,7 +47,9 @@ public class StartScreen extends JPanel {
             
             startButton.setSize(200, 50);
             startButton.setLocation(250, 170);
-            startButton.addActionListener((e) -> r.run()); // todo.
+            startButton.addActionListener((e) -> {
+                if (r != null) r.run();
+            }); // todo.
             
         } catch (IOException e) {
             Log2.write(e);
