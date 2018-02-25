@@ -5,6 +5,7 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
+import learningGame.Score;
 
 import learningGame.log.Log2;
 
@@ -41,8 +42,8 @@ public class Base extends MiniGame {
     }
     
     @Override
-    public void getScore() {
-        
+    public Score getScore() {
+        return null;
     }
     
     @Override
