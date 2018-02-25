@@ -41,12 +41,12 @@ public class Base extends MiniGame {
     }
     
     @Override
-    public void stop() {
+    public void getScore() {
         
     }
     
     @Override
-    public void getScore() {
+    public void cleanUp() {
         
     }
 }

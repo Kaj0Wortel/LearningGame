@@ -80,10 +80,6 @@ public class LearningGame extends JFrame {
     MiniGame curMiniGame;
     
     
-    
-    // GUI
-    private Button2 startButton;
-    
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
@@ -155,6 +151,7 @@ public class LearningGame extends JFrame {
     
     /* 
      * This method is called for every frame change.
+     * Should be only called by the timer.
      */
     private void update() {
         if (curMiniGame != null) {
@@ -321,8 +318,6 @@ public class LearningGame extends JFrame {
         
         setVisible(true);
     }
-    
-    
     
     /* 
      * Sets the size and location of the frame.

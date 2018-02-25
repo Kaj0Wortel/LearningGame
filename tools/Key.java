@@ -109,6 +109,9 @@ public class Key {
         return key;
     }
     
+    /* 
+     * Returns a keystroke of that key.
+     */
     public KeyStroke toKeyStroke() {
         return KeyStroke.getKeyStroke((char) (int) key, 0);
     }

@@ -21,13 +21,33 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     final private KeyDetector kd = new KeyDetector();
     final protected LearningGame lg;
     
-    protected boolean started = false;
+    private boolean started = false;
+    private boolean stopped = false;
     
     public MiniGame(LearningGame lg, Runnable r) {
         super(null);
         this.lg = lg;
         this.r = r;
         createGUI();
+        addListeners();
+    }
+    /* 
+     * Adds all nessesary listeners.
+     */
+    final private void addListeners() {
+        lg.addKeyListener(kd);
+        this.addMouseMotionListener(this);
+        this.addMouseListener(this);
+    }
+    
+    /* 
+     * Updates the frame for the minigame.
+     */
+    final public void update() {
+        if (started) {
+            kd.update();
+            update(kd.getKeysPressed());
+        }
     }
     
     /* 
@@ -55,15 +75,6 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     public void mouseReleased(MouseEvent e) { }
     
     /* 
-     * Adds all nessesary listeners.
-     */
-    final private void addListeners() {
-        lg.addKeyListener(kd);
-        this.addMouseMotionListener(this);
-        this.addMouseListener(this);
-    }
-    
-    /* 
      * Starts the current minigame.
      */
     public void start() {
@@ -75,24 +86,49 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     }
     
     /* 
-     * Updates the frame for the minigame.
+     * This method is called when the mini game is finished.
      */
-    final public void update() {
-        if (started) {
-            kd.update();
-            update(kd.getKeysPressed());
+    final public void finish() {
+        if (!stopped) {
+            started = false;
+            stopped = true;
+            cleanUp();
+            r.run();
         }
     }
     
     /* 
-     * This method is called when the mini game is finished.
+     * This method is called when the MiniGame is interrupted in it's normal behaviour.
+     * Calling this method prevents the finish method from being called.
      */
-    public void finish() {
-        r.run();
+    final public void stop() {
+        if (!stopped) {
+            started = false;
+            stopped = true;
+            cleanUp();
+        }
     }
     
+    
+    /* 
+     * This method is called to create the GUI of the application.
+     * Only called in the constructor.
+     */
     abstract protected void createGUI();
+    
+    /* 
+     * The update method. Put all time based stuff in here.
+     */
     abstract protected void update(Key[] keys);
-    abstract public void stop();
-    abstract public void getScore(); // todo
+    
+    /* 
+     * This method is always called when the MiniGame is about to shut down.
+     */
+    abstract protected void cleanUp();
+    
+    /* 
+     * This method returns the score
+     * Note: perhaps let it return a Score object.
+     */
+    abstract public void getScore(); // todo: determine score object
 }
