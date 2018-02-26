@@ -1,3 +1,3 @@
 @echo off
-pushdd ..
+pushd ..
 java -cp %CD% learningGame.LearningGame
