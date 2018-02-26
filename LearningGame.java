@@ -106,7 +106,7 @@ public class LearningGame extends JFrame {
             addListeners();
             
             // Start timer
-            timer = new TimerTool(() -> update(), 0L, 1000L/FPS);
+            timer = new TimerTool(0L, 1000L/FPS, () -> update());
             timer.start();
             
             

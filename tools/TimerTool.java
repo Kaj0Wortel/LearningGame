@@ -86,10 +86,6 @@ public class TimerTool {
                         r.run();
                     }
                 }
-                
-                if (interval == null) {
-                    timer.cancel();
-                }
             }
         };
     }
@@ -110,12 +106,7 @@ public class TimerTool {
         
         timer = new Timer(true);
         
-        if (interval != null) {
-            timer.scheduleAtFixedRate(createTimerTask(tasks), delay, interval);
-            
-        } else {
-            timer.schedule(createTimerTask(tasks), delay);
-        }
+        timer.scheduleAtFixedRate(createTimerTask(tasks), delay, interval);
         
         // Update the timeState
         timerState = TimerState.RUNNING;
@@ -145,20 +136,19 @@ public class TimerTool {
     public void resume() {
         if (timerState == TimerState.RUNNING || timerState == TimerState.CANCELED) return;
         
+        // The current time
+        long curTime = System.currentTimeMillis();
+        
         // Calculate the initial delay.
         long timeBeforeRun = interval - (curTime - startTime);
-        long startDelay = (timeToWait < 0 ? 0 : timeBeforeRun);
+        long startDelay = (timeBeforeRun < 0 ? 0 : timeBeforeRun);
         
         // Update the start time stamp.
         startTime = System.currentTimeMillis() - timeBeforeRun;
         
         timer = new Timer(true);
         
-        if (interval != null) {
-            timer.scheduleAtFixedRate(createTimerTask(tasks), startDelay, interval);
-        } else {
-            timer.schedule(createTimerTask(tasks), startDelay);
-        }
+        timer.scheduleAtFixedRate(createTimerTask(tasks), startDelay, interval);
         
         // Update the timeState
         timerState = TimerState.RUNNING;
@@ -200,7 +190,7 @@ public class TimerTool {
             
             // Calculate the initial delay.
             long timeBeforeRun = interval - (curTime - startTime);
-            long startDelay = (timeToWait < 0 ? 0 : timeBeforeRun);
+            long startDelay = (timeBeforeRun < 0 ? 0 : timeBeforeRun);
             
             // Update the start timestamp if the timer has to start directly.
             if (timeBeforeRun < 0) {
