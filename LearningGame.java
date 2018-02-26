@@ -233,7 +233,8 @@ public class LearningGame extends JFrame {
         // List all java classes in the package folder.
         File[] files = new File(workingDir + "miniGame\\")
             .listFiles((File dir, String name) -> {
-            return name.endsWith(".java"); // Include only files that end with ".java".
+            // Include only files that end with ".java" and exclude files that start with "Base".
+            return name.endsWith(".java") && !name.startsWith("Base");
         });
         
         // Create return object.
@@ -247,9 +248,10 @@ public class LearningGame extends JFrame {
             
             try {
                 miniGames[i] = (Class<MiniGame>) Class.forName("learningGame.miniGame." + className);
+                Log2.write("Succesfully loaded: \"" + miniGames[i].toString() + "\"", Log2.INFO);
                      
             } catch (Exception e) {
-                Log2.write(e);
+                Log2.write("Could not load class: \"learningGame.miniGame." + className + "\"", Log2.ERROR);
             }
         }
         
