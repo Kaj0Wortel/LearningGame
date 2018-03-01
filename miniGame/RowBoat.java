@@ -16,29 +16,24 @@ import learningGame.tools.LoadImages2;
 
 
 // Java packages
+import java.awt.image.BufferedImage;
+
 import java.io.IOException;
 
 
-public class Base extends MiniGame {
-    public Base(LearningGame lg, Runnable r) {
+
+
+public class RowBoat extends BaseTopDownScroller {
+    public RowBoat(LearningGame lg, Runnable r) {
         super(lg, r);
         
         try {
-            background = LoadImages2.ensureLoadedAndGetImage(LearningGame.workingDir + "img\\green_dot.png")[0][0];
+            background = LoadImages2.ensureLoadedAndGetImage(LearningGame.workingDir + "img\\bar.png")[0][0];
         } catch (IOException e) {
             Log2.write(e);
         }
     }
     
-    @Override
-    protected void createGUI() {
-        
-    }
-    
-    @Override
-    public void update(Key[] keys, long timeStamp) {
-        
-    }
     
     @Override
     public void resized(int width, int height) {
@@ -52,6 +47,11 @@ public class Base extends MiniGame {
     
     @Override
     public Score getScore() {
+        return null;
+    }
+    
+    @Override
+    protected BufferedImage[][] getObstacleImages() {
         return null;
     }
 }

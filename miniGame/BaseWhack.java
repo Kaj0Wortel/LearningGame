@@ -31,7 +31,6 @@ import java.util.Random;
 import java.io.IOException;
 
 import javax.swing.JPanel;
-//import javax.swing.JLayeredPane;
 
 
 public abstract class BaseWhack extends MiniGame {
@@ -64,7 +63,7 @@ public abstract class BaseWhack extends MiniGame {
         // Set the empty cursor
         lg.setCursor(ModCursors.EMPTY_CURSOR);
         
-        // Fetch images images
+        // Fetch the images
         originalHammerSheet = getHammerSheet();
         originalWhackSheet = getWhackSheet();
         originalWhacked = getWhackedImage();
@@ -554,11 +553,21 @@ public abstract class BaseWhack extends MiniGame {
                 );
         }
     }
+    
+    /* 
+     * This method is always called when the MiniGame is about to shut down.
+     * Only resets the mouse to it's default cursor.
+     */
     @Override
     protected void cleanUp() {
         lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Obstacle functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     /* 
      * @return the size of the whack field such that int[] {width, height},
      * where width and height denote the number of whackables in resp.

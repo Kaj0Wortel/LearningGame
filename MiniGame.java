@@ -43,7 +43,7 @@ public abstract class MiniGame extends JLayeredPane implements MouseMotionListen
     
     // The background image that is shown.
     protected BufferedImage background;
-    private BufferedImage backgroundResized;
+    protected BufferedImage backgroundResized;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -135,7 +135,6 @@ public abstract class MiniGame extends JLayeredPane implements MouseMotionListen
      * Starts the current minigame
      */
     final public void start() {
-        System.out.println("" + started + stopped);
         if (!started && !stopped) {
             createGUI();
             addListeners();
@@ -197,13 +196,17 @@ public abstract class MiniGame extends JLayeredPane implements MouseMotionListen
         }
     }
     
+    protected void drawBackground(Graphics g) {
+        if (backgroundResized != null) g.drawImage(backgroundResized, 0, 0, null);
+    }
+    
     /* 
      * This method is called when the panel is repainted.
      */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (backgroundResized != null) g.drawImage(backgroundResized, 0, 0, null);
+        drawBackground(g);
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
