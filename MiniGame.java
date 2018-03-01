@@ -3,7 +3,9 @@ package learningGame;
 
 
 // Own packages
+import learningGame.LearningGame;
 import learningGame.Score;
+import learningGame.log.Log2;
 import learningGame.tools.ImageTools;
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
@@ -30,6 +32,9 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     // Instance of the parent.
     final protected LearningGame lg;
     
+    // The working directory
+    final protected String workingDir = LearningGame.workingDir;
+    
     // Denotes whether the application has started.
     private boolean started = false;
     // Deonotes whether the application has ended.
@@ -39,12 +44,16 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     protected BufferedImage background;
     private BufferedImage backgroundResized;
     
-    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Constructor
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     public MiniGame(LearningGame lg, Runnable r) {
         super(null);
         this.lg = lg;
         this.r = r;
     }
+    
     /* 
      * Adds all nessesary listeners.
      */
@@ -60,7 +69,7 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     final public void update() {
         if (started) {
             kd.update();
-            update(kd.getKeysPressed());
+            update(kd.getKeysPressed(), System.currentTimeMillis());
         }
     }
     
@@ -90,14 +99,47 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     @Override
     public void mouseReleased(MouseEvent e) { }
     
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Get functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
+    
     /* 
-     * Starts the current minigame.
+     * @return whether the current MiniGame was started.
+     */
+    final public boolean isStarted() {
+        return started;
+    }
+    
+    /* 
+     * @return whether the current MiniGame is running.
+     */
+    final public boolean isRunning() {
+        return started && !stopped;
+    }
+    
+    /* 
+     * @return whether the current MiniGame was stopped.
+     */
+    final public boolean isStopped() {
+        return stopped;
+    }
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Other functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
+    /* 
+     * Starts the current minigame
      */
     final public void start() {
+        System.out.println("" + started + stopped);
         if (!started && !stopped) {
-            started = true;
             createGUI();
             addListeners();
+            resized(getWidth(), getHeight());
+            recreateBackground();
+            started = true;
         }
     }
     
@@ -123,29 +165,49 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
             stopped = true;
             cleanUp();
         }
+    } 
+    /* 
+     * This method is called when the MiniGame is resized/relocated.
+     */
+    @Override
+    final public void setBounds(int x, int y, int width, int height) {
+        boolean resized = (width != getWidth() && getWidth() != 0) ||
+                           (height != getHeight() && getHeight() != 0);
+        
+        super.setBounds(x, y, width, height);
+        
+        if (resized) {
+            resized(width, height);
+            recreateBackground();
+        }
     }
     
     /* 
-     * @return whether the current MiniGame was started.
+     * Recreates the background image.
      */
-    final public boolean isStarted() {
-        return started;
+    final protected void recreateBackground() {
+        if (background != null) {
+            // Copy and resize the background image.
+            backgroundResized = ImageTools.toBufferedImage
+                (ImageTools.imageDeepCopy
+                     (background)
+                     .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
+        }
     }
     
     /* 
-     * @return whether the current MiniGame is running.
+     * This method is called when the panel is repainted.
      */
-    final public boolean isRunning() {
-        return started && !stopped;
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (backgroundResized != null) g.drawImage(backgroundResized, 0, 0, null);
     }
     
-    /* 
-     * @return whether the current MiniGame was stopped.
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Abstract functions
+     * ----------------------------------------------------------------------------------------------------------------
      */
-    final public boolean isStopped() {
-        return stopped;
-    }
-    
     /* 
      * This method is called to create the GUI of the application.
      * Only called in the constructor.
@@ -156,8 +218,9 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      * The update method. Put all time based stuff in here.
      * 
      * @param keys the keys that were pressed since the previous update.
+     * @param timeStamp the start of the update cycle.
      */
-    abstract protected void update(Key[] keys);
+    abstract protected void update(Key[] keys, long timeStamp);
     
     /* 
      * This method is always called when the MiniGame is about to shut down.
@@ -166,6 +229,7 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
     
     /* 
      * This method returns the score
+     * 
      * Note: perhaps let it return a Score object.
      */
     abstract public Score getScore(); // todo: determine score object
@@ -178,37 +242,11 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      */
     abstract public void resized(int width, int height);
     
-    /* 
-     * This method is called when the MiniGame is resized/relocated.
-     */
-    @Override
-    public void setBounds(int x, int y, int width, int height) {
-        boolean resized = ((width != getWidth() || getWidth() == 0) ||
-                           (height != getHeight() || getHeight() == 0)
-                          ) && (width != 0 && height != 0);
-        super.setBounds(x, y, width, height);
-        
-        if (resized) {
-            if (background != null) {
-                // Load, copy and resize the image.
-                backgroundResized = ImageTools.toBufferedImage
-                    (ImageTools.imageDeepCopy
-                         (background)
-                         .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
-            }
-            
-            resized(width, height);
-        }
-    }
     
-    /* 
-     * This method is called when the panel is repainted.
-     */
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        if (backgroundResized != null) g.drawImage(backgroundResized, 0, 0, null);
+    // tmp
+    public static void main(String[] args) {
+        Log2.clear();
+        LearningGame lg = new LearningGame();
     }
     
 }

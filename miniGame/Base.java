@@ -38,7 +38,7 @@ public class Base extends MiniGame {
     }
     
     @Override
-    public void update(Key[] keys) {
+    public void update(Key[] keys, long timeStamp) {
         
     }
     

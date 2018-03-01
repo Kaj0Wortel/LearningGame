@@ -139,10 +139,10 @@ public class LearningGame extends JFrame {
             
             /* Repeat a clip continuously *//*
             PlayMusic.loop(clip, -1);
-            /* or */
+            /* or *//*
             PlayMusic.loop(clip, Clip.LOOP_CONTINUOUSLY);
             
-            /* Play a(nother) clip after another clip has stopped */
+            /* Play a(nother) clip after another clip has stopped *//*
             PlayMusic.addAction(clip,
                                 null, null, // open/close file
                                 null, () -> PlayMusic.play(clip)); // start/stop clip
@@ -159,9 +159,14 @@ public class LearningGame extends JFrame {
      * Should be only called by the timer.
      */
     private void update() {
-        if (curMiniGame != null) {
-            curMiniGame.update();
+        MiniGame mg = getMiniGame();
+        if (mg != null) {
+            mg.update();
         }
+    }
+    
+    protected MiniGame getMiniGame() {
+        return curMiniGame;
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -339,7 +344,7 @@ public class LearningGame extends JFrame {
      */
     @Override
     public void setBounds(final int x, final int y, final int width, final int height) {
-         boolean resized = width != getWidth() || height != getHeight();
+         boolean resized = (width != getWidth() || height != getHeight());
          
         super.setBounds(x, y, width, height);
         if (resized) updateSizeChildren();
@@ -396,12 +401,17 @@ public class LearningGame extends JFrame {
             // Todo: do something with the score.
         }
         
-        if (++curMiniGameNum < miniGameOrder.length) {
-            // Remove old MiniGame from frame
-            if (curMiniGame != null) remove(curMiniGame);
+        // Remove old MiniGame from frame
+        if (curMiniGame != null) remove(curMiniGame);
+        
+        do {
+            if (++curMiniGameNum >= miniGameOrder.length) break;
             
             // Create new MiniGame
             curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum], () -> endMiniGame());
+        } while (curMiniGame != null);
+        
+        if (curMiniGame != null) {
             // Add new MiniGame to frame
             add(curMiniGame);
             // Update the size of the MiniGame.
@@ -409,10 +419,11 @@ public class LearningGame extends JFrame {
             
             // Start the MiniGame
             curMiniGame.start();
+            System.out.println("started!");
             
         } else {
             System.out.println("DONE");
-            // Todo: show result screen
+            // Todo: show final result screen
         }
         
     }
@@ -421,10 +432,6 @@ public class LearningGame extends JFrame {
     public static void main(String[] args) {
         Log2.clear();
         LearningGame lg = new LearningGame();
-        
-        while(true) {
-            MultiTool.sleepThread(1000);
-            lg.repaint();
-        }
     }
+    
 }
