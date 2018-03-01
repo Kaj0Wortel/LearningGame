@@ -53,7 +53,6 @@ public class LoadImages2 {
      * @return an 2D BufferedImage array, with the images loaded such that bi[x][y]
      *     will retrieve the image part at (x, y) from the selected part (starting at (0, 0)).
      * 
-     * @throws IIOException iff the file does not exist or is not accessable.
      * @throws IllegalArgumentException iff:
      * - startX >= endX  OR  startY >= endY
      * - (endX - startX) % width != 0  OR  (endY - startY) % height != 0
@@ -70,13 +69,13 @@ public class LoadImages2 {
     // (0) Using "new File(String)" as file
     //     (1) Using "fileName" as name
     public static BufferedImage[][] loadImage(String fileName)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(new File(fileName), fileName, 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] loadImage(String fileName,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(new File(fileName), fileName, 0, 0, -1, -1, width, height);
     }
     
@@ -84,19 +83,19 @@ public class LoadImages2 {
                                               int startX, int startY,
                                               int endX, int endY,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(new File(fileName), fileName, startX, startY, endX, endY, width, height);
     }
     
     //     (1) Using "name" as name
     public static BufferedImage[][] loadImage(String fileName, String name)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(new File(fileName), name, 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] loadImage(String fileName, String name,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(new File(fileName), name, 0, 0, -1, -1, width, height);
     }
     
@@ -104,7 +103,7 @@ public class LoadImages2 {
                                               int startX, int startY,
                                               int endX, int endY,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(new File(fileName), name, startX, startY, endX, endY, width, height);
     }
     
@@ -112,13 +111,13 @@ public class LoadImages2 {
     // (0) Using "file" as file
     //     (1) Using "fileName" as name
     public static BufferedImage[][] loadImage(File file)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(file, file.getPath(), 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] loadImage(File file,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(file, file.getPath(), 0, 0, -1, -1, width, height);
     }
     
@@ -126,19 +125,19 @@ public class LoadImages2 {
                                               int startX, int startY,
                                               int endX, int endY,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(file, file.getPath(), startX, startY, endX, endY, width, height);
     }
     
     //     (1) Using "name" as name
     public static BufferedImage[][] loadImage(File file, String name)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(file, name, 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] loadImage(File file, String name,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return loadImage(file, name, 0, 0, -1, -1, width, height);
     }
     
@@ -147,7 +146,7 @@ public class LoadImages2 {
                                               int startX, int startY,
                                               int endX, int endY,
                                               int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         BufferedImage[][] newImg = null;
         
         synchronized(images) {
@@ -155,8 +154,14 @@ public class LoadImages2 {
             if (images.contains(name))
                 throw new IllegalArgumentException("Name was already used: \"" + name + "\"");
             
+            BufferedImage bigImg;
             // Read the image
-            BufferedImage bigImg = ImageIO.read(file);
+            try {
+                bigImg = ImageIO.read(file);
+                
+            } catch (IIOException e) {
+                throw new IOException("File \"" + name  + "\" does not exist or is not accessable.");
+            }
             
             
             // Check if the end coords are correct
@@ -225,13 +230,13 @@ public class LoadImages2 {
     // (0) Using "new File(String)" as file
     //     (1) Using "fileName" as name
     public static BufferedImage[][] ensureLoadedAndGetImage(String fileName)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(new File(fileName), fileName, 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] ensureLoadedAndGetImage(String fileName,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(new File(fileName), fileName, 0, 0, -1, -1, width, height);
     }
     
@@ -239,19 +244,19 @@ public class LoadImages2 {
                                                             int startX, int startY,
                                                             int endX, int endY,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(new File(fileName), fileName, startX, startY, endX, endY, width, height);
     }
     
     //     (1) Using "name" as name
     public static BufferedImage[][] ensureLoadedAndGetImage(String fileName, String name)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(new File(fileName), name, 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] ensureLoadedAndGetImage(String fileName, String name,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(new File(fileName), name, 0, 0, -1, -1, width, height);
     }
     
@@ -259,7 +264,7 @@ public class LoadImages2 {
                                                             int startX, int startY,
                                                             int endX, int endY,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(new File(fileName), name, startX, startY, endX, endY, width, height);
     }
     
@@ -267,13 +272,13 @@ public class LoadImages2 {
     // (0) Using "file" as file
     //     (1) Using "fileName" as name
     public static BufferedImage[][] ensureLoadedAndGetImage(File file)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(file, file.getPath(), 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] ensureLoadedAndGetImage(File file,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(file, file.getPath(), 0, 0, -1, -1, width, height);
     }
     
@@ -281,19 +286,19 @@ public class LoadImages2 {
                                                             int startX, int startY,
                                                             int endX, int endY,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(file, file.getPath(), startX, startY, endX, endY, width, height);
     }
     
     //     (1) Using "name" as name
     public static BufferedImage[][] ensureLoadedAndGetImage(File file, String name)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(file, name, 0, 0, -1, -1, -1, -1);
     }
     
     public static BufferedImage[][] ensureLoadedAndGetImage(File file, String name,
                                                             int width, int height)
-        throws IllegalArgumentException, IOException, IIOException {
+        throws IllegalArgumentException, IOException {
         return ensureLoadedAndGetImage(file, name, 0, 0, -1, -1, width, height);
     }
     
@@ -301,7 +306,7 @@ public class LoadImages2 {
                                                             int startX, int startY,
                                                             int endX, int endY,
                                                             int width, int height)
-        throws IOException, IllegalArgumentException, IIOException {
+        throws IOException, IllegalArgumentException {
         synchronized(images) {
             if (images.containsKey(name)) {
                 return images.get(name);
