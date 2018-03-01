@@ -110,8 +110,19 @@ public class PlayMusic {
      * @param clip clip to be played.
      */
     public static void play(Clip clip) {
+        if (clip.isRunning()) {
+            clip.stop();
+        }
+        
         clip.setFramePosition(0);
         clip.start();
+        /*
+        clip.setFramePosition(0);
+        if (!clip.isRunning()) {
+            clip.start();
+        } else {
+            System.out.println("check");
+        }*/
     }
     
     /* 

@@ -19,10 +19,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
+//import javax.swing.JPanel;
+import javax.swing.JLayeredPane;
 
 
-public abstract class MiniGame extends JPanel implements MouseMotionListener, MouseListener {
+public abstract class MiniGame extends JLayeredPane implements MouseMotionListener, MouseListener {
     // The action that is executed after the minigame has ended.
     final private Runnable r;
     
@@ -49,7 +50,8 @@ public abstract class MiniGame extends JPanel implements MouseMotionListener, Mo
      * ----------------------------------------------------------------------------------------------------------------
      */
     public MiniGame(LearningGame lg, Runnable r) {
-        super(null);
+        super();
+        this.setLayout(null);
         this.lg = lg;
         this.r = r;
     }

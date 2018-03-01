@@ -22,6 +22,8 @@ import java.io.IOException;
 
 
 public class WhackAMole extends BaseWhack {
+    final private static String whackFile = LearningGame.workingDir + "music\\sfx\\whack.wav";
+    
     public WhackAMole(LearningGame lg, Runnable r) {
         super(lg, r);
         
@@ -34,28 +36,24 @@ public class WhackAMole extends BaseWhack {
         }
     }
     
-    /* 
-     * The update method.
-     * 
-     * @param keys the keys that were pressed since the previous update.
-     * @param timeStamp the start of the update cycle.
-     */
-    @Override
-    public void update(Key[] keys, long timeStamp) {
-        super.update(keys, timeStamp);
-        //whacks[0][0].showWhackable(500, 200, timeStamp);
-    }
-    
-    @Override
-    public void cleanUp() {
-        
-    }
-    
     @Override
     public Score getScore() {
         return null;
     }
     
+    /* 
+     * @return the size of the whack field such that int[] {width, height},
+     * where width and height denote the number of whackables in resp.
+     * the rows and columns.
+     */
+    @Override
+    protected int[] getFieldSize() {
+        return new int[] {3, 3};
+    }
+    
+    /* 
+     * @return the image sheet for the whackable animation.
+     */
     @Override
     protected BufferedImage[] getWhackSheet() {
         try {
@@ -67,6 +65,9 @@ public class WhackAMole extends BaseWhack {
         return null;
     }
     
+    /* 
+     * @return the image for when the whackable has been whacked.
+     */
     @Override
     protected BufferedImage getWhackedImage() {
         try {
@@ -82,6 +83,9 @@ public class WhackAMole extends BaseWhack {
         return null;
     }
     
+    /* 
+     * @return the image sheet for the hammer.
+     */
     @Override
     protected BufferedImage[] getHammerSheet() {
         try {
@@ -92,5 +96,24 @@ public class WhackAMole extends BaseWhack {
         }
         
         return null;
+    }
+    
+    /* 
+     * @return the location of the music file
+     */
+    @Override
+    protected String getWhackMusicFile() {
+        return whackFile; 
+    }
+    
+    /* 
+     * This method is called when a whackable has been whacked.
+     * 
+     * @param timeStamp the time when the whackable has been whacked.
+     *     Note that this is an event, so this part is NOT synchronized
+     *     with the update thread.
+     */
+    protected void whackEvent(long timeStamp) {
+        
     }
 }
