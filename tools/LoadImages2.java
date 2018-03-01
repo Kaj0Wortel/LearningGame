@@ -377,6 +377,35 @@ public class LoadImages2 {
     }
     
     /* 
+     * Inverses the x and y of an entry
+     * Assumes that entry[0].length == entry[i].length for every i.
+     * 
+     * @param name the name of the image that will be inversed.
+     */
+    public static boolean inverseXY(String name) {
+        synchronized(images) {
+            BufferedImage[][] entry;
+            if ((entry = images.get(name)) != null &&
+                entry.length > 0 && entry[0].length > 0)
+            {
+                BufferedImage[][] tmp = new BufferedImage[entry[0].length][entry.length];
+                
+                for (int i = 0; i < entry.length; i++) {
+                    for (int j = 0; j < entry[0].length; j++) {
+                        tmp[j][i] = entry[i][j];
+                    }
+                }
+                
+                images.put(name, tmp);
+                return true;
+                
+            } else {
+                return false;
+            }
+        }
+    }
+    
+    /* 
      * Removes a stored image.
      * 
      * @param name the name of the image that will be retrieved.
