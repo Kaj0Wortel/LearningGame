@@ -36,6 +36,7 @@ import javax.sound.sampled.Clip;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -118,7 +119,7 @@ public class LearningGame extends JFrame {
             // Music examples:
             
             /** DONT EVER USE ANY METHODS FROM THE "Clip" CLASS! **/
-            
+            /*
             String clipFileName = workingDir + "music\\test.wav";
             Clip clip = PlayMusic.createClip(clipFileName);
             
@@ -179,8 +180,8 @@ public class LearningGame extends JFrame {
     private void addKeyBindings() {
         // Add keybinding for full screen (F5 key)
         this.getRootPane().getInputMap().put(Key.F5.toKeyStroke(),
-                                             "full screen");
-        this.getRootPane().getActionMap().put("full screen", 
+                                             "full_screen");
+        this.getRootPane().getActionMap().put("full_screen", 
                                               new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
