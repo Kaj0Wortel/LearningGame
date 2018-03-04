@@ -169,6 +169,22 @@ public class MultiTool {
     }
     
     /* 
+     * Checks if a given value is in the array.
+     * Generic version of the function above.
+     * 
+     * @param array array to look in.
+     * @param number number to look for.
+     * @return true iff the number is in the array.
+     */
+    public static <T> boolean isInArray(T[] array, T value) {
+        for (T entry : array) {
+            if (entry.equals(value)) return true;
+        }
+        
+        return false;
+    }
+    
+    /* 
      * Converts an ArrayList to an array.
      * 
      * @param array the array to be converted.
