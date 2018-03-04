@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
+
+// tmp
+import javax.swing.JFrame;
+
+
 public class KeyDetector extends KeyAdapter {
     // List containing all keys that are currently pressed.
     private ArrayList<Key> keysCurPressed = new ArrayList<Key>();
@@ -87,6 +92,34 @@ public class KeyDetector extends KeyAdapter {
     public void update() {
         keysPressedHistory = MultiTool.copyArrayList(keysPressedSinceLastUpdate);
         keysPressedSinceLastUpdate = MultiTool.copyArrayList(keysCurPressed);
+    }
+    
+    
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("test");
+        frame.setLayout(null);
+        frame.setLocation(50, 50);
+        frame.setSize(300, 300);
+        KeyDetector kd = new KeyDetector();
+        frame.addKeyListener(kd);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        while(true) {
+            try {
+                Thread.sleep(1000);
+                
+                kd.update();
+                Key[] keys = kd.getKeysPressed();
+                System.out.println("keys pressed:");
+                for (Key key : keys) {
+                    System.out.println(key);
+                }
+                
+            } catch (InterruptedException e) {
+                
+            }
+        }
     }
 }
 
