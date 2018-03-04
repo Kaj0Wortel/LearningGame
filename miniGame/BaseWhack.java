@@ -19,6 +19,7 @@ import learningGame.tools.ModCursors;
 
 // Java packages
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
@@ -33,7 +34,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 
 
-public abstract class BaseWhack extends MiniGame {
+abstract public class BaseWhack extends MiniGame {
     // The original images
     final private BufferedImage[] originalHammerSheet;
     final private BufferedImage[] originalWhackSheet;
@@ -52,6 +53,9 @@ public abstract class BaseWhack extends MiniGame {
     
     // The hammer
     protected Hammer hammer;
+    
+    // The chance that a whackable spawns in spawns / sec
+    protected double spawnChance = 0.5;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -110,8 +114,7 @@ public abstract class BaseWhack extends MiniGame {
          * ------------------------------------------------------------------------------------------------------------
          */
         public Hammer() {
-            super();
-            setLayout(null);
+            super(null);
             setBackground(new Color(0, 0, 0, 0));
             setOpaque(false);
         }
@@ -256,6 +259,7 @@ public abstract class BaseWhack extends MiniGame {
          */
         public void update(long timeStamp) {
             long delta = timeStamp - whackableShownTime;
+            
             // Update the shown image
             if (state == GOING_UP) {
                 if (delta > moveTime * (curWhackImageNum + 1.0) / whackSheet.length) {
@@ -376,7 +380,7 @@ public abstract class BaseWhack extends MiniGame {
             }
         }
         
-        updateWhackBounds(width, height, calcWhackWidth(width, height), calcWhackHeight(width, height));
+        updateWhackBounds(width, height, calcWhackDim(width, height));
         resized(getWidth(), getHeight());
     }
     
@@ -409,8 +413,9 @@ public abstract class BaseWhack extends MiniGame {
                 int mouseOnScreenY = MouseInfo.getPointerInfo().getLocation().y;
                 int thisX = this.getLocationOnScreen().x;
                 int thisY = this.getLocationOnScreen().y;
-                int dx = (int) ((1.0/3.0) * calcHammerWidth(getWidth(), getHeight()));
-                int dy = (int) ((2.0/3.0) * calcHammerHeight(getWidth(), getHeight()));
+                Dimension hammerDim = calcHammerDim(getWidth(), getHeight());
+                int dx = (int) ((1.0/3.0) * hammerDim.getWidth());
+                int dy = (int) ((2.0/3.0) * hammerDim.getHeight());
                 
                 hammer.setLocation(mouseOnScreenX - thisX - dx, mouseOnScreenY - thisY - dy);
                 
@@ -423,8 +428,6 @@ public abstract class BaseWhack extends MiniGame {
         }
     }
     
-    // The chance that a whackable spawns in spawns / sec
-    protected double spawnChance = 0.5;
     /* 
      * In this update method should be used for letting the whackables show.
      */
@@ -452,13 +455,11 @@ public abstract class BaseWhack extends MiniGame {
      */
     @Override
     public void resized(int width, int height) {
-        int whackWidth = calcWhackWidth(width, height);
-        int whackHeight = calcWhackHeight(width, height);
-        int hammerWidth = calcHammerWidth(width, height);
-        int hammerHeight = calcHammerHeight(width, height);
+        Dimension whackDim = calcWhackDim(width, height);
+        Dimension hammerDim = calcHammerDim(width, height);
         
         if (whacks != null) {
-            if (whackWidth > 0 && whackHeight > 0) {
+            if (whackDim.getWidth() > 0 && whackDim.getHeight() > 0) {
                 if (imageCreateThread != null) {
                     imageCreateThread.interrupt();
                 }
@@ -467,15 +468,18 @@ public abstract class BaseWhack extends MiniGame {
                     @Override
                     public void run() {
                         // Whack
-                        resizeWhackImages(whackWidth, whackHeight);
-                        updateWhackBounds(width, height, whackWidth, whackHeight);
+                        resizeWhackImages(whackDim);
+                        updateWhackBounds(width, height, whackDim);
                         
                         // Hammer
-                        resizeHammerImages(hammerWidth, hammerHeight);
-                        hammer.setSize(hammerWidth, hammerHeight);
+                        resizeHammerImages(hammerDim);
+                        hammer.setSize(hammerDim);
                         
                         // Set image thread to null.
                         imageCreateThread = null;
+                        
+                        // Repaint the panel.
+                        repaint();
                     }
                 };
                 
@@ -487,69 +491,58 @@ public abstract class BaseWhack extends MiniGame {
     /* 
      * Updates the bounds of the used Whacks.
      */
-    protected void updateWhackBounds(int panelWidth, int panelHeight, int whackWidth, int whackHeight) {
+    protected void updateWhackBounds(int panelWidth, int panelHeight, Dimension whackDim) {
         for (int i = 0; i < whacks.length; i++) {
             for (int j = 0; j < whacks[i].length; j++) {
-                whacks[i][j].setSize(whackWidth, whackHeight);
-                whacks[i][j].setLocation((int) ((i + 1) * panelWidth  /(whacks.length    + 1) - 0.5*whackWidth),
-                                         (int) ((j + 1) * panelHeight / (int) (whacks[i].length + 1) - 0.5*whackHeight));
+                whacks[i][j].setSize(whackDim);
+                whacks[i][j].setLocation
+                    ((int) ((i + 1) * panelWidth  / (whacks.length + 1) - 0.5*whackDim.getWidth()),
+                     (int) ((j + 1) * panelHeight / (whacks[i].length + 1) - 0.5*whackDim.getHeight()));
             }
         }
     }
     
     /* 
-     * @return the width of each Whack, knowing the new width and height.
+     * @return the dimension of a Whack.
      */
-    protected int calcWhackWidth(int newWidth, int newHeight) {
-        return (int) ((2.0/3.0) * newWidth / (whacks.length + 1));
+    protected Dimension calcWhackDim(int newWidth, int newHeight) {
+        return new Dimension((int) ((2.0/3.0) * newWidth / (whacks.length + 1)),
+                             (int) ((2.0/3.0) * newHeight / (whacks[0].length + 1)));
     }
     
     /* 
-     * @return the height of each Whack, knowing the new width and height.
+     * @return the dimension of the Hammer.
      */
-    protected int calcWhackHeight(int newWidth, int newHeight) {
-        return (int) ((2.0/3.0) * newHeight / (whacks[0].length + 1));
-    }
-    
-    /* 
-     * @return the width of each Whack, knowing the new width and height.
-     */
-    protected int calcHammerWidth(int newWidth, int newHeight) {
-        return (int) ((2.0/3.0) * newWidth / (whacks.length + 1));
-    }
-    
-    /* 
-     * @return the height of each Whack, knowing the new width and height.
-     */
-    protected int calcHammerHeight(int newWidth, int newHeight) {
-        return (int) ((2.0/3.0) * newHeight / (whacks[0].length + 1)) * 2;
+    protected Dimension calcHammerDim(int newWidth, int newHeight) {
+        return new Dimension((int) ((2.0/3.0) * newWidth / (whacks.length + 1)),
+                             (int) ((4.0/3.0) * newHeight / (whacks[0].length + 1)));
     }
     
     /* 
      * Rresizes the images for the Whack class.
      */
-    protected void resizeWhackImages(int width, int height) {
+    protected void resizeWhackImages(Dimension newDim) {
         for (int i = 0; i < originalWhackSheet.length; i++) {
             whackSheet[i] = ImageTools.toBufferedImage
                 (originalWhackSheet[i]
-                     .getScaledInstance(width, height, Image.SCALE_SMOOTH)
+                     .getScaledInstance((int) newDim.getWidth(), (int) newDim.getHeight(), Image.SCALE_SMOOTH)
                 );
         }
         
         whacked = ImageTools.toBufferedImage
             (originalWhacked
-                 .getScaledInstance(width, height, Image.SCALE_SMOOTH)
+                 .getScaledInstance((int) newDim.getWidth(), (int) newDim.getHeight(), Image.SCALE_SMOOTH)
             );
     }
     
     /* 
      * Resizes the images for the Hammer class.
      */
-    protected void resizeHammerImages(int width, int height) {
+    protected void resizeHammerImages(Dimension newDim) {
         for (int i = 0; i < originalHammerSheet.length; i++) {
             hammerSheet[i] = ImageTools.toBufferedImage
                 (originalHammerSheet[i]
-                     .getScaledInstance(width, height, Image.SCALE_SMOOTH)
+                     .getScaledInstance((int) newDim.getWidth(), (int) newDim.getHeight(), Image.SCALE_SMOOTH)
                 );
         }
     }
@@ -559,13 +552,13 @@ public abstract class BaseWhack extends MiniGame {
      * Only resets the mouse to it's default cursor.
      */
     @Override
-    protected void cleanUp() {
+    final protected void cleanUp() {
         lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     
     /* ----------------------------------------------------------------------------------------------------------------
-     * Obstacle functions
+     * Abstract functions
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
@@ -573,27 +566,27 @@ public abstract class BaseWhack extends MiniGame {
      * where width and height denote the number of whackables in resp.
      * the rows and columns.
      */
-    protected abstract int[] getFieldSize();
+    abstract protected int[] getFieldSize();
     
     /* 
      * @return the image sheet for the whackable animation.
      */
-    protected abstract BufferedImage[] getWhackSheet();
+    abstract protected BufferedImage[] getWhackSheet();
     
     /* 
      * @return the image for when the whackable has been whacked.
      */
-    protected abstract BufferedImage getWhackedImage();
+    abstract protected BufferedImage getWhackedImage();
     
     /* 
      * @return the image sheet for the hammer.
      */
-    protected abstract BufferedImage[] getHammerSheet();
+    abstract protected BufferedImage[] getHammerSheet();
     
     /* 
      * @return the location of the music file
      */
-    protected abstract String getWhackMusicFile();
+    abstract protected String getWhackMusicFile();
     
     /* 
      * This method is called when a whackable has been whacked.
