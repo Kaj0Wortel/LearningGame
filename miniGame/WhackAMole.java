@@ -22,7 +22,7 @@ import java.io.IOException;
 
 
 public class WhackAMole extends BaseWhack {
-    final private static String whackFile = LearningGame.workingDir + "music\\sfx\\whack.wav";
+    final private static String whackFile = LearningGame.workingDir + "music\\sfx\\whack_sfx.wav";
     
     public WhackAMole(LearningGame lg, Runnable r) {
         super(lg, r);
