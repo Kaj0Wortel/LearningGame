@@ -26,12 +26,6 @@ public class WhackAMole extends BaseWhack {
     
     public WhackAMole(LearningGame lg, Runnable r) {
         super(lg, r);
-        
-        try {
-            background = LoadImages2.ensureLoadedAndGetImage(LearningGame.workingDir + "img\\green_dot.png")[0][0];
-        } catch (IOException e) {
-            Log2.write(e);
-        }
     }
     
     @Override
@@ -50,12 +44,28 @@ public class WhackAMole extends BaseWhack {
     }
     
     /* 
+     * @return the background image
+     */
+    @Override
+    protected BufferedImage getBackgroundImage() {
+        try {
+            return LoadImages2.ensureLoadedAndGetImage(LearningGame.workingDir + "img\\green_dot.png")[0][0];
+            
+        } catch (IOException e) {
+            Log2.write(e);
+        }
+        
+        return null;
+    }
+    
+    /* 
      * @return the image sheet for the whackable animation.
      */
     @Override
     protected BufferedImage[] getWhackSheet() {
         try {
             return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\mole.png", 31, 14)[0];
+            
         } catch (IOException e) {
             Log2.write(e);
         }
