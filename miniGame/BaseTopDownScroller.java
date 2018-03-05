@@ -339,22 +339,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
         }
         
         /* 
-         * Checks if the player was resized. If so, set the new correct location
-         *//*
-        @Override
-        public void setBounds(int x, int y, int width, int height) {
-            boolean resized = width != getWidth() || height != getHeight();
-            super.setBounds(x, y, width, height);
-            
-            if (resized) {
-                int panelWidth = BaseTopDownScroller.this.getWidth();
-                int panelHeight = BaseTopDownScroller.this.getHeight();
-                
-                this.setLocation((int) (widthLoc * (panelWidth - width)), (int) (heightLoc * (panelHeight - height)));
-            }
-        }*/
-        
-        /* 
          * This function is called to damage the player.
          */
         public void damage() {
@@ -583,7 +567,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * @param height the new height of the MiniGame.
      */
     @Override
-    final public void resized(int width, int height) {
+    final protected void resized(int width, int height) {
         Dimension[] obstacleDims = calcObstacleDims(width, height);
         Dimension[] collectableDims = calcCollectableDims(width, height);
         Dimension playerDim = calcPlayerDim(width, height);
@@ -628,129 +612,10 @@ abstract public class BaseTopDownScroller extends MiniGame {
     }
     
     /* 
-     * Rresizes the images for the Obstacle class.
-     *//*
-    protected void resizeObstacleImages(Dimension[] newDims) {
-        // If there are no images to be calculated
-        if (originalObstacleSheets == null) {
-            obstacleSheets = null;
-            return;
-        }
-        
-        // Check if the arrays differ in size.
-        if (obstacleSheets == null ||
-            (originalObstacleSheets.length != obstacleSheets.length &&
-             originalObstacleSheets[0] != null))
-        {
-            obstacleSheets = new BufferedImage[originalObstacleSheets.length][];
-        }
-        
-        for (int i = 0; i < originalObstacleSheets.length; i++) {
-            // Check if the array is not null.
-            if (originalObstacleSheets[i] != null) {
-                // Check if the arrays differ in size.
-                if (obstacleSheets[i] == null ||
-                    originalObstacleSheets[i].length != obstacleSheets[i].length)
-                {
-                    obstacleSheets[i] = new BufferedImage[originalObstacleSheets[i].length];
-                }
-                
-                for (int j = 0; j < originalObstacleSheets[i].length; j++) {
-                    // Check if the element is not null.
-                    if (originalObstacleSheets[i][j] != null) {
-                        // Update the image.
-                        obstacleSheets[i][j] = ImageTools.toBufferedImage
-                            (originalObstacleSheets[i][j]
-                                 .getScaledInstance((int) newDims[i].getWidth(),
-                                                    (int) newDims[i].getHeight(), Image.SCALE_SMOOTH)
-                            );
-                    }
-                } // End for
-                
-            }
-        } // End for
-        
-    }
-    
-    /* 
-     * Rresizes the images for the Collectable class.
-     *//*
-    protected void resizeCollectableImages(Dimension[] newDims) {
-        // If there are no images to be calculated
-        if (originalCollectableSheets == null) {
-            collectableSheets = null;
-            return;
-        }
-        
-        // Check if the arrays differ in size.
-        if (collectableSheets == null ||
-            (originalCollectableSheets.length != collectableSheets.length &&
-             originalCollectableSheets[0] != null))
-        {
-            collectableSheets = new BufferedImage[originalCollectableSheets.length][originalCollectableSheets[0].length];
-        }
-        
-        for (int i = 0; i < originalCollectableSheets.length; i++) {
-            // Check if the array is not null.
-            if (originalCollectableSheets[i] != null) {
-                // Check if the arrays differ in size.
-                if (collectableSheets[i] == null ||
-                    originalCollectableSheets[i].length != collectableSheets[i].length)
-                {
-                    collectableSheets[i] = new BufferedImage[originalCollectableSheets[i].length];
-                }
-                
-                for (int j = 0; j < originalCollectableSheets[i].length; j++) {
-                    // Check if the element is not null.
-                    if (originalCollectableSheets[i][j] != null) {
-                        // Update the image.
-                        collectableSheets[i][j] = ImageTools.toBufferedImage
-                            (originalCollectableSheets[i][j]
-                                 .getScaledInstance((int) newDims[i].getWidth(),
-                                                    (int) newDims[i].getHeight(), Image.SCALE_SMOOTH)
-                            );
-                    }
-                } // End for
-                
-            }
-        } // End for
-        
-    }
-    
-    /* 
-     * Rresizes the images for the Player class.
-     *//*
-    protected void resizePlayerImages(Dimension newDim) {
-        // If there are no images to be calculated
-        if (originalPlayerSheet == null) {
-            playerSheet = null;
-            return;
-        }
-        
-        // Check if the arrays differ in size.
-        if (playerSheet == null || originalPlayerSheet.length != playerSheet.length) {
-            playerSheet = new BufferedImage[originalPlayerSheet.length];
-        }
-        
-        for (int i = 0; i < originalPlayerSheet.length; i++) {
-            // Check if the element is not null.
-            if (originalPlayerSheet[i] != null) {
-                // Update the image.
-                playerSheet[i] = ImageTools.toBufferedImage
-                    (originalPlayerSheet[i]
-                         .getScaledInstance((int) newDim.getWidth(),
-                                            (int) newDim.getHeight(), Image.SCALE_SMOOTH)
-                    );
-            }
-        } // End for
-        
-    }
-    
-    /* 
      * This method draws a scrolling background.
      */
     @Override
-    protected void drawBackground(Graphics g) {
+    protected void drawBackground(Graphics g, BufferedImage background) {
         if (background != null) {
             Graphics2D g2d = (Graphics2D) g;
             
