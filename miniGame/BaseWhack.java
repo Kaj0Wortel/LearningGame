@@ -20,6 +20,7 @@ import learningGame.tools.ModCursors;
 // Java packages
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MouseInfo;
@@ -35,6 +36,7 @@ import javax.swing.JPanel;
 
 
 abstract public class BaseWhack extends MiniGame {
+    /*
     // The original images
     final private BufferedImage[] originalHammerSheet;
     final private BufferedImage[] originalWhackSheet;
@@ -47,7 +49,7 @@ abstract public class BaseWhack extends MiniGame {
     
     // The image creation thread
     private Thread imageCreateThread;
-    
+    */
     // The whacks
     protected Whack[][] whacks;
     
@@ -66,25 +68,6 @@ abstract public class BaseWhack extends MiniGame {
         
         // Set the empty cursor
         lg.setCursor(ModCursors.EMPTY_CURSOR);
-        
-        // Fetch the images
-        originalHammerSheet = getHammerSheet();
-        originalWhackSheet = getWhackSheet();
-        originalWhacked = getWhackedImage();
-        
-        // Whacks
-        whackSheet = new BufferedImage[originalWhackSheet.length];
-        for (int i = 0; i < originalWhackSheet.length; i++) {
-            whackSheet[i] = ImageTools.imageDeepCopy(originalWhackSheet[i]);
-        }
-        
-        whacked = ImageTools.imageDeepCopy(originalWhacked);
-        
-        // Hammer
-        hammerSheet = new BufferedImage[originalHammerSheet.length];
-        for (int i = 0; i < originalHammerSheet.length; i++) {
-            hammerSheet[i] = ImageTools.imageDeepCopy(originalHammerSheet[i]);
-        }
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -147,15 +130,19 @@ abstract public class BaseWhack extends MiniGame {
             long delta = timeStamp - swingStartedTime;
             
             if (state == WHACKING) {
-                if (delta > moveTime * ((double) curHammerImageNum + 1.0) / hammerSheet.length) {
-                    // Increase the image counter.
-                    // If the end of the hammerSheet has been reached, set the state to {@code WAITING}.
-                    if (++curHammerImageNum >= hammerSheet.length - 1) {
-                        curHammerImageNum = hammerSheet.length - 1;
-                        state = WAITING;
+                BufferedImage[] hammerSheet = getHammerSheet();
+                
+                if (hammerSheet != null) {
+                    if (delta > moveTime * ((double) curHammerImageNum + 1.0) / hammerSheet.length) {
+                        // Increase the image counter.
+                        // If the end of the hammerSheet has been reached, set the state to {@code WAITING}.
+                        if (++curHammerImageNum >= hammerSheet.length - 1) {
+                            curHammerImageNum = hammerSheet.length - 1;
+                            state = WAITING;
+                        }
+                        
+                        BaseWhack.this.repaint();
                     }
-                    
-                    BaseWhack.this.repaint();
                 }
                 
             } else if (state == WAITING) {
@@ -172,20 +159,31 @@ abstract public class BaseWhack extends MiniGame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             
-            // Draw the image.
-            if (hammerSheet != null && whackSheet.length > 0) {
-                if (state == NOTHING) {
-                    if (hammerSheet[0] != null)
-                        g.drawImage(hammerSheet[0], 0, 0, null);
-                    
-                } else if (state == WHACKING) {
-                    if (hammerSheet[curHammerImageNum] != null)
-                        g.drawImage(hammerSheet[curHammerImageNum], 0, 0, null);
-                    
-                } else if (state == WAITING) {
-                    if (hammerSheet[hammerSheet.length - 1] != null)
-                        g.drawImage(hammerSheet[hammerSheet.length - 1], 0, 0, null);
-                }
+            BufferedImage[] hammerSheet = getHammerSheet();
+            
+            // If there is nothing to draw, return immediately.
+            if (hammerSheet == null || hammerSheet.length <= 0) return;
+            
+            int draw = -1;
+            if (state == NOTHING) {
+                if (hammerSheet[0] != null) draw = 0;
+                
+            } else if (state == WHACKING) {
+                if (hammerSheet[curHammerImageNum] != null) draw = curHammerImageNum;
+                
+            } else if (state == WAITING) {
+                if (hammerSheet[hammerSheet.length - 1] != null) draw = hammerSheet.length - 1;
+            }
+            
+            if (draw >= 0) {
+                Graphics2D g2d = (Graphics2D) g;
+                
+                // Scale the graphics
+                g2d.scale(getWidth()  / hammerSheet[draw].getWidth(),
+                          getHeight() / hammerSheet[draw].getHeight());
+                
+                // Draw the image
+                g2d.drawImage(hammerSheet[draw], 0, 0, null);
             }
         }
         
@@ -259,6 +257,10 @@ abstract public class BaseWhack extends MiniGame {
          */
         public void update(long timeStamp) {
             long delta = timeStamp - whackableShownTime;
+            BufferedImage[] whackSheet = getWhackSheet();
+            
+            // If there is nothing to draw, return immediately.
+            if (whackSheet == null) return;
             
             // Update the shown image
             if (state == GOING_UP) {
@@ -305,9 +307,20 @@ abstract public class BaseWhack extends MiniGame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             
-            // Draw the image.
-             if (state == WHACKED) {
-                if (whacked != null) g.drawImage(whacked, 0, 0, null);
+            BufferedImage whacked = getWhackedImage();
+            BufferedImage[] whackSheet = getWhackSheet();
+            
+            Graphics2D g2d = (Graphics2D) g;
+            
+            if (state == WHACKED) {
+                if (whacked != null) {
+                    // Scale the graphics for the image
+                    g2d.scale(getWidth()  / whacked.getWidth(),
+                              getHeight() / whacked.getHeight());
+                    
+                    // Draw image
+                    g2d.drawImage(whacked, 0, 0, null);
+                }
                 
              } else if (whackSheet != null && whackSheet.length > 0) {
                  if (state == NOTHING) {
@@ -315,11 +328,19 @@ abstract public class BaseWhack extends MiniGame {
                      //if (whacked != null) g.drawImage(whacked, 0, 0, null);// tmp
                      
                  } else if (curWhackImageNum < whackSheet.length && whackSheet[curWhackImageNum] != null) {
-                     g.drawImage(whackSheet[curWhackImageNum], 0, 0, null);
+                     // Scale the graphics for the image
+                     g2d.scale(getWidth()  / whackSheet[curWhackImageNum].getWidth(),
+                               getHeight() / whackSheet[curWhackImageNum].getHeight());
+                     
+                     // Draw image
+                     g2d.drawImage(whackSheet[curWhackImageNum], 0, 0, null);
                  }
              }
         }
         
+        /* 
+         * @return the current state of the whack.
+         */
         public int getState() {
             return state;
         }
@@ -392,8 +413,10 @@ abstract public class BaseWhack extends MiniGame {
      */
     @Override
     final public void update(Key[] keys, long timeStamp) {
-        whackUpdate(timeStamp);
+        // Show new whackables
+        showWhackables(timeStamp);
         
+        // Update the whacks
         if (whacks != null) {
             for (int i = 0; i < whacks.length; i++) {
                 if (whacks[i] == null) continue;
@@ -426,12 +449,14 @@ abstract public class BaseWhack extends MiniGame {
             
             hammer.update(timeStamp);
         }
+        
+        repaint();
     }
     
     /* 
      * In this update method should be used for letting the whackables show.
      */
-    protected void whackUpdate(long timeStamp) {
+    protected void showWhackables(long timeStamp) {
         Random random = new Random();
         
         for (int i = 0; whacks != null && i < whacks.length; i++) {
@@ -440,7 +465,6 @@ abstract public class BaseWhack extends MiniGame {
                     //System.out.println(spawnChance * LearningGame.FPS * whacks.length * whacks[i].length);
                     if (random.nextDouble() < 1.0 / (spawnChance * LearningGame.FPS * whacks.length * whacks[i].length)) {
                         whacks[i][j].showWhackable(500, 200, timeStamp);
-                        repaint();
                     }
                 }
             }
@@ -455,37 +479,9 @@ abstract public class BaseWhack extends MiniGame {
      */
     @Override
     public void resized(int width, int height) {
-        Dimension whackDim = calcWhackDim(width, height);
-        Dimension hammerDim = calcHammerDim(width, height);
-        
-        if (whacks != null) {
-            if (whackDim.getWidth() > 0 && whackDim.getHeight() > 0) {
-                if (imageCreateThread != null) {
-                    imageCreateThread.interrupt();
-                }
-                
-                imageCreateThread = new Thread("image create thread " + this.getClass().toString()) {
-                    @Override
-                    public void run() {
-                        // Whack
-                        resizeWhackImages(whackDim);
-                        updateWhackBounds(width, height, whackDim);
-                        
-                        // Hammer
-                        resizeHammerImages(hammerDim);
-                        hammer.setSize(hammerDim);
-                        
-                        // Set image thread to null.
-                        imageCreateThread = null;
-                        
-                        // Repaint the panel.
-                        repaint();
-                    }
-                };
-                
-                imageCreateThread.start();
-            }
-        }
+        updateWhackBounds(width, height, calcWhackDim(width, height));
+        hammer.setSize(calcHammerDim(width, height));
+        repaint();
     }
     
     /* 
@@ -520,7 +516,7 @@ abstract public class BaseWhack extends MiniGame {
     
     /* 
      * Rresizes the images for the Whack class.
-     */
+     *//*
     protected void resizeWhackImages(Dimension newDim) {
         for (int i = 0; i < originalWhackSheet.length; i++) {
             whackSheet[i] = ImageTools.toBufferedImage
@@ -537,7 +533,7 @@ abstract public class BaseWhack extends MiniGame {
     
     /* 
      * Resizes the images for the Hammer class.
-     */
+     *//*
     protected void resizeHammerImages(Dimension newDim) {
         for (int i = 0; i < originalHammerSheet.length; i++) {
             hammerSheet[i] = ImageTools.toBufferedImage
