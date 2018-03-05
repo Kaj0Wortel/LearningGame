@@ -26,14 +26,7 @@ import javax.sound.sampled.Clip;
 public class RowBoat extends BaseTopDownScroller {
     public RowBoat(LearningGame lg, Runnable r) {
         super(lg, r);
-        
-        try {
-            background = LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\bar.png")[0][0];
-        } catch (IOException e) {
-            Log2.write(e);
-        }
     }
-    
     
     @Override
     public void cleanUp() {
@@ -42,6 +35,21 @@ public class RowBoat extends BaseTopDownScroller {
     
     @Override
     public Score getScore() {
+        return null;
+    }
+    
+    /* 
+     * @return the background image.
+     */
+    @Override
+    protected BufferedImage getBackgroundImage() {
+        try {
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\bar.png")[0][0];
+            
+        } catch (IOException e) {
+            Log2.write(e);
+        }
+        
         return null;
     }
     
