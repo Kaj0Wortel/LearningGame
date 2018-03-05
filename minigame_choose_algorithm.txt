@@ -1,0 +1,13 @@
+Score:
+- Ratio of minigame score (score / max score)
+- Ratio of questions correct (correct / total questions)
+- Number of questions correct (correct)
+- Number of questions wrong (wrong)
+- Wrong words (word)
+
+Alle woorden 1x
+1x goed: weg
+1x fout: na 2/3 woordjes komt hij terug.
+1x fout: en als aantal woorden < 3, vul aantal woorden aan tot 3 met woorden.
+       die je eerder fout had gedaan. Als die er niet zijn, pak een woord dat je goed had gedaan.
+       Als die er niet zijn vraag je alleen het fout woord opniew.
