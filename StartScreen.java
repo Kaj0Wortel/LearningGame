@@ -48,7 +48,7 @@ public class StartScreen extends JPanel {
      */
     private void createGUI() {
         try {
-            startButton = new Button2(100, 25, 10, true, "Start");
+            startButton = new Button2(100, 25, 10, "Start");
             this.add(startButton);
             startButton.setSize(200, 50);
             startButton.setLocation(250, 170);
