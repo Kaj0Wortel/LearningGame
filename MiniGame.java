@@ -13,10 +13,12 @@ import learningGame.tools.KeyDetector;
 
 // Java packages
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JLayeredPane;
@@ -40,9 +42,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     // Deonotes whether the application has ended.
     private boolean stopped = false;
     
-    // The background image that is shown.
-    protected BufferedImage background;
-    protected BufferedImage backgroundResized;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -139,7 +138,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             createGUI();
             addListeners();
             resized(getWidth(), getHeight());
-            recreateBackground();
+            //recreateBackground();
             started = true;
         }
     }
@@ -179,20 +178,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         
         if (resized) {
             resized(width, height);
-            recreateBackground();
-        }
-    }
-    
-    /* 
-     * Recreates the background image.
-     */
-    protected void recreateBackground() {
-        if (background != null) {
-            // Copy and resize the background image.
-            backgroundResized = ImageTools.toBufferedImage
-                (ImageTools.imageDeepCopy
-                     (background)
-                     .getScaledInstance(getWidth(), getHeight(), Image.SCALE_FAST));
         }
     }
     
@@ -200,8 +185,13 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * This method draws the background.
      * Override this method to paint something else then the background.
      */
-    protected void drawBackground(Graphics g) {
-        if (backgroundResized != null) g.drawImage(backgroundResized, 0, 0, null);
+    protected void drawBackground(Graphics g, BufferedImage background) {
+        if (background != null) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.scale(getWidth()  / background.getWidth(),
+                      getHeight() / background.getHeight());
+            g.drawImage(background, 0, 0, null);
+        }
     }
     
     /* 
@@ -210,7 +200,18 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawBackground(g);
+        
+        // Convert graphics object
+        Graphics2D g2d = (Graphics2D) g;
+        
+        // Retrieve the current g2d transformation.
+        AffineTransform g2dTrans = g2d.getTransform();
+        
+        // Draw background
+        drawBackground(g, getBackgroundImage());
+        
+        // Restore the g2d transformation.
+        g2d.setTransform(g2dTrans);
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -248,8 +249,12 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * @param width the new width of the MiniGame.
      * @param height the new height of the MiniGame.
      */
-    abstract public void resized(int width, int height);
+    abstract protected void resized(int width, int height);
     
+    /*
+     * @return the background image.
+     */
+    abstract protected BufferedImage getBackgroundImage();
     
     // tmp
     public static void main(String[] args) {
