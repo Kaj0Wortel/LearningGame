@@ -29,19 +29,6 @@ import javax.swing.JPanel;
 
 
 abstract public class BaseTopDownScroller extends MiniGame {
-    // The original images
-    final private BufferedImage[][] originalObstacleSheets;
-    final private BufferedImage[][] originalCollectableSheets;
-    final private BufferedImage[] originalPlayerSheet;
-    
-    // The resized images
-    private BufferedImage[][] obstacleSheets;
-    private BufferedImage[][] collectableSheets;
-    private BufferedImage[] playerSheet;
-    
-    // The image creation thread
-    private Thread imageCreateThread;
-    
     // The obstacles
     protected ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
     
@@ -71,9 +58,9 @@ abstract public class BaseTopDownScroller extends MiniGame {
     public BaseTopDownScroller(LearningGame lg, Runnable r) {
         super(lg, r);
         
-        originalObstacleSheets = getObstacleSheets();
-        originalCollectableSheets = getCollectableSheets();
-        originalPlayerSheet = getPlayerSheet();
+        /*obstacleSheets = getObstacleSheets();
+        collectableSheets = getCollectableSheets();
+        playerSheet = getPlayerSheet();*/
     }
     
     
@@ -166,26 +153,20 @@ abstract public class BaseTopDownScroller extends MiniGame {
             }
         }
         
-        /*
-        @Override
-        public void setBounds(int x, int y, int width, int height) {
-            boolean resized = width != getWidth() || height != getHeight();
-            super.setBounds(x, y, width, height);
-            
-            if (resized) {
-                int panelWidth = BaseTopDownScroller.this.getWidth();
-                int panelHeight = BaseTopDownScroller.this.getHeight();
-                
-                this.setLocation((int) (widthLoc * (panelWidth - width)), (int) (heightLoc * (panelHeight - height)));
-            }
-        }*/
-        
         @Override
         final protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
             
             // Draw the image
             BufferedImage image = getDrawImage();
+            
+            int imgWidth = image.getWidth();
+            int imgHeight = image.getHeight();
+            double widthRatio = ((double) getWidth()) / imgWidth;
+            double heightRatio = ((double) getHeight()) / imgHeight;
+            
+            g2d.scale(widthRatio, heightRatio);
             if (image != null) g.drawImage(image, 0, 0, null);
         }
         
@@ -220,7 +201,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
          */
         @Override
         protected BufferedImage getDrawImage() {
-            return obstacleSheets[type][animNum];
+            return getObstacleSheets()[type][animNum];
         }
         
         /* 
@@ -229,7 +210,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
          */
         @Override
         protected int getAnimMax() {
-            return obstacleSheets[type].length;
+            return getObstacleSheets()[type].length;
         }
     }
     
@@ -253,7 +234,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
          */
         @Override
         protected BufferedImage getDrawImage() {
-            return collectableSheets[type][animNum];
+            return getCollectableSheets()[type][animNum];
         }
         
         /* 
@@ -262,7 +243,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
          */
         @Override
         protected int getAnimMax() {
-            return collectableSheets[type].length;
+            return getCollectableSheets()[type].length;
         }
     }
     
@@ -308,7 +289,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
             int width = BaseTopDownScroller.this.getWidth();
             int height = BaseTopDownScroller.this.getHeight();
             
-            setLocation((int) (widthLoc * width), (int) (heightLoc * height));
+            setLocation((int) (widthLoc * (width - getWidth())), (int) (heightLoc * (height - getHeight())));
             animTimeStamp = System.currentTimeMillis();
         }
         
@@ -345,6 +326,8 @@ abstract public class BaseTopDownScroller extends MiniGame {
             
             // Update the animation image
             if (timeStamp > animTimeStamp + animSpeed) {
+                BufferedImage[] playerSheet = getPlayerSheet();
+                
                 if (playerSheet != null) {
                     animNum = (animNum + 1) % playerSheet.length;
                 }
@@ -383,42 +366,42 @@ abstract public class BaseTopDownScroller extends MiniGame {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Graphics2D g2d = (Graphics2D) g;
             
+            BufferedImage[] playerSheet = getPlayerSheet();
             if (playerSheet != null && playerSheet[animNum] != null) {
-                // tmp
-                // Retrieve the current g2d transformation.
-                //AffineTransform g2dTrans = g2d.getTransform();
-                
+                Graphics2D g2d = (Graphics2D) g;
                 // tmp
                 //g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
                 
-                
                 // Scale the graphics
+                double imgW = playerSheet[animNum].getWidth();
+                double imgH = playerSheet[animNum].getHeight();
                 double diagonalLength = Math.sqrt(getWidth()*getWidth() + getHeight()*getHeight());
-                double widthScaleFactor  = getWidth()  / diagonalLength;
-                double heightScaleFactor = getHeight() / diagonalLength;
                 
-                double xTrans = (diagonalLength - getWidth() ) / 2;
-                double yTrans = (diagonalLength - getHeight()) / 2;
-                
+                // Calculate scale factors and scale
+                double widthScaleFactor  = (getWidth()  / imgW) * (getWidth()  / diagonalLength);
+                double heightScaleFactor = (getHeight() / imgH) * (getHeight() / diagonalLength);
                 g2d.scale(widthScaleFactor, heightScaleFactor);
+                
+                // Calculate translation and translage
+                double xTrans = (diagonalLength - getWidth() ) / 2 / (getWidth()  / imgW);
+                double yTrans = (diagonalLength - getHeight()) / 2 / (getHeight() / imgW);
                 g2d.translate(xTrans, yTrans);
                 
                 // Turn the image if nessecary
+                // The anchor points are set at:
+                // <original size> / <scale factor> / 2 <center of image>, 
+                // which is equivalent to:
+                // transX: getWidth()  / (getWidth()  / imgW) / 2 = imgW / 2
+                // transY: getHeight() / (getHeight() / imgH) / 2 = imgH / 2
                 if (state == LEFT) {
-                    g2d.rotate(-Math.PI/4.0, getWidth()/2, getHeight()/2);
+                    g2d.rotate(-Math.PI/4.0, imgW / 2, imgH / 2);
                     
                 } else if (state == RIGHT) {
-                    g2d.rotate(Math.PI/4.0, getWidth()/2, getHeight()/2);
+                    g2d.rotate(Math.PI/4.0, imgW / 2, imgH / 2);
                 }
-                
                 // Draw the image
-                g2d.drawImage(playerSheet[animNum], 0, 0, null); 
-                
-                // tmp
-                // Restore the g2d transformation.
-                //g2d.setTransform(g2dTrans);
+                g2d.drawImage(playerSheet[animNum], 0, 0, null);
             }
         }
     }
@@ -517,6 +500,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
         
         repaint();
     }
+    
     /* 
      * This method creates all obstacles and collectables.
      */
@@ -604,49 +588,8 @@ abstract public class BaseTopDownScroller extends MiniGame {
         Dimension[] collectableDims = calcCollectableDims(width, height);
         Dimension playerDim = calcPlayerDim(width, height);
         
-        if (imageCreateThread != null) {
-            imageCreateThread.interrupt();
-        }
+        player.setSize(playerDim);
         
-        imageCreateThread = new Thread("image create thread " + this.getClass().toString()) {
-            @Override
-            public void run() {
-                // Obstacles
-                resizeObstacleImages(obstacleDims);
-                
-                // Collectables
-                resizeCollectableImages(collectableDims);
-                
-                // Player
-                resizePlayerImages(playerDim);
-                
-                // Update the bounds of all elements.
-                updateElementBounds(width, height, obstacleDims, collectableDims, playerDim);
-                
-                // Set image thread to null.
-                imageCreateThread = null;
-                
-                // Repaint the panel.
-                repaint();
-            }
-        };
-        
-        imageCreateThread.start();
-    }
-    
-    /* 
-     * Updates the bounds of the used obstacles.
-     * 
-     * @param panelWidth the new width of the panel.
-     * @param panelHeight the new height of the panel.
-     * @param obstacleDims the dimensions of the obstacles.
-     * @param collectableDims the dimensions of the collectables.
-     * @param playerDim the dimension of the player.
-     */
-    protected void updateElementBounds(int panelWidth, int panelHeight,
-                                       Dimension[] obstacleDims,
-                                       Dimension[] collectableDims,
-                                       Dimension playerDim) {
         for (Obstacle ob : obstacles) {
             ob.setSize(obstacleDims[ob.getType()]);
         }
@@ -654,8 +597,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
         for (Collectable col : collectables) {
             col.setSize(collectableDims[col.getType()]);
         }
-        
-        player.setSize(playerDim);
     }
     
     /* 
@@ -688,7 +629,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     
     /* 
      * Rresizes the images for the Obstacle class.
-     */
+     *//*
     protected void resizeObstacleImages(Dimension[] newDims) {
         // If there are no images to be calculated
         if (originalObstacleSheets == null) {
@@ -733,7 +674,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     
     /* 
      * Rresizes the images for the Collectable class.
-     */
+     *//*
     protected void resizeCollectableImages(Dimension[] newDims) {
         // If there are no images to be calculated
         if (originalCollectableSheets == null) {
@@ -778,7 +719,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     
     /* 
      * Rresizes the images for the Player class.
-     */
+     *//*
     protected void resizePlayerImages(Dimension newDim) {
         // If there are no images to be calculated
         if (originalPlayerSheet == null) {
@@ -810,8 +751,22 @@ abstract public class BaseTopDownScroller extends MiniGame {
      */
     @Override
     protected void drawBackground(Graphics g) {
-        g.drawImage(backgroundResized, 0, (int) ((curPos-1.0) * getHeight()), null);
-        g.drawImage(backgroundResized, 0, (int) (curPos * getHeight()), null);
+        if (background != null) {
+            Graphics2D g2d = (Graphics2D) g;
+            
+            // Retrieve the current g2d transformation.
+            AffineTransform g2dTrans = g2d.getTransform();
+            
+            double widthRatio = ((double) getWidth()) / background.getWidth();
+            double heightRatio = ((double) getHeight()) / background.getHeight();
+            
+            g2d.scale(widthRatio, heightRatio);
+            g2d.drawImage(background, 0, (int) ((curPos - 1.0) * background.getHeight()), null);
+            g2d.drawImage(background, 0, (int) (curPos * background.getHeight()), null);
+            
+            // Restore the g2d transformation.
+            g2d.setTransform(g2dTrans);
+        }
     }
     
     
