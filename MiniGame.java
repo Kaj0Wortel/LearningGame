@@ -59,7 +59,8 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * Adds all nessesary listeners.
      */
     final private void addListeners() {
-        this.addKeyListener(kd);
+        lg.getRootPane().addKeyListener(kd);
+        //this.addKeyListener(kd);
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
     }
@@ -139,7 +140,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             addListeners();
             resized(getWidth(), getHeight());
             recreateBackground();
-            requestFocus();
             started = true;
         }
     }

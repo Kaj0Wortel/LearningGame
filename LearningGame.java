@@ -166,6 +166,9 @@ public class LearningGame extends JFrame {
         }
     }
     
+    /* 
+     * @return the minigame that is currently active.
+     */
     protected MiniGame getMiniGame() {
         return curMiniGame;
     }
@@ -387,7 +390,6 @@ public class LearningGame extends JFrame {
         public void componentResized(ComponentEvent e) {
             // Do resize stuff.
             updateSizeChildren();
-            Log2.write("Window resized", Log2.INFO);
             
         }
     };
