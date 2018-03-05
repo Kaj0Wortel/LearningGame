@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException;
@@ -47,10 +48,7 @@ public class Button2 extends AbstractButton {
     final public static int TYPE_MIRRORED = 1;
     
     protected Image[][] originalImages;
-    protected Thread generateImagesThread = null;
-    protected BufferedImage[] buttonImages = new BufferedImage[4];
     final private int imageType;
-    final private int scaleType;
     
     public enum State {
         NORMAL_OPERATION, NO_CHANGE, HOOVER_EXCEPT_PRESSED, NO_HOOVER, 
@@ -60,7 +58,7 @@ public class Button2 extends AbstractButton {
     private State state = State.NORMAL_OPERATION;
     private int noChangeType = -1;
     
-    // Size and barsize
+    // The bar size
     private int barSize;
     
     // Contents
@@ -80,39 +78,39 @@ public class Button2 extends AbstractButton {
      * Constructors
      * ---------------------------------------------------------------------------------
      */
-    public Button2(int sizeX, int sizeY, int barSize, boolean resizable) throws IOException {
+    public Button2(int sizeX, int sizeY, int barSize) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
                  (imgLoc + "button2_img_TYPE_001.png", 16, 16),
-             Button2.TYPE_TURNED, resizable, Image.SCALE_SMOOTH);
+             Button2.TYPE_TURNED);
     }
     
-    public Button2(int sizeX, int sizeY, int barSize, boolean resizable, char character) throws IOException {
-        this(sizeX, sizeY, barSize, resizable, "" + character);
+    public Button2(int sizeX, int sizeY, int barSize, char character) throws IOException {
+        this(sizeX, sizeY, barSize, "" + character);
     }
     
-    public Button2(int sizeX, int sizeY, int barSize, boolean resizable, String text) throws IOException {
+    public Button2(int sizeX, int sizeY, int barSize, String text) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
                  (imgLoc + "button2_img_TYPE_001.png", 16, 16),
-             Button2.TYPE_TURNED, resizable, Image.SCALE_SMOOTH, text);
+             Button2.TYPE_TURNED, text);
     }
     
-    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type, boolean resizable, int scaleType,
+    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type,
                    char character) {
-        this(sizeX, sizeY, barSize, img, type, resizable, scaleType,
+        this(sizeX, sizeY, barSize, img, type,
              "" + character);
     }
     
-    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type, boolean resizable, int scaleType,
+    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type,
                    String text) {
-        this(sizeX, sizeY, barSize, img, type, resizable, scaleType,
+        this(sizeX, sizeY, barSize, img, type,
              new JLabel(text));
     }
     
-    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type, boolean resizable, int scaleType,
+    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type,
                    JLabel label) {
-        this(sizeX, sizeY, barSize, img, type, resizable, scaleType);
+        this(sizeX, sizeY, barSize, img, type);
         this.label = label;
         this.add(label);
         
@@ -132,9 +130,6 @@ public class Button2 extends AbstractButton {
      *  - Button2.TYPE_MIRRORED
      *    This generates teh corners by mirroring them.
      * 
-     * Resizable determines whether it is possible to recalculate the images after
-     * resizing the button.
-     * 
      * scaleType determines the scale type which is used to scale the images.
      * Must be one of:
      *  - Image.SCALE_AREA_AVERAGING
@@ -153,10 +148,9 @@ public class Button2 extends AbstractButton {
      *     o img[1][x] with 1 <= x < 4 contain the backgrounds for the edges.
      *     o img[2][x] with 1 <= x < 4 contain the backgrounds for the center part
      */
-    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type, boolean resizable, int scaleType) {
+    public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type) {
         this.imageType = type;
         this.barSize = barSize;
-        this.scaleType = scaleType;
         
         // Sets the size of the Button.
         // Uses the parent function to avoid throwing errors and
@@ -165,20 +159,13 @@ public class Button2 extends AbstractButton {
         this.setLayout(null);
         
         
-        if (resizable) {
-            originalImages = new Image[3][5];
-            
-            for (int i = 0; i < originalImages.length; i++) {
-                for (int j = 0; j < originalImages[i].length; j++) {
-                    originalImages[i][j] = img[i][j];
-                }
-            }
-            
-        } else {
-            originalImages = null;
-        }
+        originalImages = new Image[3][5];
         
-        generateNewImages(img);
+        for (int i = 0; i < originalImages.length; i++) {
+            for (int j = 0; j < originalImages[i].length; j++) {
+                originalImages[i][j] = img[i][j];
+            }
+        }
         
         this.addMouseListener(listener);
     }
@@ -369,12 +356,11 @@ public class Button2 extends AbstractButton {
      * @param y the y location of the button.
      * @param width the width of the button.
      * @param height the height of the button.
-     * @throws UnsupportedOperationException if the button was initialized as not-resizable.
      * 
      * See setBarAndBounds(int, int, int, int, int) for more info.
      */
     @Override
-    public void setBounds(int x, int y, int width, int height) throws UnsupportedOperationException {
+    public void setBounds(int x, int y, int width, int height)  {
         setBarAndBounds(barSize, x, y, width, height);
     }
     
@@ -382,11 +368,10 @@ public class Button2 extends AbstractButton {
      * Sets the barSize of the image.
      * 
      * @param bz the new barsize of the button.
-     * @throws UnsupportedOperationException if the button was initialized as not-resizable.
      * 
      * See setBarAndBounds(int, int, int, int, int) for more info.
      */
-    public void setBarsize(int bz) throws UnsupportedOperationException {
+    public void setBarSize(int bz) {
         setBarAndSize(this.getWidth(), this.getHeight(), bz);
     }
     
@@ -395,12 +380,11 @@ public class Button2 extends AbstractButton {
      * 
      * @param bz the new barsize of the button.
      * @param width the width of the button.
-     * @param height the height of the button.
-     * @throws UnsupportedOperationException if the button was initialized as not-resizable.
+     * @param height the height of the button..
      * 
      * See setBarAndBounds(int, int, int, int, int) for more info.
      */
-    public void setBarAndSize(int bz, int width, int height) throws UnsupportedOperationException {
+    public void setBarAndSize(int bz, int width, int height) {
         setBarAndBounds(bz, this.getX(), this.getY(), width, height);
     }
     
@@ -412,27 +396,20 @@ public class Button2 extends AbstractButton {
      * @param y the y location of the button.
      * @param width the width of the button.
      * @param height the height of the button.
-     * @throws UnsupportedOperationException if the button was initialized as not-resizable.
      */
     public void setBarAndBounds(int bz, int x, int y, int width, int height) {
         if (barSize == bz && getWidth() == width && getHeight() == height) {
             super.setBounds(x, y, width, height);
             
         } else {
-            if (originalImages != null) {
-                if (barSize != bz || width != getWidth() || height != getHeight()) {
-                    super.setBounds(x, y, width, height);
-                    barSize = bz;
-                    
-                    generateNewImages(originalImages);
-                    
-                    updateLabel();
-                    
-                } else if (x != getX() || y != getY()) {
-                    super.setBounds(x, y, width, height);
-                }
-            } else {
-                throw new UnsupportedOperationException("Button2 was initialized as not-resizable.");
+            if (barSize != bz || width != getWidth() || height != getHeight()) {
+                super.setBounds(x, y, width, height);
+                barSize = bz;
+                
+                updateLabel();
+                
+            } else if (x != getX() || y != getY()) {
+                super.setBounds(x, y, width, height);
             }
         }
     }
@@ -535,7 +512,7 @@ public class Button2 extends AbstractButton {
      * it is still calculating and the a new image generation request is done.
      * 
      * @param img see constructor for detailed info.
-     */
+     *//*
     private void generateNewImages(Image[][] imgs) {
         if (getWidth() == 0 || getHeight() == 0) return;
         
@@ -777,6 +754,42 @@ public class Button2 extends AbstractButton {
         }
     }
     
+    /*
+    private void repeatPaint(Graphics2D g2d, Image img, int[] size, double[] factor, int[] trans, AffineTransform restore) {
+        for (int i = 0; i < 4; i++) {
+            g2d.rotate(i * 0.5*Math.PI, size[i != 3 ? 0 : 1] / 2, size[i != 1 ? 1 : 0] / 2);
+            g2d.scale(factor[i % 2], factor[(i+1) % 2]);
+            g2d.drawImage(img, (int) (trans[0] / factor[i % 2]), (int) (trans[1] / factor[(i+1) % 2]), null);
+            
+            // Restore the g2d transformation.
+            g2d.setTransform(restore);
+        }
+    }*/
+    
+    private void repeatPaint(Graphics2D g2d, Image img, double[] imgSize, double[] panelSize, double[] trans, int repeat) {
+        double[] widthFactor = new double[] {
+            imgSize[0] / img.getWidth(null),
+                imgSize[2] / img.getWidth(null)
+        };
+        double[] heightFactor = new double[] {
+            imgSize[1] / img.getHeight(null),
+                imgSize[3] / img.getHeight(null)
+        };
+        
+        // Retrieve the current g2d transformation.
+        AffineTransform baseTrans = g2d.getTransform();
+        
+        for (int i = 0; i < repeat; i++) {
+            g2d.rotate(i * 0.5*Math.PI, panelSize[i != 3 ? 0 : 1] / 2, panelSize[i != 1 ? 1 : 0] / 2);
+            g2d.scale(widthFactor[i % 2], heightFactor[i % 2]);
+            g2d.translate(trans[0] / widthFactor[i % 2], trans[1] / heightFactor[i % 2]);
+            g2d.drawImage(img, 0, 0, null);
+            
+            // Restore the g2d transformation.
+            g2d.setTransform(baseTrans);
+        }
+    }
+    
     /* 
      * Painting the button.
      */
@@ -784,15 +797,64 @@ public class Button2 extends AbstractButton {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         
+        // Retrieve button type
         int type = calculateType();
-        if (buttonImages != null && buttonImages != null) {
-            g.drawImage(buttonImages[type], 0, 0, null);
-        }
         
-        // Contents
-        if (image != null) {
-            g.drawImage(image, (this.getWidth() - image.getWidth(null)) / 2, (this.getHeight() - image.getHeight(null)) / 2, null);
-        }
+        // Convert to Graphics2D object
+        Graphics2D g2d = (Graphics2D) g;
+        
+        // Determine the images
+        Image corner = originalImages[0][0];
+        Image cornerBackground = originalImages[0][type+1];
+        Image bar = originalImages[1][0];
+        Image barBackground = originalImages[1][type+1];
+        Image center = originalImages[2][0];
+        Image centerBackground = originalImages[2][type+1];
+        
+        // tmp
+        g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+        
+        double[] size = new double[] {getWidth(), getHeight()};
+        
+        // Draw corners background
+        repeatPaint(g2d, cornerBackground,
+                    new double[] {barSize, barSize, barSize, barSize}, // image size
+                    size, // panel size
+                    new double[] {0, 0}, // location on panel
+                    4); // number of iterations
+        
+        // Draw corners
+        repeatPaint(g2d, corner,
+                    new double[] {barSize, barSize, barSize, barSize}, // image size
+                    size, // panel size
+                    new double[] {0, 0}, // location on panel
+                    4); // number of iterations
+        
+        // Draw bar background
+        repeatPaint(g2d, barBackground,
+                    new double[] {getWidth() - 2*barSize, barSize, getHeight() - 2*barSize, barSize}, // image size
+                    size, // panel size
+                    new double[] {barSize, 0}, // location on panel
+                    4); // number of iterations
+        
+        // Draw bar
+        repeatPaint(g2d, bar,
+                    new double[] {getWidth() - 2*barSize, barSize, getHeight() - 2*barSize, barSize}, // image size
+                    size, new double[] {barSize, 0}, 4); // panel size
+        
+        // Draw center background
+        repeatPaint(g2d, centerBackground,
+                    new double[] {getWidth() - 2*barSize, getHeight() - 2*barSize, 0, 0}, // image size
+                    size, // panel size
+                    new double[] {barSize, barSize}, // location on panel
+                    1); // number of iterations
+        
+        // Draw center
+        repeatPaint(g2d, center,
+                    new double[] {getWidth() - 2*barSize, getHeight() - 2*barSize, 0, 0}, // image size
+                    size, // panel size
+                    new double[] {barSize, barSize} // location on panel
+                    , 1); // number of iterations
     }
     
     /* 
@@ -804,9 +866,7 @@ public class Button2 extends AbstractButton {
             + ", showState=" + calculateType()
             + ", location=(" + this.getX() + ", " + this.getY() + ")"
             + ", size=(" + this.getWidth() + ", " + this.getHeight() + ")"
-            + ", resizable=" + (originalImages != null)
             + ", type=" + imageType
-            + ", scaleTyp=" + scaleType
             + ", noChangeType=" + noChangeType + "]";
     }
     
@@ -839,4 +899,9 @@ public class Button2 extends AbstractButton {
         return false;
     }
     */
+    
+    // tmp
+    public static void main(String[] args) {
+        LearningGame lg = new LearningGame();
+    }
 }
