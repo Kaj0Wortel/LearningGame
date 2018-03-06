@@ -56,11 +56,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     
     
     public BaseTopDownScroller(LearningGame lg, Runnable r) {
-        super(lg, r);
-        
-        /*obstacleSheets = getObstacleSheets();
-        collectableSheets = getCollectableSheets();
-        playerSheet = getPlayerSheet();*/
+       super(lg, r);
     }
     
     

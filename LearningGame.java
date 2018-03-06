@@ -8,6 +8,7 @@ import learningGame.music.PlayMusic;
 
 import learningGame.tools.Button2;
 import learningGame.tools.Key;
+import learningGame.tools.KeyDetector;
 import learningGame.tools.MultiTool;
 import learningGame.tools.TerminalErrorMessage;
 import learningGame.tools.TimerTool;
@@ -53,6 +54,9 @@ public class LearningGame extends JFrame {
     
     // The frames per second.
     final public static int FPS = 30;
+    
+    // The KeyDetector used to detect the key presses between updates.
+    final private KeyDetector kd = new KeyDetector();
     
     // Return size and location after returning from full screen.
     private int oldWindowWidth;
@@ -199,6 +203,7 @@ public class LearningGame extends JFrame {
     protected void addListeners() {
         this.addWindowListener(wl);
         this.addComponentListener(cl);
+        this.getRootPane().addKeyListener(kd);
     }
     
     /* 
@@ -208,26 +213,6 @@ public class LearningGame extends JFrame {
         this.setLayout(null);
         this.setLocation(500, 100);
         this.setSize(500, 500);
-        /*
-        try {
-            Button2 tmpFullScreenButton = new Button2(100, 25, 10, true, "test full screen");
-            this.add(tmpFullScreenButton);
-            
-            tmpFullScreenButton.setSize(200, 50);
-            tmpFullScreenButton.setLocation(100, 100);
-            tmpFullScreenButton.addActionListener((e) -> setFullScreen(!fullScreen));
-            
-            
-            startButton = new Button2(100, 25, 10, true, "Start");
-            this.add(startButton);
-            
-            startButton.setSize(200, 50);
-            startButton.setLocation(350, 100);
-            startButton.addActionListener((e) -> startMiniGames());
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         
         // Set default close operation and make the frame visible
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -419,6 +404,8 @@ public class LearningGame extends JFrame {
             add(curMiniGame);
             // Update the size of the MiniGame.
             updateSizeChildren();
+            // Add keydetector
+            curMiniGame.useKeyDetector(kd);
             
             // Start the MiniGame
             curMiniGame.start();

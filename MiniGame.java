@@ -29,7 +29,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     final private Runnable r;
     
     // The KeyDetector used to detect the key presses between updates.
-    final private KeyDetector kd = new KeyDetector();
+    private KeyDetector kd;
     
     // Instance of the parent.
     final protected LearningGame lg;
@@ -58,8 +58,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * Adds all nessesary listeners.
      */
     final private void addListeners() {
-        lg.getRootPane().addKeyListener(kd);
-        //this.addKeyListener(kd);
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
     }
@@ -69,8 +67,13 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      */
     final public void update() {
         if (started) {
-            kd.update();
-            update(kd.getKeysPressed(), System.currentTimeMillis());
+            if (kd != null) {
+                kd.update();
+                update(kd.getKeysPressed(), System.currentTimeMillis());
+                System.out.println("ok");
+            } else {
+                update(new Key[0], System.currentTimeMillis());
+            }
         }
     }
     
@@ -138,7 +141,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             createGUI();
             addListeners();
             resized(getWidth(), getHeight());
-            //recreateBackground();
             started = true;
         }
     }
@@ -181,17 +183,8 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         }
     }
     
-    /* 
-     * This method draws the background.
-     * Override this method to paint something else then the background.
-     */
-    protected void drawBackground(Graphics g, BufferedImage background) {
-        if (background != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.scale(getWidth()  / background.getWidth(),
-                      getHeight() / background.getHeight());
-            g.drawImage(background, 0, 0, null);
-        }
+    final public void useKeyDetector(KeyDetector kd) {
+        this.kd = kd;
     }
     
     /* 
@@ -212,6 +205,19 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         
         // Restore the g2d transformation.
         g2d.setTransform(g2dTrans);
+    }
+    
+    /* 
+     * This method draws the background.
+     * Override this method to paint something else then the background.
+     */
+    protected void drawBackground(Graphics g, BufferedImage background) {
+        if (background != null) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.scale(getWidth()  / background.getWidth(),
+                      getHeight() / background.getHeight());
+            g.drawImage(background, 0, 0, null);
+        }
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
