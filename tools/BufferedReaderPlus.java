@@ -295,8 +295,7 @@ public class BufferedReaderPlus extends BufferedReader implements Closeable, Aut
         
         // Marks the begin of a multiple line comment.
         int beginMLC = 0;
-        System.out.println("### Processing: " + line);
-        System.out.println(multipleLineCommentActive);
+        
         for (int pointer = 0; pointer < line.length(); pointer++) {
             if (multipleLineCommentActive) {
                 // Otherwise all data would be ignored.
