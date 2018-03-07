@@ -361,6 +361,7 @@ public class BufferedReaderPlus extends BufferedReader implements Closeable, Aut
      * @return a line without trailing semi-colons.
      */
     public static String removeCSVTrailings(String line) {
+        if (line == null) return null;
         if (line.length() == 0) return "";
         
         // iterate backwards
@@ -396,7 +397,7 @@ public class BufferedReaderPlus extends BufferedReader implements Closeable, Aut
             if (lineBlock) return null;
             
             // Reads the next line
-            bufferedLine = processed ? readProcessedLine() : readLine();
+            bufferedLine = (processed ? readProcessedLine() : readLine());
             
             // Check for EOF
             if (bufferedLine == null) return null;
@@ -453,7 +454,7 @@ public class BufferedReaderPlus extends BufferedReader implements Closeable, Aut
             if (lineBlock) return null;
             
             // Reads the next line
-            line = processed ? readProcessedLine() : readLine();
+            line = (processed ? readProcessedLine() : readLine());
             
             // Check for the null-value
             if (line == null) return null;
