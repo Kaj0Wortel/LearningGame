@@ -14,10 +14,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-
-import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.Array;
+//import java.lang.reflect.GenericDeclaration;
 
 
 public class MultiTool {
@@ -200,6 +201,62 @@ public class MultiTool {
         }
         
         return list;
+    }
+    
+    
+    /* 
+     * Converts a List to an array.
+     * 
+     * @param list the input list
+     * @param classValue the input/output class type
+     * 
+     * @return the elements from the output array in the same order as in the input List.
+     *     returns null iff the given list or class are null.
+     * 
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
+     * If you get class cast exceptions (e.g. cannot convert/cast Object[] to XXX[]), here's you problem.
+     */
+    @SuppressWarnings("unchecked")
+    public static <A, B extends A> A[] listToArray(List<B> list, Class<B> classValue) {
+        if (list == null) {
+            return null;
+            
+        } else {
+            A[] array = (A[]) Array.newInstance(classValue, list.size());
+            
+            for (int i = 0; i < list.size(); i++) {
+                array[i] = list.get(i);
+            }
+            
+            return (A[]) array;
+        }
+    }
+    
+    /* 
+     * Converts any array to an ArrayList
+     * 
+     * @param array the input array
+     * @param classValue the input/output class type
+     * @return the elements from the output ArrayList in the same order as in the input array.
+     *     Returns null iff the given array or class are null.
+     * 
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
+     * If you get class cast exceptions (e.g. cannot convert/cast Object[] to XXX[]), here's you problem.
+     */
+    @SuppressWarnings("unchecked")
+    public static <A, B extends A> ArrayList<A> arrayToArrayList(B[] array, Class<B> classValue) {
+        if (array == null) {
+            return null;
+            
+        } else {
+            List<A> list = new ArrayList<A>(array.length);
+            
+            for (int i = 0; i < array.length; i++) {
+                list.add((A) array[i]);
+            }
+            
+            return (ArrayList<A>) list;
+        }
     }
     
     /* 
