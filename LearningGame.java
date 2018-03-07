@@ -45,6 +45,8 @@ import javax.swing.SwingUtilities;
 public class LearningGame extends JFrame {
     // The root of where the files are located.
     final public static String workingDir = System.getProperty("user.dir") + "\\learningGame\\";
+    final public static String wordFile = workingDir + "data\\words.csv";
+    final public static String miniGameDir = workingDir + "miniGame\\";
     
     // The name of the application.
     final public static String appName = "application name";
@@ -74,14 +76,19 @@ public class LearningGame extends JFrame {
     private StartScreen startScreen;
     
     // Array containing all different MiniGame classes.
-    final private Class<MiniGame>[] miniGames = listMiniGameClasses();
+    //final private Class<MiniGame>[] miniGames = listMiniGameClasses();
+    final private Word[] words = MultiTool.listToArray(Word.createWordList(wordFile, miniGameDir), Word.class);
     
-    // Array containing a random shuffle of all MiniGame classes.
-    private Class<MiniGame>[] miniGameOrder;
-    // The current MiniGame that is active according to {@code miniGameOrder}.
-    private int curMiniGameNum = 0;
+    // Array containing the order in which the words are asked.
+    //private Class<MiniGame>[] miniGameOrder;
+    private Word[] wordOrder;
     
-    // The current MiniGame object.
+    // The current Word that is active according to {@code miniGameOrder}.
+    //private int curMiniGameNum = 0;
+    private int curWordNum = 0;
+    
+    // The Word an MiniGame that are currently active.
+    Word curWord;
     MiniGame curMiniGame;
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -112,10 +119,6 @@ public class LearningGame extends JFrame {
             // Start timer
             timer = new TimerTool(0L, 1000L/FPS, () -> update());
             timer.start();
-            
-            
-            // test
-            //startMiniGames();
             
             
             //---------------------------------------------------------------------------------------------------------
@@ -219,66 +222,19 @@ public class LearningGame extends JFrame {
     }
     
     /* 
-     * Returns an array containing all classes in the folder "learningGame.miniGame".
-     */
-    @SuppressWarnings("unchecked") // For the cast from Object[] to Class[]
-    final private Class<MiniGame>[] listMiniGameClasses() {
-        // List all java classes in the package folder.
-        File[] files = new File(workingDir + "miniGame\\")
-            .listFiles((File dir, String name) -> {
-            // Include only files that end with ".java" and exclude files that start with "Base".
-            return name.endsWith(".java") && !name.startsWith("Base");
-        });
-        
-        // Create return object.
-        Class<MiniGame>[] miniGames
-            = (Class<MiniGame>[]) new Class[files.length];
-        
-        // Iterate over the files and put each class in the array
-        for (int i = 0; i < files.length; i++) {
-            String fileName = files[i].getName();
-            String className = fileName.substring(0, fileName.length() - 5); // ".java".length == 5
-            
-            try {
-                miniGames[i] = (Class<MiniGame>) Class.forName("learningGame.miniGame." + className);
-                Log2.write("Succesfully loaded: \"" + miniGames[i].toString() + "\"", Log2.INFO);
-                     
-            } catch (Exception e) {
-                Log2.write("Could not load class: \"learningGame.miniGame." + className + "\"", Log2.ERROR);
-            }
-        }
-        
-        return miniGames;
-    }
-    
-    /* 
-     * Creates a MiniGame of a certain class, with a certain terminate action.
-     * 
-     * @param miniGame the class of the object that will be created.
-     * @param r the action that will run when the MiniGame is finished.
-     * @return a new instance of the given MiniGame class.
-     */
-    private MiniGame createMiniGame(Class<MiniGame> miniGame, Runnable r) {
-        try {
-            return miniGame.getConstructor(new Class<?>[] {this.getClass(), Runnable.class}).newInstance(this, r);
-            
-        } catch (Exception e) {
-            Log2.write(e);
-        }
-        
-        return null;
-    }
-    
-    /* 
      * Begins a series of MiniGames.
      */
     @SuppressWarnings("unchecked") // For the cast from Object[] to Class[]
     private void startMiniGames() {
+        wordOrder = (Word[]) MultiTool.shuffleArray
+            ((Word[]) 
+                 MultiTool.copyArray(words));
+        /*
         miniGameOrder = (Class<MiniGame>[]) MultiTool.shuffleArray
-            ((Class<MiniGame>[]) MultiTool.copyArray(miniGames));
+            ((Class<MiniGame>[]) MultiTool.copyArray(miniGames));*/
         
-        curMiniGameNum = -1; // To start MiniGame at [0]
-        curMiniGame = null;  // For not fetching weird scores
+        curWordNum = -1; // To start MiniGame at [0]
+        curWord = null;  // For not fetching weird scores
         endMiniGame(); // Setup the MiniGame to be played and play it.
     }
     
@@ -392,11 +348,13 @@ public class LearningGame extends JFrame {
         if (curMiniGame != null) remove(curMiniGame);
         
         do {
-            if (++curMiniGameNum >= miniGameOrder.length) break;
+            // Check if the list is finished
+            if (++curWordNum >= wordOrder.length) break;
             
             // Create new MiniGame
-            curMiniGame = createMiniGame(miniGameOrder[curMiniGameNum], () -> endMiniGame());
-        } while (curMiniGame != null);
+            curMiniGame = wordOrder[curWordNum].createMiniGame(this, () -> endMiniGame());
+            
+        } while (curMiniGame == null);
         
         if (curMiniGame != null) {
             // Add new MiniGame to frame
