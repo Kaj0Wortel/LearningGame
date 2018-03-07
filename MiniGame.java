@@ -70,7 +70,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             if (kd != null) {
                 kd.update();
                 update(kd.getKeysPressed(), System.currentTimeMillis());
-                System.out.println("ok");
+                
             } else {
                 update(new Key[0], System.currentTimeMillis());
             }
