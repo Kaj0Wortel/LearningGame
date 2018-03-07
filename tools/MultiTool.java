@@ -209,21 +209,32 @@ public class MultiTool {
      * 
      * @param list the input list
      * @param classValue the input/output class type
-     * 
+     * @param start the first element that will be put in the array.
+     * @param end the last element that will NOT be put in the array.
      * @return the elements from the output array in the same order as in the input List.
      *     returns null iff the given list or class are null.
-     * 
-     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
-     * If you get class cast exceptions (e.g. cannot convert/cast Object[] to XXX[]), here's you problem.
+     * @throws IllegalArgumentException iff start < end.
      */
     @SuppressWarnings("unchecked")
     public static <A, B extends A> A[] listToArray(List<B> list, Class<B> classValue) {
-        if (list == null) return null;
+        return listToArray(list, classValue, 0);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <A, B extends A> A[] listToArray(List<B> list, Class<B> classValue, int start) {
+        return listToArray(list, classValue, start, list.size());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <A, B extends A> A[] listToArray(List<B> list, Class<B> classValue, int start, int end)
+        throws IllegalArgumentException {
+        if (list == null || classValue == null) return null;
+        if (start >= end) throw new IllegalArgumentException("start(" + start + ") > end(" + end + ").");
         
-        A[] array = (A[]) Array.newInstance(classValue, list.size());
+        A[] array = (A[]) Array.newInstance(classValue, end - start);
         
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
+        for (int i = start; i < list.size() && i < end; i++) {
+            array[i - start] = list.get(i);
         }
         
         return (A[]) array;
@@ -257,6 +268,7 @@ public class MultiTool {
      * Makes a copy of an arrayList.
      * 
      * @param list ArrayList to copy
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
      */
     public static <T> ArrayList<T> copyArrayList(ArrayList<T> list) {
         if (list == null) return null;
@@ -274,12 +286,13 @@ public class MultiTool {
      * Makes a copy of an array.
      * 
      * @param array array to copy.
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] copyArray(T[] array) {
         if (array == null) return null;
         
-        T[] newArray = (T[]) new Object[array.length];
+        T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
         
         for (int i = 0; i < array.length; i++) {
             newArray[i] = (T) array[i];
@@ -494,6 +507,7 @@ public class MultiTool {
      * Makes a copy of a Class array, keeping the type variable.
      * 
      * @param array Class array with type to copy.
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
      */
     @SuppressWarnings("unchecked")
     public static <T> Class<T>[] copyArray(Class<T>[] array) {
@@ -507,7 +521,6 @@ public class MultiTool {
         
         return newArray;
     }
-    
     
     /* 
      * Performs a swap between two elements of an array.
