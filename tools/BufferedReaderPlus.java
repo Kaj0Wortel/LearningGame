@@ -12,6 +12,9 @@ package learningGame.tools;
 // Java packages
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -54,7 +57,59 @@ public class BufferedReaderPlus extends BufferedReader implements Closeable, Aut
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * Constructor with supported comments.
+     * Constructors with String to file location.
+     * Thes constructors only convert the given String to a FileReader
+     *     and let the other constructor handle the rest.
+     */
+    // For the constructors with supported comments.
+    public BufferedReaderPlus(String file) throws FileNotFoundException {
+        this(new FileReader(file));
+    }
+    
+    public BufferedReaderPlus(String file, int commentType) throws FileNotFoundException {
+        this(new FileReader(file), commentType);
+    }
+    
+    public BufferedReaderPlus(String file, boolean isCsv) throws FileNotFoundException {
+        this(new FileReader(file), isCsv);
+    }
+    
+    public BufferedReaderPlus(String file, int commentType, boolean isCsv) throws FileNotFoundException {
+        this(new FileReader(file), commentType, isCsv);
+    }
+    
+    // For constructors with custom comments.
+    public BufferedReaderPlus(String file, String singleComment) throws FileNotFoundException {
+        this(new FileReader(file));
+    }
+    
+    public BufferedReaderPlus(String file, String singleComment, boolean isCsv) throws FileNotFoundException {
+        this(new FileReader(file), singleComment, isCsv);
+    }
+    
+    public BufferedReaderPlus(String file, String multipleCommentStart, String multipleCommentEnd)
+        throws FileNotFoundException {
+        this(new FileReader(file), multipleCommentStart, multipleCommentEnd);
+    }
+    
+    public BufferedReaderPlus(String file, String multipleCommentStart, String multipleCommentEnd, boolean isCsv)
+        throws FileNotFoundException {
+        this(new FileReader(file), multipleCommentStart, multipleCommentEnd, isCsv);
+    }
+    
+    public BufferedReaderPlus(String file, String singleComment, String multipleCommentStart,
+                              String multipleCommentEnd) throws FileNotFoundException {
+        this(new FileReader(file), singleComment, multipleCommentStart, multipleCommentEnd);
+    }
+    
+    public BufferedReaderPlus(String file, String singleComment, String multipleCommentStart,
+                              String multipleCommentEnd, boolean isCsv) throws FileNotFoundException {
+        this(new FileReader(file), singleComment, multipleCommentStart, multipleCommentEnd, isCsv);
+    }
+    
+    
+    /* 
+     * Constructors with supported comments.
      * 
      * @param reader the used reader object.
      * @param commentType the supported type of comment used. Must be one of NO_COMMENT, HASHTAG_COMMENT,
@@ -98,7 +153,7 @@ public class BufferedReaderPlus extends BufferedReader implements Closeable, Aut
     }
     
     /* 
-     * Custom comment constructor.
+     * Constructors with custom comments.
      * 
      * @param reader the used reader object.
      * @param singleComment the String used to indicate a single line comment. Default is "".
