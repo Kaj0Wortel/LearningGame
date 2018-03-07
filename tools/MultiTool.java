@@ -218,18 +218,15 @@ public class MultiTool {
      */
     @SuppressWarnings("unchecked")
     public static <A, B extends A> A[] listToArray(List<B> list, Class<B> classValue) {
-        if (list == null) {
-            return null;
-            
-        } else {
-            A[] array = (A[]) Array.newInstance(classValue, list.size());
-            
-            for (int i = 0; i < list.size(); i++) {
-                array[i] = list.get(i);
-            }
-            
-            return (A[]) array;
+        if (list == null) return null;
+        
+        A[] array = (A[]) Array.newInstance(classValue, list.size());
+        
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
         }
+        
+        return (A[]) array;
     }
     
     /* 
@@ -245,18 +242,15 @@ public class MultiTool {
      */
     @SuppressWarnings("unchecked")
     public static <A, B extends A> ArrayList<A> arrayToArrayList(B[] array, Class<B> classValue) {
-        if (array == null) {
-            return null;
-            
-        } else {
-            List<A> list = new ArrayList<A>(array.length);
-            
-            for (int i = 0; i < array.length; i++) {
-                list.add((A) array[i]);
-            }
-            
-            return (ArrayList<A>) list;
+        if (array == null) return null;
+        
+        List<A> list = new ArrayList<A>(array.length);
+        
+        for (int i = 0; i < array.length; i++) {
+            list.add((A) array[i]);
         }
+        
+        return (ArrayList<A>) list;
     }
     
     /* 
