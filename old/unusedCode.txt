@@ -1,0 +1,32 @@
+    /* 
+     * Returns an array containing all classes in the folder "learningGame.miniGame",
+     * except for those starting with "Base". Also ignores inner classes.
+     */
+    @SuppressWarnings("unchecked") // For the cast from Object[] to Class[]
+    final private Class<MiniGame>[] listMiniGameClasses(String miniGameDir) {
+        // List all java classes in the package folder.
+        File[] files = new File(miniGameDir)
+            .listFiles((File dir, String name) -> {
+            // Include only files that end with ".java" and exclude files that start with "Base".
+            return name.endsWith(".class") && !name.startsWith("Base") && !name.contains("$");
+        });
+        
+        // Create return object.
+        Class<MiniGame>[] miniGames = (Class<MiniGame>[]) new Class[files.length];
+        
+        // Iterate over the files and put each class in the array
+        for (int i = 0; i < files.length; i++) {
+            String fileName = files[i].getName();
+            String className = fileName.substring(0, fileName.length() - 6); // ".class".length == 6
+            
+            try {
+                miniGames[i] = (Class<MiniGame>) Class.forName("learningGame.miniGame." + className);
+                Log2.write("Succesfully loaded: \"" + miniGames[i].toString() + "\"", Log2.INFO);
+                
+            } catch (Exception e) {
+                Log2.write("Could not load class: \"learningGame.miniGame." + className + "\"", Log2.ERROR);
+            }
+        }
+        
+        return miniGames;
+    }
