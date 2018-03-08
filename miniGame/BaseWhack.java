@@ -65,9 +65,6 @@ abstract public class BaseWhack extends MiniGame {
      */
     public BaseWhack(LearningGame lg, Runnable r) {
         super(lg, r);
-        
-        // Set the empty cursor
-        lg.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -437,10 +434,10 @@ abstract public class BaseWhack extends MiniGame {
                 int thisX = this.getLocationOnScreen().x;
                 int thisY = this.getLocationOnScreen().y;
                 Dimension hammerDim = calcHammerDim(getWidth(), getHeight());
-                int dx = (int) ((1.0/3.0) * hammerDim.getWidth());
-                int dy = (int) ((2.0/3.0) * hammerDim.getHeight());
+                int dx = (int) (getHammerWidthAdjustmentFactor()  * hammerDim.getWidth());
+                int dy = (int) (getHammerHeightAdjustmentFactor() * hammerDim.getHeight());
                 
-                hammer.setLocation(mouseOnScreenX - thisX - dx, mouseOnScreenY - thisY - dy);
+                hammer.setLocation(mouseOnScreenX - thisX + dx, mouseOnScreenY - thisY + dy);
                 
             } catch (IllegalStateException e) {
                 // This might occur when the window is going to or from full screen.
@@ -464,7 +461,8 @@ abstract public class BaseWhack extends MiniGame {
                 if (whacks[i][j] != null) {
                     //System.out.println(spawnChance * LearningGame.FPS * whacks.length * whacks[i].length);
                     if (random.nextDouble() < 1.0 / (spawnChance * LearningGame.FPS * whacks.length * whacks[i].length)) {
-                        whacks[i][j].showWhackable(500, 200, timeStamp);
+                        //whacks[i][j].showWhackable(500, 200, timeStamp);
+                        whacks[i][j].showWhackable(2000, 200, timeStamp);
                     }
                 }
             }
@@ -515,32 +513,12 @@ abstract public class BaseWhack extends MiniGame {
     }
     
     /* 
-     * Rresizes the images for the Whack class.
-     *//*
-    protected void resizeWhackImages(Dimension newDim) {
-        for (int i = 0; i < originalWhackSheet.length; i++) {
-            whackSheet[i] = ImageTools.toBufferedImage
-                (originalWhackSheet[i]
-                     .getScaledInstance((int) newDim.getWidth(), (int) newDim.getHeight(), Image.SCALE_SMOOTH)
-                );
-        }
-        
-        whacked = ImageTools.toBufferedImage
-            (originalWhacked
-                 .getScaledInstance((int) newDim.getWidth(), (int) newDim.getHeight(), Image.SCALE_SMOOTH)
-            );
-    }
-    
-    /* 
-     * Resizes the images for the Hammer class.
-     *//*
-    protected void resizeHammerImages(Dimension newDim) {
-        for (int i = 0; i < originalHammerSheet.length; i++) {
-            hammerSheet[i] = ImageTools.toBufferedImage
-                (originalHammerSheet[i]
-                     .getScaledInstance((int) newDim.getWidth(), (int) newDim.getHeight(), Image.SCALE_SMOOTH)
-                );
-        }
+     * This method is invoked when the minigame is started.
+     */
+    @Override
+    protected void startMiniGame() {
+        // Set the empty cursor
+        lg.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -548,7 +526,7 @@ abstract public class BaseWhack extends MiniGame {
      * Only resets the mouse to it's default cursor.
      */
     @Override
-    final protected void cleanUp() {
+    protected void cleanUp() {
         lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
@@ -563,6 +541,20 @@ abstract public class BaseWhack extends MiniGame {
      * the rows and columns.
      */
     abstract protected int[] getFieldSize();
+    
+    /* 
+     * @return the width adjustment factor for the hammer image.
+     *     0 means no adjustment, -1 means pushing the image to the left with it's height,
+     *     and 1 means pushing the image to the right with it's height.
+     */
+    abstract protected double getHammerWidthAdjustmentFactor();
+    
+    /* 
+     * @return the height adjustment factor for the hammer image.
+     *     0 means no adjustment, -1 means pushing the image downwards with it's height,
+     *     and 1 means pushing the image upwards with it's height.
+     */
+    abstract protected double getHammerHeightAdjustmentFactor();
     
     /* 
      * @return the image sheet for the whackable animation.

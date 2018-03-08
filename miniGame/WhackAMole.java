@@ -13,6 +13,7 @@ import learningGame.music.PlayMusic;
 
 import learningGame.tools.Key;
 import learningGame.tools.LoadImages2;
+import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
@@ -44,7 +45,27 @@ public class WhackAMole extends BaseWhack {
     }
     
     /* 
+     * @return the width adjustment factor for the hammer image.
+     *     0 means no adjustment, 1 means pushing the image to the right with it's height,
+     *     and -1 means pushing the image to the left with it's height.
+     */
+    @Override
+    protected double getHammerWidthAdjustmentFactor() {
+        return -0.17;
+    }
+    
+    /* 
+     * @return the height adjustment factor for the hammer image.
+     *     0 means no adjustment, 1 means pushing the image downwards with it's height,
+     *     and -1 means pushing the image upwards with it's height.
+     */
+    protected double getHammerHeightAdjustmentFactor() {
+        return -0.525;
+    }
+    
+    /* 
      * @return the background image
+     * TODO: add image
      */
     @Override
     protected BufferedImage getBackgroundImage() {
@@ -64,10 +85,16 @@ public class WhackAMole extends BaseWhack {
     @Override
     protected BufferedImage[] getWhackSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\mole.png", 31, 14)[0];
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
+                                                       workingDir + "img\\sprites\\Mole.png_whack",
+                                                       26, 0,      // startX, startY
+                                                       57, 56,     // endX, endY
+                                                       31, 14)[0]; // sizeX, sizeY
             
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Whack image sheet of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
@@ -79,13 +106,22 @@ public class WhackAMole extends BaseWhack {
     @Override
     protected BufferedImage getWhackedImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\whack_test.png",
-                                                       workingDir + "img\\sprites\\whack_test.png_small",
-                                                       0, 0,   // startX, startY
-                                                       20, 20, // sizeX, sizeY
-                                                       20, 20)[0][0]; // endX, endY
-        } catch (IOException e) {
+            /*
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
+                                                       workingDir + "img\\sprites\\Mole.png_whacked",
+                                                       26, 0,         // startX, startY
+                                                       57, 56,        // endX, endY
+                                                       31, 14)[0][0]; // sizeX, sizeY
+            */
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\old\\whack_test.png",
+                                                       workingDir + "img\\sprites\\Mole.png_whacked",
+                                                       0, 0,         // startX, startY
+                                                       20, 20,        // endX, endY
+                                                       20, 20)[0][0]; // sizeX, sizeY
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Whacked image sheet of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
@@ -97,10 +133,16 @@ public class WhackAMole extends BaseWhack {
     @Override
     protected BufferedImage[] getHammerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\hammer.png", 26, 39)[0];
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
+                                                       workingDir + "img\\sprites\\Mole.png_hammer",
+                                                       0, 0,       // startX, startY
+                                                       26, 156,    // endX, endY
+                                                       26, 39)[0]; // sizeX, sizeY
             
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Hammer image sheet of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
