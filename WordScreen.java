@@ -12,6 +12,8 @@ import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
+import java.awt.Font;
+
 import java.io.IOException;
 
 import java.util.Random;
@@ -46,6 +48,8 @@ public class WordScreen extends JPanel {
         this.word = word;
         this.langQ = langQ;
         this.langA = langA;
+        
+        createGUI();
     }
     
     /* 
@@ -71,8 +75,10 @@ public class WordScreen extends JPanel {
                              );
             corBtn.setImage(word.getRandomImage(), true);
             corBtn.addActionListener((e) -> {
-                corBtn.setEnabled(false);
-                correctWord();
+                if (e.getActionCommand().contains("released")) {
+                    corBtn.setEnabled(false);
+                    correctWord();
+                }
             });
             this.add(corBtn);
             
@@ -145,8 +151,10 @@ public class WordScreen extends JPanel {
                     newBtn.setImage(nextWord.getRandomImage(), true);
                     
                     wordOptionButtons[i][j].addActionListener((e) -> {
-                        newBtn.setEnabled(false);
-                        wrongWord();
+                        if (e.getActionCommand().contains("released")) {
+                            newBtn.setEnabled(false);
+                            wrongWord();
+                        }
                     });
                     
                     this.add(wordOptionButtons[i][j]);
@@ -168,7 +176,6 @@ public class WordScreen extends JPanel {
      */
     private JLabel createLabel(String name) {
         JLabel label = new JLabel(name);
-        //label.setFont(FontLoader.Cousine.deriveFont(12f));
         label.setHorizontalAlignment(JLabel.CENTER);
         this.add(label);
         return label;
@@ -209,12 +216,16 @@ public class WordScreen extends JPanel {
         
         
         if (resized) {
+            Font defaultFont = FontLoader.getLocalFont("source-sans-pro\\SourceSansPro-Bold.ttf");
+            Font buttonFont = defaultFont.deriveFont(width / 50F);
+            
             double spareFactor = 0.5;
             double wordHeightFactor = 0.15;
             double labelHeightFactor = 0.1;
             
-            wordQ.setSize(width,(int) (height * labelHeightFactor));
+            wordQ.setSize(width,(int) (height * wordHeightFactor));
             wordQ.setLocation(0, 0);
+            wordQ.setFont(defaultFont.deriveFont(width / 25F));
             
             double reservedWidth = ((double) width) / wordOptionButtons.length;
             
@@ -234,11 +245,12 @@ public class WordScreen extends JPanel {
                     
                     if (buttonWords[i][j] != null) {
                         buttonWords[i][j]
-                            .setSize((int) (reservedWidth * spareFactor),
+                            .setSize((int) (reservedWidth),
                                      (int) (reservedHeight * labelHeightFactor));
                         buttonWords[i][j]
-                            .setLocation(wordOptionButtons[i][j].getX(),
+                            .setLocation((int) (i * reservedWidth),
                                          wordOptionButtons[i][j].getY() + wordOptionButtons[i][j].getHeight());
+                        buttonWords[i][j].setFont(buttonFont);
                     }
                 }
             }
@@ -252,7 +264,7 @@ public class WordScreen extends JPanel {
         JFrame frame = new JFrame("test");
         frame.setLayout(null);
         frame.setSize(1000, 1000);
-        frame.setLocation(100, 100);
+        frame.setLocation(0, 0);
         
         WordScreen ws = new WordScreen(LearningGame.getWords()[0], "Italian", "English");
         System.out.println(LearningGame.getWords()[0]);
