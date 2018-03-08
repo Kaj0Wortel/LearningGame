@@ -4,8 +4,10 @@ package learningGame;
 
 // Own packages
 import learningGame.LearningGame;
+import learningGame.font.FontLoader;
 import learningGame.log.Log2;
 import learningGame.tools.Button2;
+import learningGame.tools.LoadImages2;
 import learningGame.tools.TerminalErrorMessage;
 
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 
 import java.util.Random;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
@@ -24,26 +27,56 @@ import java.util.ArrayList;
 
 
 public class WordScreen extends JPanel {
+    final private static String goodButtonImgsLoc = LearningGame.workingDir + "\\img\\button2_img_good_answer.png";
+    final private static String wrongButtonImgsLoc = LearningGame.workingDir + "\\img\\button2_img_wrong_answer.png";
+    
     final private Word word;
+    final private String langQ;
+    final private String langA;
     
     // GUI
-    Button2[][] wordOptionButtons = new Button2[3][2];
+    final private static int buttonsX = 3;
+    final private static int buttonsY  = 2;
+    Button2[][] wordOptionButtons = new Button2[buttonsX][buttonsY];
+    JLabel[][] buttonWords = new JLabel[buttonsX][buttonsY];
+    JLabel wordQ;
     
-    WordScreen(Word word) {
+    WordScreen(Word word, String langQ, String langA) {
         super(null);
         this.word = word;
+        this.langQ = langQ;
+        this.langA = langA;
     }
     
+    /* 
+     * Creates the GUI of the panel.
+     */
     public void createGUI() {
-        // Create random
-        Random rand = new Random();
-        
+        // Create question panel
+        wordQ = createLabel(word.getWord(langQ));
+            
         try {
+            // Create random
+            Random rand = new Random();
+            
             // Create the correct word button
             int x = rand.nextInt(wordOptionButtons.length);
             int y = rand.nextInt(wordOptionButtons[x].length);
-            Button2 corBtn = wordOptionButtons[x][y] = new Button2(10);
+            Button2 corBtn = wordOptionButtons[x][y]
+                = new Button2(10, LoadImages2.ensureLoadedAndGetImage
+                                  (goodButtonImgsLoc,
+                                   0, 0,   // Start x/y
+                                   48, 80, // End x/y
+                                   16, 16) // Width/height)
+                             );
             corBtn.setImage(word.getRandomImage(), true);
+            corBtn.addActionListener((e) -> {
+                corBtn.setEnabled(false);
+                correctWord();
+            });
+            this.add(corBtn);
+            
+            buttonWords[x][y] = createLabel(word.getWord(langQ));
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -55,59 +88,110 @@ public class WordScreen extends JPanel {
         
         for (int i = 0; i < wordOptionButtons.length; i++) {
             for (int j = 0; j < wordOptionButtons[i].length; j++) {
-                try {
-                    Word nextWord = LearningGame.getRandomWord(wordsSeen);
+                System.out.println(wordOptionButtons[i][j] != null);
+                if (wordOptionButtons[i][j] != null) continue;
+                
+                Word nextWord = LearningGame.getRandomWord(wordsSeen);
+                System.out.println(nextWord == null ? "null" : nextWord);
+                
+                // Check if there was a word found
+                if (nextWord == null) {
+                    Log2.write("Not enough words in the list to fill all buttons!", Log2.WARNING);
                     
-                    // Check if the word exists.
-                    if (nextWord == null) {
-                        Log2.write("Not enough words in the list to fill all buttons!", Log2.WARNING);
+                    if (wordsSeen.size() <= 1) {
+                        Log2.write(new Object[] {
+                            "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
+                                "Word list is empty or consists of one element.",
+                                "Action taken: initiate fail safe termination of the application.",
+                                "StackTrace: ",
+                                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
+                                " === END ERROR MESSAGE === ",
+                                ""
+                        }, Log2.ERROR);
+                        new TerminalErrorMessage("There are too less words in the input list!");
                         
-                        if (wordsSeen.size() <= 1) {
+                    } else {
+                        // If there are only a few (>= 2) words in the list, clear the list and try again.
+                        wordsSeen.clear();
+                        wordsSeen.add(word);
+                        nextWord = LearningGame.getRandomWord(wordsSeen);
+                        
+                        if (nextWord == null) {
                             Log2.write(new Object[] {
-                                    "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
+                                "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
+                                    "Word list was first non-empty and contained > 1 element.",
                                     "Word list is now empty or consists of one element.",
                                     "Action taken: initiate fail safe termination of the application.",
                                     "StackTrace: ",
-                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
+                                    (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
                                     " === END ERROR MESSAGE === ",
                                     ""
                             }, Log2.ERROR);
-                            Log2.write("Only at most one words found in the input list!", Log2.ERROR);
                             new TerminalErrorMessage("There are too less words in the input list!");
-                            
-                        } else {
-                            // If there are only a few (>= 2) words in the list, clear the list and try again.
-                            wordsSeen.clear();
-                            wordsSeen.add(word);
-                            nextWord = LearningGame.getRandomWord(wordsSeen);
-                            
-                            if (nextWord == null) {
-                                Log2.write(new Object[] {
-                                    "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
-                                        "Word list was first non-empty and contained > 1 element.",
-                                        "Word list is now empty or consists of one element.",
-                                        "Action taken: initiate fail safe termination of the application.",
-                                        "StackTrace: ",
-                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
-                                        " === END ERROR MESSAGE === ",
-                                        ""
-                                }, Log2.ERROR);
-                                new TerminalErrorMessage("There are too less words in the input list!");
-                            }
                         }
                     }
+                }
+                
+                try {
+                    // Create new buttons
+                    wordOptionButtons[i][j]
+                        = new Button2(10, LoadImages2.ensureLoadedAndGetImage
+                                          (wrongButtonImgsLoc,
+                                           0, 0,   // Start x/y
+                                           48, 80, // End x/y
+                                           16, 16) // Width/height
+                                     );
+                    Button2 newBtn = wordOptionButtons[i][j];
+                    newBtn.setImage(nextWord.getRandomImage(), true);
                     
-                    if (wordOptionButtons[i][j] == null) {
-                        wordOptionButtons[i][j] = new Button2(50, 50, 10, "test");
-                    }
+                    wordOptionButtons[i][j].addActionListener((e) -> {
+                        newBtn.setEnabled(false);
+                        wrongWord();
+                    });
                     
                     this.add(wordOptionButtons[i][j]);
                     
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                
+                // Create new labels
+                buttonWords[i][j] = createLabel(nextWord.getWord(langA));
+            } // End for
+        } // End for
+    }
+    
+    /* 
+     * @param name the text to be set to the JLabel.
+     * @return a JLabel with text 'name' and with the default settings.
+     *     Also adds the JLabel to the panel.
+     */
+    private JLabel createLabel(String name) {
+        JLabel label = new JLabel(name);
+        //label.setFont(FontLoader.Cousine.deriveFont(12f));
+        label.setHorizontalAlignment(JLabel.CENTER);
+        this.add(label);
+        return label;
+    }
+    
+    /* 
+     * This function is invoked when the correct button has been pressed.
+     */
+    public void correctWord() {
+        for (int i = 0; i < wordOptionButtons.length; i++) {
+            for (int j = 0; j < wordOptionButtons[i].length; j++) {
+                wordOptionButtons[i][j].setEnabled(false);
             }
         }
+        repaint();
+        
+    }
+    
+    /* 
+     * This function is invoked when a wrong button has been pressed.
+     */
+    public void wrongWord() {
+        
     }
     
     /* 
@@ -123,15 +207,39 @@ public class WordScreen extends JPanel {
         boolean resized = getWidth() != width || getHeight() != height;
         super.setBounds(x, y, width, height);
         
+        
         if (resized) {
-            int btnWidth = (int) (((double) width)  / wordOptionButtons.length * 0.5);
+            double spareFactor = 0.5;
+            double wordHeightFactor = 0.15;
+            double labelHeightFactor = 0.1;
+            
+            wordQ.setSize(width,(int) (height * labelHeightFactor));
+            wordQ.setLocation(0, 0);
+            
+            double reservedWidth = ((double) width) / wordOptionButtons.length;
+            
             for (int i = 0; i < wordOptionButtons.length; i++) {
-                // 10% of the space is reserved for the word.
-                int btnHeight = (int) (((double) height) / wordOptionButtons[i].length * 0.5 * 0.9);
+                double reservedHeight = ((double) height) / wordOptionButtons[i].length * (1 - wordHeightFactor);
                 
                 for (int j = 0; j < wordOptionButtons[i].length; j++) {
-                    wordOptionButtons[i][j].setSize(btnWidth, btnHeight);
-                    wordOptionButtons[i][j].setLocation(btnWidth * 1, 1);
+                    if (wordOptionButtons[i][j] != null) {
+                        wordOptionButtons[i][j]
+                            .setSize((int) (reservedWidth * spareFactor),
+                                     (int) (reservedHeight * (spareFactor - labelHeightFactor)));
+                        wordOptionButtons[i][j]
+                            .setLocation((int) ((i + 0.5 * spareFactor)* reservedWidth),
+                                         (int) ((j + 0.5 * spareFactor + wordHeightFactor)
+                                                    * reservedHeight));
+                    }
+                    
+                    if (buttonWords[i][j] != null) {
+                        buttonWords[i][j]
+                            .setSize((int) (reservedWidth * spareFactor),
+                                     (int) (reservedHeight * labelHeightFactor));
+                        buttonWords[i][j]
+                            .setLocation(wordOptionButtons[i][j].getX(),
+                                         wordOptionButtons[i][j].getY() + wordOptionButtons[i][j].getHeight());
+                    }
                 }
             }
         }
@@ -143,10 +251,10 @@ public class WordScreen extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("test");
         frame.setLayout(null);
-        frame.setSize(500, 500);
+        frame.setSize(1000, 1000);
         frame.setLocation(100, 100);
         
-        WordScreen ws = new WordScreen(LearningGame.getWords()[0]);
+        WordScreen ws = new WordScreen(LearningGame.getWords()[0], "Italian", "English");
         System.out.println(LearningGame.getWords()[0]);
         frame.add(ws);
         ws.createGUI();
@@ -154,15 +262,6 @@ public class WordScreen extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         
-        Log2.write(new Object[] {
-                "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
-                "Word list is now empty or consists of one element.",
-                "Action taken: initiate fail safe termination of the application.",
-                "StackTrace: ",
-                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
-                " === END ERROR MESSAGE === ",
-                ""
-        }, Log2.ERROR);
         while(true) {
             try {
                 Thread.sleep(1);
