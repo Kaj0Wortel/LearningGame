@@ -33,6 +33,9 @@ import java.io.IOException;
 //import java.lang.reflect.Constructor;
 //import java.lang.reflect.InvocationTargetException;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import javax.sound.sampled.Clip;
 
 import javax.swing.AbstractAction;
@@ -47,6 +50,12 @@ public class LearningGame extends JFrame {
     final public static String workingDir = System.getProperty("user.dir") + "\\learningGame\\";
     final public static String wordFile = workingDir + "data\\words.csv";
     final public static String miniGameDir = workingDir + "miniGame\\";
+    final public static String imgSpriteDir = workingDir + "img\\sprites\\";
+    final public static String imgWordDir = workingDir + "img\\word_images\\";
+    
+    static {
+        Log2.clear();
+    }
     
     // The name of the application.
     final public static String appName = "application name";
@@ -59,6 +68,9 @@ public class LearningGame extends JFrame {
     
     // The KeyDetector used to detect the key presses between updates.
     final private KeyDetector kd = new KeyDetector();
+    
+    // The random object use for this instance
+    private static Random random = new Random();
     
     // Return size and location after returning from full screen.
     private int oldWindowWidth;
@@ -76,15 +88,13 @@ public class LearningGame extends JFrame {
     private StartScreen startScreen;
     
     // Array containing all different MiniGame classes.
-    //final private Class<MiniGame>[] miniGames = listMiniGameClasses();
-    final private Word[] words = MultiTool.listToArray(Word.createWordList(wordFile, miniGameDir), Word.class);
+    final private static Word[] words = MultiTool.listToArray
+        (Word.createWordList(wordFile, miniGameDir, imgWordDir), Word.class);
     
     // Array containing the order in which the words are asked.
-    //private Class<MiniGame>[] miniGameOrder;
     private Word[] wordOrder;
     
     // The current Word that is active according to {@code miniGameOrder}.
-    //private int curMiniGameNum = 0;
     private int curWordNum = 0;
     
     // The Word an MiniGame that are currently active.
@@ -219,6 +229,37 @@ public class LearningGame extends JFrame {
         // Set default close operation and make the frame visible
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+    }
+    
+    /* 
+     * @return the words array.
+     */
+    public static Word[] getWords() {
+        return words;
+    }
+    
+    /* 
+     * @param exclude list containing all the words that are not allowed to be returned.
+     * @return a random word in the words list, but not occuring in exclude.
+     *     Returns null iff {@code
+     *         {\forall int i; words.has(i); 
+     *             {\exists int j; exclude.has(j); words.get(i).equals(exclude.get(j))}
+     *         }
+     *     }
+     */
+    public static Word getRandomWord(ArrayList<Word> exclude) {
+        if (exclude == null) return words[random.nextInt(words.length)];
+        
+        ArrayList<Word> allowedWords = new ArrayList<Word>();
+        
+        for (Word word : words) {
+            if (!exclude.contains(word)) {
+                allowedWords.add(word);
+            }
+        }
+        
+        if (allowedWords.size() == 0) return null;
+        return allowedWords.get(random.nextInt(allowedWords.size()));
     }
     
     /* 
