@@ -13,12 +13,14 @@ package learningGame.tools;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.io.File;
 
 import java.lang.reflect.Array;
 //import java.lang.reflect.GenericDeclaration;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class MultiTool {
@@ -151,6 +153,77 @@ public class MultiTool {
         else if (dHex == 'V') return 31;
         else throw new NumberFormatException();
     }
+    
+    
+    /* 
+     * Lists all files in a dir.
+     * @param rootDir the root dir from which the files will be listed.
+     * @param listDirs whether the directories should be listed or not.
+     * @param pathSoFar the path that has been traversed so far.
+     * 
+     * @return an ArrayList containing an array of File objects of length 2 for which holds:
+     *     - The first element contains the full path of the file.
+     *     - The second element contains the path of the file relative to the given rootDir
+     *       (excl. the rootdir and the file itself).
+     * 
+     * @throws IllegalArgumentException if the root dir is not a directory.
+     * @throws IllegalStateException if a file found in a certain directory, is not located in that directory.
+     * 
+     * Furthermore is guarenteed that:
+     * - For every directory that all its children (sub-dirs included) are listed
+     *     directly below its own entry.
+     * - When the files X in directory dirX and Y NOT in dirX are listed consecutively,
+     *     then all children (including sub-children) of dirX are listed.
+     * - No other assumptions regarding file-order can be made on the output.
+     * 
+     * Note: ONLY use the THIRD function when you know what you are doing!
+     */
+    public static ArrayList<File[]> listFilesAndPathsFromRootDir(File rootDir)
+        throws IllegalArgumentException, IllegalStateException {
+        return listFilesAndPathsFromRootDir(rootDir, "", true);
+    }
+    
+    public static ArrayList<File[]> listFilesAndPathsFromRootDir(File rootDir, boolean listDirs)
+        throws IllegalArgumentException, IllegalStateException {
+        return listFilesAndPathsFromRootDir(rootDir, "", listDirs);
+    }
+    
+    public static ArrayList<File[]> listFilesAndPathsFromRootDir(File rootDir, String pathSoFar, boolean listDirs)
+        throws IllegalArgumentException, IllegalStateException {
+        
+        if (rootDir.isFile()) {
+            new IllegalArgumentException("The file \"" + rootDir.getPath() + "\" is no dir.");
+        }
+        
+        pathSoFar = (pathSoFar == null ? "" : pathSoFar);
+        
+        ArrayList<File[]> output = new ArrayList<File[]>();
+        String root = rootDir.getPath();
+        File[] listOfFiles = rootDir.listFiles();
+        
+        if (listDirs && !pathSoFar.equals("")) {
+            output.add(new File[] {rootDir, new File(pathSoFar)});
+        }
+        
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (!root.equals(listOfFiles[i].getPath().substring(0, root.length()))) {
+                throw new IllegalStateException("File \"" + listOfFiles[i] + "\" could not be found in dir \"" + root + "\"");
+            }
+            
+            if (listOfFiles[i].isFile()) {
+                output.add(new File[] {listOfFiles[i],
+                    new File(pathSoFar + listOfFiles[i].getParent().substring(root.length()))});
+                
+            } else {
+                output.addAll
+                    (listFilesAndPathsFromRootDir
+                         (listOfFiles[i], pathSoFar + listOfFiles[i].getPath().substring(root.length()), listDirs));
+            }
+        }
+        
+        return output;
+    }
+    
     
     /* 
      * Checks if a given number is in the array.
