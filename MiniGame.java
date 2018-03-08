@@ -141,6 +141,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             createGUI();
             addListeners();
             resized(getWidth(), getHeight());
+            startMiniGame();
             started = true;
         }
     }
@@ -225,9 +226,14 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * This method is called to create the GUI of the application.
+     * This method is invoked to create the GUI of the application.
      */
     abstract protected void createGUI();
+    
+    /* 
+     * This method is invoked when the minigame is started.
+     */
+    abstract protected void startMiniGame();
     
     /* 
      * The update method. Put all time based stuff in here.
@@ -264,7 +270,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     
     // tmp
     public static void main(String[] args) {
-        Log2.clear();
         LearningGame lg = new LearningGame();
     }
     
