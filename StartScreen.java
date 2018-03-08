@@ -52,7 +52,7 @@ public class StartScreen extends JPanel {
             this.add(startButton);
             startButton.setSize(200, 50);
             startButton.setLocation(250, 170);
-            startButton.setFont(FontLoader.Cousine);
+            startButton.setFont(FontLoader.getLocalFont("cousine\\Cousine-Regular.ttf"));
             startButton.setTextSize(30);
             startButton.addActionListener((e) -> {
                 if (r != null) r.run();
