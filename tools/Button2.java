@@ -65,6 +65,11 @@ public class Button2 extends AbstractButton {
     private JLabel label;
     private Image image;
     
+    // Variables for the image contents.
+    private int imageBarWidth;
+    private int imageBarHeight;
+    private boolean resizeImage;
+    
     // Font for the label
     private Font font = new Font(Font.DIALOG, Font.BOLD, 12);
     
@@ -78,6 +83,9 @@ public class Button2 extends AbstractButton {
      * Constructors
      * ---------------------------------------------------------------------------------
      */
+    public Button2(int barSize) throws IOException {
+        this(0, 0, barSize);
+    }
     public Button2(int sizeX, int sizeY, int barSize) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
@@ -300,9 +308,23 @@ public class Button2 extends AbstractButton {
      * Sets the given image as icon image
      * 
      * @param image the new image of the buttons.
+     * @param barWidth the width size of the bar of the button that is still visible.
+     * @param barHeight the height size of the bar of the button that is still visible.
+     * @param resize whether the image should be resized to have an equal border on all sides.
      */
-    public void setImage(Image image) {
+    public void setImage(Image image, boolean resize) {
+        setImage(image, barSize, barSize, resize);
+    }
+    
+    public void setImage(Image image, int imgBarSize, boolean resize) {
+        setImage(image, imgBarSize, imgBarSize, resize);
+    }
+    
+    public void setImage(Image image, int barWidth, int barHeight, boolean resize) {
         this.image = image;
+        imageBarWidth = barWidth;
+        imageBarHeight = barHeight;
+        resizeImage = resize;
     }
     
     /* 
@@ -500,97 +522,19 @@ public class Button2 extends AbstractButton {
         return enabled;
     }
     
+    /* 
+     * @return the size of the bar.
+     */
+    public int getBarSize() {
+        return barSize;
+    }
+    
+    
     /*
      * ---------------------------------------------------------------------------------
      * Action functions
      * ---------------------------------------------------------------------------------
      */
-    /* 
-     * Generates the background image for all four types, given the images in img.
-     * img must have the same constraints as the images described in the constructor.
-     * Is executed on another thread to improve speed. This thread is interrupted when
-     * it is still calculating and the a new image generation request is done.
-     * 
-     * @param img see constructor for detailed info.
-     *//*
-    private void generateNewImages(Image[][] imgs) {
-        if (getWidth() == 0 || getHeight() == 0) return;
-        
-        if (generateImagesThread != null) {
-            generateImagesThread.interrupt();
-        }
-        
-        generateImagesThread = new Thread() {
-            @Override
-            public void run() {
-                Image[][] scaledImages = new Image[4][5];
-                
-                // Scale each of the images to the right size
-                for (int i = 0; i < scaledImages.length; i++) {
-                    for (int j = 0; j < scaledImages[i].length; j++) {
-                        if (i == 0) { // Corner
-                            scaledImages[i][j] = imgs[i][j]
-                                .getScaledInstance(barSize, barSize, scaleType);
-                            
-                        } else if (i == 1) { // Horizontal bars
-                            if (getWidth() - 2*barSize > 0) {
-                                scaledImages[i][j] = imgs[i][j]
-                                    .getScaledInstance(getWidth() - 2*barSize, barSize, scaleType);
-                            }
-                            
-                        } else if (i == 2) { // Vertical bars
-                            if (getHeight() - 2*barSize > 0) {
-                                scaledImages[i][j] = imgs[i-1][j]
-                                    .getScaledInstance(getHeight() - 2*barSize, barSize, scaleType);
-                            }
-                            
-                        } else if (i == 3) { // Center
-                            if (getWidth() - 2*barSize > 0 && getHeight() - 2*barSize > 0) {
-                                scaledImages[i][j] = imgs[i-1][j]
-                                    .getScaledInstance(getWidth() - 2*barSize, getHeight() - 2*barSize, scaleType);
-                            }
-                        }
-                    }
-                }
-                
-                for (int i = 0; i < buttonImages.length; i++) {
-                    buttonImages[i] = new BufferedImage(getWidth(),
-                                                        getHeight(),
-                                                        BufferedImage.TYPE_4BYTE_ABGR);
-                    
-                    Graphics2D g2d = buttonImages[i].createGraphics();
-                    
-                    if (getWidth() - 2*barSize > 0 && getHeight() - 2*barSize > 0) {
-                        g2d.drawImage(scaledImages[3][i+1], barSize, barSize, null); // Draw center background
-                    }
-                    
-                    // Todo: add TYPE_MIRRORED
-                    for (int j = 0; j < 4; j++) { // Repeat all 4 times.
-                        g2d.drawImage(scaledImages[0][i+1], 0, 0, null); // Draw corner background
-                        g2d.drawImage(scaledImages[0][0], 0, 0, null); // Draw corner
-                        
-                        if ((i % 2 == 0 && getWidth() - 2*barSize > 0) ||
-                            (i % 2 == 1 && getHeight() - 2*barSize > 0))
-                        {
-                            g2d.drawImage(scaledImages[(j % 2 == 0 ? 1 : 2)][i+1], barSize, 0, null); // Draw edge background
-                            g2d.drawImage(scaledImages[(j % 2 == 0 ? 1 : 2)][0], barSize, 0, null); // Draw edge
-                        }
-                        
-                        
-                        g2d.rotate(0.5 * Math.PI);
-                        g2d.translate(0, (j % 2 == 0 ? -getWidth() : -getHeight()));
-                    }
-                    
-                    g2d.dispose();
-                }
-                
-                generateImagesThread = null;
-            }
-        };
-        
-        generateImagesThread.start();
-    }
-    
     /* 
      * Updates the size and location of the label.
      */
@@ -766,7 +710,9 @@ public class Button2 extends AbstractButton {
         }
     }*/
     
-    private void repeatPaint(Graphics2D g2d, Image img, double[] imgSize, double[] panelSize, double[] trans, int repeat) {
+    private void repeatPaint(Graphics2D g2d, Image img,
+                             double[] imgSize, double[] panelSize, double[] trans,
+                             int repeat) {
         double[] widthFactor = new double[] {
             imgSize[0] / img.getWidth(null),
                 imgSize[2] / img.getWidth(null)
@@ -812,7 +758,7 @@ public class Button2 extends AbstractButton {
         Image centerBackground = originalImages[2][type+1];
         
         // tmp
-        g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+        //g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
         
         double[] size = new double[] {getWidth(), getHeight()};
         
@@ -853,8 +799,23 @@ public class Button2 extends AbstractButton {
         repeatPaint(g2d, center,
                     new double[] {getWidth() - 2*barSize, getHeight() - 2*barSize, 0, 0}, // image size
                     size, // panel size
-                    new double[] {barSize, barSize} // location on panel
-                    , 1); // number of iterations
+                    new double[] {barSize, barSize}, // location on panel
+                    1); // number of iterations
+        
+        if (image != null) {
+            int x;
+            int y;
+            if (resizeImage) {
+                repeatPaint(g2d, image,
+                            new double[] {getWidth() - 2*imageBarWidth, getHeight() - 2*imageBarHeight, 0, 0}, // image size
+                            size, // panel size
+                            new double[] {barSize, barSize}, // location on panel
+                            1); // number of iterations
+                
+            } else {
+                g2d.drawImage(image, imageBarWidth, imageBarHeight, null);
+            }
+        }
     }
     
     /* 
