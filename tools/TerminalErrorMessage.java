@@ -1,21 +1,27 @@
 package learningGame.tools;
 
-// java packages
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
+// Java packages
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import learningGame.log.Log2;
 /* 
  * Creates a terminal error message.
  * Gives a message to the user about the error.
  * Kills the program after the user presses the ok button.
  */
 public class TerminalErrorMessage {
+    private volatile static boolean terminalMessageStarted = false;
+    
     public TerminalErrorMessage (String errorMessage) {
+        while (terminalMessageStarted) {
+            Thread.currentThread().interrupt();
+        }
+        
+        terminalMessageStarted = true;
+        
         JFrame errorFrame = new JFrame("Error");
         JPanel errorPanel = new JPanel();
         JLabel errorText_1 = new JLabel("A fatal error occured:");
@@ -46,13 +52,18 @@ public class TerminalErrorMessage {
         errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         errorFrame.setVisible(true);
+        ok.addActionListener((e) -> {
+            System.out.println("KILL ALL OF THEM!");
+            System.exit(0);
+        });
         
-        ok.addMouseListener(exitProgram);
+        try {
+            while(true) {
+                Thread.sleep(10);
+            }
+        } catch(InterruptedException e) {
+            
+        }
     }
     
-    MouseAdapter exitProgram = new MouseAdapter() {
-        public void mousePressed(MouseEvent e) {
-            System.exit(0);
-        }
-    };
 }
