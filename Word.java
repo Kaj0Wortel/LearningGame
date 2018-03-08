@@ -159,9 +159,9 @@ public class Word {
     public static ArrayList<Word> createWordList(String dataFileName, String miniGameDir, String imgDir) {
         Log2.write(new String[] {
             (" === Started creating word list === "),
-                ("Data file: \"" + dataFileName + "\""),
+                ("Data file:    \"" + dataFileName + "\""),
                 ("MiniGame dir: \"" + miniGameDir + "\""),
-                ("Image dir: \"" + imgDir + "\""),
+                ("Image dir:    \"" + imgDir + "\""),
                 ("")
         }, Log2.INFO);
         
