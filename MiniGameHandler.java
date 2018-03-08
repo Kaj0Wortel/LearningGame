@@ -5,6 +5,8 @@ package learningGame;
 // Owm packages
 import learningGame.log.Log2;
 
+import learningGame.tools.ModCursors;
+
 
 // Java packages
 
@@ -17,7 +19,8 @@ public class MiniGameHandler {
     STATE_NONE,
         STATE_SHOW_WORD_SCREEN, STATE_END_WORD_SCREEN,
         STATE_SHOW_MINI_GAME, STATE_END_MINI_GAME,
-        STATE_SHOW_SCORE_SCREEN, STATE_FINISHED;
+        STATE_SHOW_SCORE_SCREEN, STATE_END_SCORE_SCREEN,
+        STATE_FINISHED;
     }
     
     // The current state
@@ -54,14 +57,12 @@ public class MiniGameHandler {
      * Flow functions
      * ----------------------------------------------------------------------------------------------------------------
      */
+    /* 
+     * Method to handle the setup of the word screen.
+     */
     public void begin() {
-        if (state != State.STATE_NONE) {
-            Log2.write(new String[] {
-                "IllegalStateException in " + this.getClass() + "occured!",
-                    "Expected: STATE_NONE. Found: " + state.toString()
-            }, Log2.ERROR);
-            throw new IllegalStateException("Incorrect state: " + state.toString() + " (expected: STATE_NONE).");
-        }
+        // Check state
+        checkState(State.STATE_NONE);
         
         // Change state
         state = State.STATE_SHOW_WORD_SCREEN;
@@ -70,14 +71,12 @@ public class MiniGameHandler {
         // todo
     }
     
+    /* 
+     * Method to handle the ending of the word screen.
+     */
     public void endWordScreen() {
-        if (state != State.STATE_SHOW_WORD_SCREEN) {
-            Log2.write(new String[] {
-                "IllegalStateException in " + this.getClass() + "occured!",
-                    "Expected: STATE_SHOW_WORD_SCREEN. Found: " + state.toString()
-            }, Log2.ERROR);
-            throw new IllegalStateException("Incorrect state: " + state.toString() + " (expected: STATE_SHOW_WORD_SCREEN).");
-        }
+        // Check state
+        checkState(State.STATE_SHOW_WORD_SCREEN);
         
         // Change state
         state = State.STATE_END_WORD_SCREEN;
@@ -89,14 +88,12 @@ public class MiniGameHandler {
         startMiniGame();
     }
     
+    /* 
+     * Method to handle the setup of the miniGame.
+     */
     private void startMiniGame() {
-        if (state != State.STATE_END_WORD_SCREEN) {
-            Log2.write(new String[] {
-                "IllegalStateException in " + this.getClass() + "occured!",
-                    "Expected: STATE_END_WORD_SCREEN. Found: " + state.toString()
-            }, Log2.ERROR);
-            throw new IllegalStateException("Incorrect state: " + state.toString() + " (expected: STATE_END_WORD_SCREEN).");
-        }
+        // Check state
+        checkState(State.STATE_END_WORD_SCREEN);
         
         // Change state
         state = State.STATE_SHOW_MINI_GAME;
@@ -105,14 +102,12 @@ public class MiniGameHandler {
         // todo
     }
     
+    /* 
+     * Method to handle the ending of the miniGame.
+     */
     public void miniGameEnded() {
-        if (state != State.STATE_SHOW_MINI_GAME) {
-            Log2.write(new String[] {
-                "IllegalStateException in " + this.getClass() + "occured!",
-                    "Expected: STATE_SHOW_MINI_GAME. Found: " + state.toString()
-            }, Log2.ERROR);
-            throw new IllegalStateException("Incorrect state: " + state.toString() + " (expected: STATE_SHOW_MINI_GAME).");
-        }
+        // Check state
+        checkState(State.STATE_SHOW_MINI_GAME);
         
         // Change state
         state = State.STATE_END_MINI_GAME;
@@ -124,14 +119,12 @@ public class MiniGameHandler {
         startScoreScreen();
     }
     
+    /* 
+     * Method to handle the setup of the score screen.
+     */
     public void startScoreScreen() {
-        if (state != State.STATE_END_MINI_GAME) {
-            Log2.write(new String[] {
-                "IllegalStateException in " + this.getClass() + "occured!",
-                    "Expected: STATE_END_MINI_GAME. Found: " + state.toString()
-            }, Log2.ERROR);
-            throw new IllegalStateException("Incorrect state: " + state.toString() + " (expected: STATE_END_MINI_GAME).");
-        }
+        // Check state
+        checkState(State.STATE_END_MINI_GAME);
         
         // Change state
         state = State.STATE_SHOW_SCORE_SCREEN;
@@ -140,20 +133,28 @@ public class MiniGameHandler {
         // todo
     }
     
+    /* 
+     * Method to handle the ending of the score screen.
+     */
     private void endScoreScreen() {
-        if (state != State.STATE_SHOW_SCORE_SCREEN) {
-            Log2.write(new String[] {
-                "IllegalStateException in " + this.getClass() + "occured!",
-                    "Expected: STATE_SHOW_SCORE_SCREEN. Found: " + state.toString()
-            }, Log2.ERROR);
-            throw new IllegalStateException("Incorrect state: " + state.toString() + " (expected: STATE_SHOW_SCORE_SCREEN).");
-        }
+        // Check state
+        checkState(State.STATE_SHOW_SCORE_SCREEN);
         
         // Change state
-        state = State.STATE_FINISHED;
+        state = State.STATE_END_SCORE_SCREEN;
         
         
         //todo
+        
+        
+        cleanUp();
+    }
+    
+    /* 
+     * Final clean-up method
+     */
+    private void cleanUp() {
+        lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     
@@ -161,5 +162,16 @@ public class MiniGameHandler {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
+    private void checkState(State check) throws IllegalStateException {
+        if (state != check) {
+            Log2.write(new String[] {
+                "IllegalStateException in " + this.getClass() + "occured!",
+                    "Expected: " + check.toString() + ". Found: " + state.toString()
+            }, Log2.ERROR);
+            throw new IllegalStateException("Incorrect state: " + state.toString()
+                                                + " (expected: " + check.toString() + ").");
+        }
+    }
+    
 }
 
