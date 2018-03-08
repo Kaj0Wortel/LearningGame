@@ -92,6 +92,7 @@ public class Log2 {
      * written with date, and the other without date.
      * 
      * If objArr == null, then the text "null" is logged.
+     * If for some i, objArr[i] is an array, then all elements of objArr[i] are logged consecutively
      * 
      * See write(Object, boolean, boolean) for more detailed info.
      * 
@@ -117,10 +118,20 @@ public class Log2 {
         if (objArr != null) {
             if (objArr.length > 0) {
                 synchronized(writeTextLock) {
-                    write(objArr[0], showDate, type);
+                    if (objArr[0].getClass().isArray()) {
+                        write((Object[]) objArr[0], showDate, type);
+                        
+                    } else {
+                        write(objArr[0], showDate, type);
+                    }
                     
                     for (int i = 1; i < objArr.length; i++) {
-                        write(objArr[i], showDate, NONE);
+                        if (objArr[i].getClass().isArray()) {
+                            write((Object[]) objArr[i], showDate, NONE);
+                            
+                        } else {
+                            write(objArr[i], showDate, NONE);
+                        }
                     }
                 }
                 
