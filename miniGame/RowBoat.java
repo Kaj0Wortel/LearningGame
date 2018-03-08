@@ -13,6 +13,7 @@ import learningGame.music.PlayMusic;
 
 import learningGame.tools.Key;
 import learningGame.tools.LoadImages2;
+import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
@@ -44,10 +45,16 @@ public class RowBoat extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\bar.png")[0][0];
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
+                                                       workingDir + "img\\sprites\\Row.png_background",
+                                                       32, 0,  // startX, startY
+                                                       82, 50, // endX, endY
+                                                       50, 50)[0][0]; // sizeX, sizeY
             
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Background image of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
@@ -60,13 +67,17 @@ public class RowBoat extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                new BufferedImage[] {
-                    LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\whack_test.png", 20, 20)[0][4]
-                }
+                LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
+                                                    workingDir + "img\\sprites\\Row.png_obstacle",
+                                                    0, 0,       // startX, startY
+                                                    13, 19,     // endX, endY
+                                                    13, 57)[0]  // sizeX, sizeY
             };
             
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Obstacle image sheet of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
@@ -79,13 +90,17 @@ public class RowBoat extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                new BufferedImage[] {
-                    LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\whack_test.png", 20, 20)[0][2]
-                }
+                    LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\old\\whack_test.png",
+                                                        workingDir + "img\\sprites\\old\\whack_test.png_obstacle",
+                                                        0, 0,        // startX, startY
+                                                        20, 20,      // endX, endY
+                                                        20, 160)[0]  // sizeX, sizeY
             };
             
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Collectable image sheet of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
@@ -101,8 +116,10 @@ public class RowBoat extends BaseTopDownScroller {
                 LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\whack_test.png", 20, 20)[0][0]
             };
             
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
+            e.printStackTrace();
+            new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
         }
         
         return null;
