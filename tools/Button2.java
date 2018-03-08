@@ -104,6 +104,14 @@ public class Button2 extends AbstractButton {
              Button2.TYPE_TURNED, text);
     }
     
+    public Button2(int barSize, Image[][] img) {
+        this(0, 0, barSize, img);
+    }
+    
+    public Button2(int sizeX, int sizeY, int barSize, Image[][] img) {
+        this(sizeX, sizeY, barSize, img, Button2.TYPE_TURNED);
+    }
+    
     public Button2(int sizeX, int sizeY, int barSize, Image[][] img, int type,
                    char character) {
         this(sizeX, sizeY, barSize, img, type,
@@ -353,7 +361,6 @@ public class Button2 extends AbstractButton {
      * A press of the mouse button when the mouse is over the button notifies all ActionListeners.
      * Also the background is changed accordingly.
      * 
-     * 
      * When disabled:
      * The button ignores the mouse. The background is always "backgroundDisabled".
      * 
@@ -361,6 +368,9 @@ public class Button2 extends AbstractButton {
      * nothing happens.
      * 
      * @param enable whether the button should be enabled or disabled.
+     * 
+     * Note: super.setEnabled(enable) sometimes gives a random NullPointerException (mainly when
+     *     the button is not yet (fully) drawn. Not certain what to do with this.
      */
     @Override
     public void setEnabled(boolean enable) {
@@ -368,7 +378,7 @@ public class Button2 extends AbstractButton {
             enabled = enable;
         }
         
-        super.setEnabled(enable);
+        //super.setEnabled(enable);
     }
     
     /* 
