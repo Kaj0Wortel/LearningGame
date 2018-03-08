@@ -53,8 +53,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
     // A value lower then 0 will cause no collectables to be spawned.
     protected double collectableSpawnChance = 0.5;
     
-    
-    
     public BaseTopDownScroller(LearningGame lg, Runnable r) {
        super(lg, r);
     }
@@ -606,6 +604,12 @@ abstract public class BaseTopDownScroller extends MiniGame {
         return new Dimension((int) ((1.0/5.0) * newWidth),
                              (int) ((1.0/5.0) * newHeight));
     }
+    
+    /* 
+     * This method is invoked when the minigame is started.
+     */
+    @Override
+    protected void startMiniGame() { }
     
     /* 
      * This method draws a scrolling background.
