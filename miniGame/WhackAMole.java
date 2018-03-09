@@ -106,18 +106,11 @@ public class WhackAMole extends BaseWhack {
     @Override
     protected BufferedImage getWhackedImage() {
         try {
-            /*
             return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
                                                        workingDir + "img\\sprites\\Mole.png_whacked",
-                                                       26, 0,         // startX, startY
-                                                       57, 56,        // endX, endY
-                                                       31, 14)[0][0]; // sizeX, sizeY
-            */
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\old\\whack_test.png",
-                                                       workingDir + "img\\sprites\\Mole.png_whacked",
-                                                       0, 0,         // startX, startY
-                                                       20, 20,        // endX, endY
-                                                       20, 20)[0][0]; // sizeX, sizeY
+                                                       57, 0,         // startX, startY
+                                                       96, 13,        // endX, endY
+                                                       39, 13)[0][0]; // sizeX, sizeY
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();

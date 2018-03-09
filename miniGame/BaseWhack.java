@@ -461,8 +461,8 @@ abstract public class BaseWhack extends MiniGame {
                 if (whacks[i][j] != null) {
                     //System.out.println(spawnChance * LearningGame.FPS * whacks.length * whacks[i].length);
                     if (random.nextDouble() < 1.0 / (spawnChance * LearningGame.FPS * whacks.length * whacks[i].length)) {
-                        //whacks[i][j].showWhackable(500, 200, timeStamp);
-                        whacks[i][j].showWhackable(2000, 200, timeStamp);
+                        whacks[i][j].showWhackable(500, 200, timeStamp);
+                        //whacks[i][j].showWhackable(2000, 200, timeStamp);
                     }
                 }
             }

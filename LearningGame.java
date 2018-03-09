@@ -418,7 +418,6 @@ public class LearningGame extends JFrame {
     
     
     public static void main(String[] args) {
-        Log2.clear();
         LearningGame lg = new LearningGame();
     }
     

@@ -30,11 +30,6 @@ public class RowBoat extends BaseTopDownScroller {
     }
     
     @Override
-    public void cleanUp() {
-        
-    }
-    
-    @Override
     public Score getScore() {
         return null;
     }
@@ -47,8 +42,8 @@ public class RowBoat extends BaseTopDownScroller {
         try {
             return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
                                                        workingDir + "img\\sprites\\Row.png_background",
-                                                       32, 0,  // startX, startY
-                                                       82, 50, // endX, endY
+                                                       41, 0,         // startX, startY
+                                                       91, 50,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -69,9 +64,9 @@ public class RowBoat extends BaseTopDownScroller {
             return new BufferedImage[][] {
                 LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
                                                     workingDir + "img\\sprites\\Row.png_obstacle",
-                                                    0, 0,       // startX, startY
-                                                    13, 19,     // endX, endY
-                                                    13, 57)[0]  // sizeX, sizeY
+                                                    9, 0,       // startX, startY
+                                                    22, 57,     // endX, endY
+                                                    13, 19)[0]  // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -90,11 +85,11 @@ public class RowBoat extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\old\\whack_test.png",
-                                                        workingDir + "img\\sprites\\old\\whack_test.png_obstacle",
-                                                        0, 0,        // startX, startY
-                                                        20, 20,      // endX, endY
-                                                        20, 160)[0]  // sizeX, sizeY
+                    LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
+                                                        workingDir + "img\\sprites\\Row.png_collectable",
+                                                        0, 0,    // startX, startY
+                                                        9, 72,   // endX, endY
+                                                        9, 9)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -112,10 +107,12 @@ public class RowBoat extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return new BufferedImage[] {
-                LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\whack_test.png", 20, 20)[0][0]
-            };
-            
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
+                                                       workingDir + "img\\sprites\\Row.png_player",
+                                                       22, 0,      // startX, startY
+                                                       41, 26,     // endX, endY
+                                                       19, 13)[0]; // sizeX, sizeY
+                
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
@@ -143,29 +140,29 @@ public class RowBoat extends BaseTopDownScroller {
     
     /* 
      * @return the frame speed for the given obstacle type.
-     *     Speed is measured in frames per second.
+     *     Speed is measured in miliseconds per frame.
      */
     @Override
     protected int getObstacleFrameSpeed(int type) {
-        return 12;
+        return 1000 * 1/12;
     }
     
     /* 
      * @return the frame speed for the given collectable type.
-     *     Speed is measured in frames per second.
+     *     Speed is measured in miliseconds per frame.
      */
     @Override
     protected int getCollectableFrameSpeed(int type) {
-        return 12;
+        return 1000 * 1/24;
     }
     
     /* 
      * @return the frame speed for the player.
-     *     Speed is measured in frames per second.
+     *     Speed is measured in miliseconds per frame.
      */
     @Override
     protected int getPlayerFrameSpeed() {
-        return 12;
+        return 1000 * 1/4;
     }
     
     /* 

@@ -5,9 +5,12 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
+
 import learningGame.music.PlayMusic;
+
 import learningGame.tools.ImageTools;
 import learningGame.tools.Key;
+import learningGame.tools.ModCursors;
 import learningGame.tools.MultiTool;
 
 
@@ -39,7 +42,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     protected Player player;
     
     // Scroll speed of the background (1.0 = 1 full screen further in 1 sec).
-    protected double scrollSpeed = 0.67;
+    protected double scrollSpeed = 1.5;
     
     // The current position of the background.
     // It always holds that 0.0 <= curPos < 1.0.
@@ -127,6 +130,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
             
             // Update the animation image
             if (timeStamp > animTimeStamp + animSpeed) {
+                animTimeStamp = animTimeStamp + animSpeed;
                 animNum = (animNum + 1) % getAnimMax();
             }
             
@@ -320,6 +324,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
             
             // Update the animation image
             if (timeStamp > animTimeStamp + animSpeed) {
+                animTimeStamp = animTimeStamp + animSpeed;
                 BufferedImage[] playerSheet = getPlayerSheet();
                 
                 if (playerSheet != null) {
@@ -400,6 +405,23 @@ abstract public class BaseTopDownScroller extends MiniGame {
         
         Clip backgroundClip = getBackgroundClip();
         backgroundClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+    
+    /* 
+     * This method is invoked when the minigame is started.
+     */
+    @Override
+    protected void startMiniGame() {
+        // Set the empty cursor
+        lg.setCursor(ModCursors.EMPTY_CURSOR);
+    }
+    
+    /* 
+     * This method is always called when the MiniGame is about to shut down.
+     */
+    @Override
+    public void cleanUp() {
+        lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     /* 
@@ -604,12 +626,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
         return new Dimension((int) ((1.0/5.0) * newWidth),
                              (int) ((1.0/5.0) * newHeight));
     }
-    
-    /* 
-     * This method is invoked when the minigame is started.
-     */
-    @Override
-    protected void startMiniGame() { }
     
     /* 
      * This method draws a scrolling background.
