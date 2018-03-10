@@ -36,7 +36,9 @@ public class TimerTool {
     
     /* --------------------------------------------------------------------------------------------------------
      * Constructor
-     * 
+     * --------------------------------------------------------------------------------------------------------
+     */
+    /*
      * @param r the action that will be executed when the timer ends.
      * @param delay the time in ms before the first exectution of {@code r.run()}.
      * @param interval the time in ms which is between two executions of {@code r.run()}.
@@ -70,7 +72,7 @@ public class TimerTool {
      * Create a new timer task from the given runnable.
      * Also updates the start time and the pause time.
      * 
-     * @param rs the tasks to be executed. Is allowed to be 0, but this is not effective.
+     * @param rs the tasks to be executed. Is allowed to be null, but this is not effective.
      */
     private TimerTask createTimerTask(Runnable... rs) {
         return new TimerTask() {
