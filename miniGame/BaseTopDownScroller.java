@@ -56,8 +56,8 @@ abstract public class BaseTopDownScroller extends MiniGame {
     // A value lower then 0 will cause no collectables to be spawned.
     protected double collectableSpawnChance = 0.5;
     
-    public BaseTopDownScroller(LearningGame lg, Runnable r) {
-       super(lg, r);
+    public BaseTopDownScroller(LearningGame lg, Runnable r, long timeOut) {
+       super(lg, r, timeOut);
     }
     
     
@@ -366,9 +366,11 @@ abstract public class BaseTopDownScroller extends MiniGame {
                 double heightScaleFactor = (getHeight() / imgH) * (getHeight() / diagonalLength);
                 g2d.scale(widthScaleFactor, heightScaleFactor);
                 
+                double angle = getPlayerAngle();
+                
                 // Calculate translation and translage
-                double xTrans = (diagonalLength - getWidth() ) / 2 / (getWidth()  / imgW);
-                double yTrans = (diagonalLength - getHeight()) / 2 / (getHeight() / imgW);
+                double xTrans = Math.cos(angle) * (diagonalLength - getWidth() ) / (getWidth()  / imgW);
+                double yTrans = Math.sin(angle) * (diagonalLength - getHeight()) / (getHeight() / imgW);
                 g2d.translate(xTrans, yTrans);
                 
                 // Turn the image if nessecary
@@ -378,11 +380,12 @@ abstract public class BaseTopDownScroller extends MiniGame {
                 // transX: getWidth()  / (getWidth()  / imgW) / 2 = imgW / 2
                 // transY: getHeight() / (getHeight() / imgH) / 2 = imgH / 2
                 if (state == LEFT) {
-                    g2d.rotate(-Math.PI/4.0, imgW / 2, imgH / 2);
+                    g2d.rotate(Math.toRadians(-angle), imgW / 2, imgH / 2);
                     
                 } else if (state == RIGHT) {
-                    g2d.rotate(Math.PI/4.0, imgW / 2, imgH / 2);
+                    g2d.rotate(Math.toRadians(angle), imgW / 2, imgH / 2);
                 }
+                
                 // Draw the image
                 g2d.drawImage(playerSheet[animNum], 0, 0, null);
             }
@@ -712,6 +715,13 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * @return the music file for the background music.
      */
     abstract protected Clip getBackgroundClip();
+    
+    /* 
+     * @return the angle that the player is turned when the left/right buttons
+     * are pressed. A positive angle means that the player is turned clockwise
+     * when the right directional button is pressed.
+     */
+    abstract protected double getPlayerAngle();
 }
 
 
