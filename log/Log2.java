@@ -33,9 +33,20 @@ public class Log2 {
     final public static int ERROR = 2;
     final public static int DEBUG = 3;
     
-    private static File logFile = new File(LearningGame.workingDir + "log\\log.log");
+    // The file to log to.
+    private static File logFile = null;
+    
+    // Only false until the first log call.
+    // True afterwards.
+    private static boolean initiated = false;
+    
+    // Whether to use a timestamp as default or not.
     private static boolean useTimeStamp = true;
+    
+    // Whetehr to use the full exception notation as default or not.
     private static boolean useFull = true;
+    
+    // The lock of the current log class. Use {@code syhcnronized} to lock the object.
     private static volatile Object writeTextLock = new Object();
     
     /* 
@@ -199,8 +210,17 @@ public class Log2 {
         String dateLine;
         String infoLine;
         
-        // Create file writer (append to/create file)
+        // Check if the log file was initiated.
+        checkLogFileInit();
+        
+        if (logFile == null || !logFile.exists()) {
+            System.err.println("Invallid log file!");
+            return;
+        }
+        
+        // Create file writer
         try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
+            
             if (showDate) {
                 // Determine and print date
                 DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
@@ -241,6 +261,8 @@ public class Log2 {
      * If the file(-path) does not yet exist, create it.
      */
     public static void clear() {
+        checkLogFileInit();
+        
         // Create file writer (overwrite/create file)
         try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, false)))) {
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy - HH:mm:ss:SSS");
@@ -263,9 +285,9 @@ public class Log2 {
      * @param file denotes the file that is used as logfile.
      */
     public static boolean setLogFile(File file) {
+        initiated = true;
         logFile = file;
         logFile.getParentFile().mkdirs();
-        Log2.clear();
         
         return true;
     }
@@ -293,8 +315,18 @@ public class Log2 {
      * 
      * NOTE: Use with care! Uncarefull use of this can result in blocking threads!
      */
-    @Deprecated
     public static Object getWriteLock() {
         return writeTextLock;
     }
+    
+    private static void checkLogFileInit() {
+        // If no logFile was initiated, use the default log file.
+        // NOTE: do NOT use a static constant for this.
+        // There will be problems when the class is loaded.
+        if (!initiated) {
+            if (logFile == null) logFile = new File(LearningGame.workingDir + "log\\log.log");
+            initiated = true;
+        }
+    }
+    
 }
