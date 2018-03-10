@@ -70,7 +70,8 @@ public class FontLoader {
         Font font = null;
         
         try (FileInputStream fis = new FileInputStream(path)) {
-            font = Font.createFont(type, fis).deriveFont(style, 12F);
+            //font = Font.createFont(type, fis).deriveFont(style, 12F);
+            font = Font.createFont(type, fis).deriveFont(12F);
             fonts.put(path, font);
             
         } catch (FontFormatException | IOException e) {
@@ -112,6 +113,8 @@ public class FontLoader {
      * See registerFont(Font) for more info about registering a font.
      */
     static {
+        Font[] allFonts = null;
+        
         Log2.write(" === Start loading fonts === ", Log2.INFO);
         ArrayList<File[]> files = MultiTool.listFilesAndPathsFromRootDir(new File(staticPath), false);
         
@@ -119,10 +122,17 @@ public class FontLoader {
             String fontLoc = file[0].toString();
             
             if (fontLoc.endsWith(".ttf")) {
-                int style = 
-                    (fontLoc.toLowerCase().contains("bold") ? Font.BOLD : 0) |
-                    (fontLoc.toLowerCase().contains("italic") ||
-                     fontLoc.contains("It") ? Font.ITALIC : 0);
+                String fontString = fontLoc.toLowerCase();
+                
+                int style = (fontString.contains("bold") ||
+                             fontString.endsWith("b.ttf") ||
+                             fontString.endsWith("bi.ttf") ||
+                             fontString.endsWith("ib.ttf") ? Font.BOLD : 0) |
+                    (fontString.contains("italic") ||
+                     fontString.contains("it") ||
+                     fontString.endsWith("i.ttf") ||
+                     fontString.endsWith("bi.ttf") ||
+                     fontString.endsWith("ib.ttf") ? Font.ITALIC : 0);
                 if (style == 0) style = Font.PLAIN;
                 /*
                 System.out.println(style == Font.PLAIN ? "PLAIN"
@@ -137,7 +147,24 @@ public class FontLoader {
                     Log2.write("A null font has been created: " + file[0].toString(), Log2.ERROR);
                     
                 } else if (!registerFont(font)) {
-                    Log2.write("Could not register font: " + file[0].toString(), Log2.ERROR);
+                    if (allFonts == null) {
+                        allFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+                    }
+                    
+                    boolean isRegistered = false;
+                    for (Font checkFont : allFonts) {
+                        if (checkFont.getName().equals(font.getName())) {
+                            isRegistered = true;
+                            break;
+                        }
+                    }
+                    
+                    if (isRegistered) {
+                        Log2.write("Font was already registered: " + file[0].toString(), Log2.WARNING);
+                        
+                    } else {
+                        Log2.write("Could not register font: " + file[0].toString(), Log2.ERROR);
+                    }
                     
                 } else {
                     Log2.write("Successfully loaded font: " + file[0].toString(), Log2.INFO);
