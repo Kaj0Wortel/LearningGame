@@ -25,8 +25,8 @@ import javax.sound.sampled.Clip;
 
 
 public class RowBoat extends BaseTopDownScroller {
-    public RowBoat(LearningGame lg, Runnable r) {
-        super(lg, r);
+    public RowBoat(LearningGame lg, Runnable r, long timeOut) {
+       super(lg, r, timeOut);
     }
     
     @Override
@@ -49,10 +49,8 @@ public class RowBoat extends BaseTopDownScroller {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            new TerminalErrorMessage("Background image of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Background image of class" + this.getClass() + " could not be loaded.");
         }
-        
-        return null;
     }
     
     /* 
@@ -72,10 +70,8 @@ public class RowBoat extends BaseTopDownScroller {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            new TerminalErrorMessage("Obstacle image sheet of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Obstacle image sheet of class" + this.getClass() + " could not be loaded.");
         }
-        
-        return null;
     }
     
     /* 
@@ -95,10 +91,8 @@ public class RowBoat extends BaseTopDownScroller {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            new TerminalErrorMessage("Collectable image sheet of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Collectable image sheet of class" + this.getClass() + " could not be loaded.");
         }
-        
-        return null;
     }
     
     /* 
@@ -116,10 +110,8 @@ public class RowBoat extends BaseTopDownScroller {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
         }
-        
-        return null;
     }
     
     /* 
@@ -189,6 +181,11 @@ public class RowBoat extends BaseTopDownScroller {
         Clip clip = PlayMusic.createClip(workingDir + "music\\background\\water_background.wav");
         PlayMusic.setVolume(clip, 0.5F);
         return clip;
+    }
+    
+    @Override
+    protected double getPlayerAngle() {
+        return 20;
     }
     
 }

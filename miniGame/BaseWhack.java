@@ -63,8 +63,8 @@ abstract public class BaseWhack extends MiniGame {
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public BaseWhack(LearningGame lg, Runnable r) {
-        super(lg, r);
+    public BaseWhack(LearningGame lg, Runnable r, long timeOut) {
+       super(lg, r, timeOut);
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ abstract public class BaseWhack extends MiniGame {
         /* 
          * This method swings the hammer.
          */
-        public boolean whack(int moveTime, int waitTime, long timeStamp) {
+        public boolean whack(int moveTime, int waitTime, Long timeStamp) {
             if (state == NOTHING) {
                 swingStartedTime = timeStamp;
                 this.moveTime = moveTime;
@@ -138,7 +138,7 @@ abstract public class BaseWhack extends MiniGame {
                             state = WAITING;
                         }
                         
-                        BaseWhack.this.repaint();
+                        //BaseWhack.this.repaint();
                     }
                 }
                 
