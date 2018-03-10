@@ -610,4 +610,49 @@ public class MultiTool {
         return (V[]) arr;
     }
     
+    /* 
+     * Calculates a hashValue for an object with the given dependant objects.
+     */
+    public static int calcHashCode(Object[] objArr) {
+        int result = 41;
+        
+        for (Object obj : objArr) {
+            int c;
+            
+            if (obj == null) {
+                c = 0;
+                
+            } else if (obj instanceof Boolean) {
+                c = ((Boolean) obj ? 1 : 0);
+                
+            } else if (obj instanceof Byte ||
+                       obj instanceof Character ||
+                       obj instanceof Short ||
+                       obj instanceof Integer) {
+                c = (int) obj;
+                
+            } else if (obj instanceof Long) {
+                c = (int) Math.pow((Long) obj, (Long) obj >>> 32);
+                
+            } else if (obj instanceof Float) {
+                c = Float.floatToIntBits((Float) obj);
+                
+            } else if (obj instanceof Double) {
+                Long value = Double.doubleToLongBits((Double) obj);
+                c = (int) Math.pow(value, value >>> 32);
+                
+            } else if (isArray(obj)) {
+                c = calcHashCode((Object[]) obj);
+                
+            } else {
+                c = obj.hashCode();
+            }
+            
+            result = 37 * result + c;
+        }
+        
+        return result;
+    }
+    
+    
 }
