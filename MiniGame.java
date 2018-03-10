@@ -5,13 +5,18 @@ package learningGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.Score;
+
+import learningGame.font.FontLoader;
+
 import learningGame.log.Log2;
+
 import learningGame.tools.ImageTools;
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
 
 
 // Java packages
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -25,6 +30,9 @@ import javax.swing.JLayeredPane;
 
 
 abstract public class MiniGame extends JLayeredPane implements MouseMotionListener, MouseListener {
+    // The working directory
+    final protected String workingDir = LearningGame.workingDir;
+    
     // The action that is executed after the minigame has ended.
     final private Runnable r;
     
@@ -34,50 +42,37 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     // Instance of the parent.
     final protected LearningGame lg;
     
-    // The working directory
-    final protected String workingDir = LearningGame.workingDir;
+    // The time stamp from when the start() method was invoked.
+    protected long startTimeStamp;
+    
+    // The time to complete the miniGame
+    final protected long timeOut;
+    
+    // The total time left to complete the MiniGame.
+    protected Long timeLeft;
     
     // Denotes whether the application has started.
     private boolean started = false;
     // Deonotes whether the application has ended.
     private boolean stopped = false;
     
+    // The font used to display the text.
+    final private static Font textFont = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public MiniGame(LearningGame lg, Runnable r) {
+    public MiniGame(LearningGame lg, Runnable r, long timeOut) {
         super();
         this.setLayout(null);
         this.lg = lg;
         this.r = r;
+        this.timeOut = timeOut;
     }
     
-    /* 
-     * Adds all nessesary listeners.
-     */
-    final private void addListeners() {
-        this.addMouseMotionListener(this);
-        this.addMouseListener(this);
-    }
-    
-    /* 
-     * Updates the frame for the minigame.
-     */
-    final public void update() {
-        if (started) {
-            if (kd != null) {
-                kd.update();
-                update(kd.getKeysPressed(), System.currentTimeMillis());
-                
-            } else {
-                update(new Key[0], System.currentTimeMillis());
-            }
-        }
-    }
-    
-    /* 
+    /* ----------------------------------------------------------------------------------------------------------------
      * MouseMotionListener overrides.
      * These are supposed to be overridden by the child child class.
      * They are here for easy access.
@@ -107,7 +102,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * Get functions
      * ----------------------------------------------------------------------------------------------------------------
      */
-    
     /* 
      * @return whether the current MiniGame was started.
      */
@@ -134,6 +128,14 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
+     * Adds all nessesary listeners.
+     */
+    final private void addListeners() {
+        this.addMouseMotionListener(this);
+        this.addMouseListener(this);
+    }
+    
+    /* 
      * Starts the current minigame.
      */
     final public void start() {
@@ -142,8 +144,30 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             addListeners();
             resized(getWidth(), getHeight());
             startMiniGame();
+            timeLeft = timeOut;
+            startTimeStamp = System.currentTimeMillis();
             started = true;
         }
+    }
+    
+    /* 
+     * Updates the frame for the minigame.
+     */
+    final public void update() {
+        if (started) {
+            long time = System.currentTimeMillis();
+            timeLeft = timeOut - (time - startTimeStamp);
+            
+            if (kd != null) {
+                kd.update();
+                update(kd.getKeysPressed(), time);
+                
+            } else {
+                update(new Key[0], System.currentTimeMillis());
+            }
+        }
+        
+        repaint();
     }
     
     /* 
@@ -184,6 +208,9 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         }
     }
     
+    /* 
+     * Uses the given KeyDetector as key input.
+     */
     final public void useKeyDetector(KeyDetector kd) {
         this.kd = kd;
     }
@@ -192,7 +219,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * This method is called when the panel is repainted.
      */
     @Override
-    protected void paintComponent(Graphics g) {
+    final protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         
         // Convert graphics object
@@ -206,6 +233,21 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         
         // Restore the g2d transformation.
         g2d.setTransform(g2dTrans);
+        
+        if (timeLeft != null) {
+            String text;
+            if (timeLeft > 0) {
+                text = timeLeft.toString();
+                
+            } else {
+                text = "Time's Up !";
+            }
+            // todo: center text
+            // todo: add bar for text
+            // todo: change size of the font
+            g2d.setFont(textFont.deriveFont(50F));
+            g2d.drawString(text, 300, 50);
+        }
     }
     
     /* 
