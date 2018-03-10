@@ -12,31 +12,21 @@ import learningGame.log.Log2;
  * Gives a message to the user about the error.
  * Kills the program after the user presses the ok button.
  */
-public class TerminalErrorMessage {
+public class TerminalErrorMessage extends Error {
     private static Boolean terminalMessageStarted = false;
     
-    public TerminalErrorMessage (String errorMessage, String... data) {
+    public TerminalErrorMessage (String errorMessage, Object... data) throws TerminalError {
+        super();
+        
         // Checks if another thread is has already invoked this method.
         synchronized(terminalMessageStarted) {
             if (terminalMessageStarted) {
-                while (true) {
-                    Thread.currentThread().interrupt();
-                }
+                return;
                 
             } else {
                 terminalMessageStarted = true;
             }
         }
-        
-        Log2.write(new Object[] {
-            "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
-                "Word list is empty or consists of one element.",
-                data,
-                " === STACK === ",
-                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
-                " === END TERMINAL ERROR MESSAGE === ",
-                ""
-        }, Log2.ERROR);
         
         JFrame errorFrame = new JFrame("Error");
         JPanel errorPanel = new JPanel();
@@ -68,18 +58,24 @@ public class TerminalErrorMessage {
         errorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         errorFrame.setVisible(true);
+        
         ok.addActionListener((e) -> {
-            System.out.println("KILL ALL OF THEM!");
             System.exit(0);
         });
         
-        try {
-            while(true) {
-                Thread.sleep(10);
-            }
-        } catch(InterruptedException e) {
-            
-        }
+        Log2.write(new Object[] {
+            "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
+                "Word list is empty or consists of one element.",
+                data,
+                " === STACK === ",
+                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
+                " === END TERMINAL ERROR MESSAGE === ",
+                ""
+        }, Log2.ERROR);
+    }
+    
+    public static void main(String[] args) {
+        throw new TerminalErrorMessage("test", "line 1", "line 2");
     }
     
 }
