@@ -252,7 +252,7 @@ public class Log2 {
             
         } catch (IOException e) {
             e.printStackTrace();
-            new TerminalErrorMessage("Could not create/append the log file: access denied.");
+            throw new TerminalErrorMessage("Could not create/append the log file: access denied.");
         }
     }
     
@@ -273,7 +273,7 @@ public class Log2 {
             
         } catch (IOException e) {
             e.printStackTrace();
-            new TerminalErrorMessage("Could not clear the log file: access denied.");
+            throw new TerminalErrorMessage("Could not clear the log file: access denied.");
         }
     }
     
