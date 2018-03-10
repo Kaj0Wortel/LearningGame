@@ -13,14 +13,30 @@ import learningGame.log.Log2;
  * Kills the program after the user presses the ok button.
  */
 public class TerminalErrorMessage {
-    private volatile static boolean terminalMessageStarted = false;
+    private static Boolean terminalMessageStarted = false;
     
-    public TerminalErrorMessage (String errorMessage) {
-        while (terminalMessageStarted) {
-            Thread.currentThread().interrupt();
+    public TerminalErrorMessage (String errorMessage, String... data) {
+        // Checks if another thread is has already invoked this method.
+        synchronized(terminalMessageStarted) {
+            if (terminalMessageStarted) {
+                while (true) {
+                    Thread.currentThread().interrupt();
+                }
+                
+            } else {
+                terminalMessageStarted = true;
+            }
         }
         
-        terminalMessageStarted = true;
+        Log2.write(new Object[] {
+            "= = = = = = = = = = = = = = = =   TERMINAL ERROR!   = = = = = = = = = = = = = = = =",
+                "Word list is empty or consists of one element.",
+                data,
+                " === STACK === ",
+                (new Throwable()).getStackTrace(), // This is 10x faster then Thread.currentThread.getStackTrace()
+                " === END TERMINAL ERROR MESSAGE === ",
+                ""
+        }, Log2.ERROR);
         
         JFrame errorFrame = new JFrame("Error");
         JPanel errorPanel = new JPanel();
