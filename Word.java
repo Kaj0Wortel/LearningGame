@@ -5,10 +5,13 @@ package learningGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
+
 import learningGame.log.Log2;
+
 import learningGame.tools.BufferedReaderPlus;
 import learningGame.tools.LoadImages2;
 import learningGame.tools.MultiTool;
+import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
@@ -26,18 +29,32 @@ public class Word {
     // All definitions of the word are stored in here.
     final private Hashtable<String, String> wordTable = new Hashtable<String, String>();
     
-    // The MiniGame that is attatched to this word.
+    // The MiniGame that is associated to this word.
     final private Class<MiniGame> miniGameClass;
     
-    final private String wordImgLoc;
+    // The location of the image file associated with this word.
+    final private String wordImageLoc;
     
-    /* 
+    // The random object of this word.
+    final private Random rand = new Random();
+    
+    // The hash value of this object;
+    final private int hashCode;
+    
+    /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
+     * ----------------------------------------------------------------------------------------------------------------
      */
-    public Word(String[] words, String[] langs, Class<MiniGame> miniGameClass, String wordImgLoc)
+    /* 
+     * @param words the words in the language defined in {@code langs}.
+     * @param langs the languages in which each element in {@code words} is defined.
+     * @param miniGameClass the MiniGame class associated with this word.
+     * @param wordImgLoc he location of the image file associated with this word.
+     */
+    public Word(String[] words, String[] langs, Class<MiniGame> miniGameClass, String wordImageLoc)
         throws IllegalArgumentException
     {
-        if (wordImgLoc == null) 
+        if (wordImageLoc == null) 
             throw new NullPointerException("The given image word location was null.");
         if (words == null) 
             throw new NullPointerException("The given word list is null.");
@@ -45,108 +62,26 @@ public class Word {
             throw new NullPointerException("The given language list is null.");
         if (words.length != langs.length)
             throw new IllegalArgumentException("The length of the words and language lists are unequal: "
-                                         + "words.length() = " + words.length + ", "
-                                         + "language.length() = " + langs.length + ".");
+                                                   + "words.length() = " + words.length + ", "
+                                                   + "language.length() = " + langs.length + ".");
         this.miniGameClass = miniGameClass;
-        this.wordImgLoc = wordImgLoc;
+        this.wordImageLoc = wordImageLoc;
         
         // Put all words with their language in the hashtable.
         for (int i = 0; i < words.length; i++) {
-            wordTable.put(langs[i], words[i]);
-        }
-    }
-    
-    /* 
-     * @param lang the language
-     * @return the word in the given language
-     */
-    public String getWord(String lang) {
-        return wordTable.get(lang);
-    }
-    
-    /* 
-     * @return the MiniGame associated with this word.
-     */
-    public Class<MiniGame> getMiniGameClass() {
-        return miniGameClass;
-    }
-    
-    private Random rand = new Random();
-    /* 
-     * @return a random image that is associated with this word.
-     */
-    public BufferedImage getRandomImage() {
-        if (wordImgLoc == null || wordImgLoc.equals("")) return null;
-        
-        try {
-            BufferedImage[][] imgs = LoadImages2.ensureLoadedAndGetImage(wordImgLoc);
-            int x = rand.nextInt(imgs.length);
-            int y = rand.nextInt(imgs[x].length);
-            return imgs[x][y];
-            
-        } catch (IOException e) {
-            Log2.write(new Object[] {
-                ("Failed to load images of word: " + this.toString() + ". Error: "), e
-            }, Log2.ERROR);
+            wordTable.put(langs[i].toUpperCase(), words[i]);
         }
         
-        return null;
+        hashCode = MultiTool.calcHashCode(new Object[] {
+            wordTable, miniGameClass, wordImageLoc
+        });
     }
     
-    /* 
-     * @return the word table of this word.
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Create functions
+     * ----------------------------------------------------------------------------------------------------------------
      */
-    protected Hashtable getWordTable() {
-        return wordTable;
-    }
-    
-    /* 
-     * @return The String representation of the Word object.
-     */
-    @Override
-    public String toString() {
-        return "[" + this.getClass().getName() + "  " + wordTable.toString() + "]";
-    }
-    
-    /* 
-     * Determines whether the two objects are equal or not.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Word)) return false;
-        return this.getWordTable().equals(((Word) obj).getWordTable());
-    }
-    
-    /* 
-     * Creates a MiniGame of a certain class, with a certain terminate action.
-     * 
-     * @param miniGame the class of the object that will be created.
-     * @param r the action that will run when the MiniGame is finished.
-     * @return a new instance of the given MiniGame class.
-     */
-    public MiniGame createMiniGame(LearningGame lg, Runnable r) {
-        if (miniGameClass == null) {
-            Log2.write(new String[] {
-                ("Class: " + this.getClass().getName()),
-                    ("Function: MiniGame createMiniGame(LearningGame, Runnable)"),
-                    ("Error: Cannot create a MiniGame from a null class.")
-            }, Log2.ERROR);
-            return null;
-        }
-        
-        try {
-            return miniGameClass.getConstructor(new Class<?>[] {LearningGame.class, Runnable.class}).newInstance(lg, r);
-            
-        } catch (Exception e) {
-            Log2.write(new Object[] {
-                ("Failed to create an instance of the class \"" + miniGameClass.getName() + "\". Error: "), e
-            }, Log2.ERROR);
-        }
-        
-        return null;
-    }
-    
     /* 
      * Creates a list of words from a given input file.
      * 
@@ -223,6 +158,131 @@ public class Word {
         Log2.write(new String[] {" === Finished creating word list === ", ""}, Log2.INFO);
         
         return words;
+    }
+    
+    /* 
+     * Creates a MiniGame of a certain class, with a certain terminate action.
+     * 
+     * @param miniGame the class of the object that will be created.
+     * @param r the action that will run when the MiniGame is finished.
+     * @return a new instance of the given MiniGame class.
+     */
+    public MiniGame createMiniGame(LearningGame lg, Runnable r, long timeOut) {
+        if (miniGameClass == null) {
+            throw new TerminalErrorMessage
+                ("Tried to create MiniGame from null.",
+                 "Class: " + this.getClass().getName(),
+                 "Function: MiniGame createMiniGame(LearningGame, Runnable)",
+                 "Error: Attempted to create a MiniGame from a null Class object.");
+        }
+        
+        try {
+            return miniGameClass
+                .getConstructor(new Class<?>[] {LearningGame.class, Runnable.class, long.class})
+                .newInstance(lg, r, timeOut);
+            
+        } catch (Exception e) {
+            throw new TerminalErrorMessage
+                ("Could not create MiniGame class",
+                 "Failed to create an instance of the class \"" + miniGameClass.getName() + "\". Error: ", e);
+        }
+    }
+    
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
+    /* 
+     * Determines whether the two objects are equal or not.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Word)) return false;
+        
+        Word word = (Word) obj;
+        if (wordTable.equals(word.wordTable) &&
+            miniGameClass.equals(word.miniGameClass) &&
+            wordImageLoc.equals(word.wordImageLoc)) return true;
+        
+        return false;
+    }
+    
+    /* 
+     * Calculates the hash code of a word depending on it's distinguishable 
+     */
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+    
+    /* 
+     * @return The String representation of the Word object.
+     */
+    @Override
+    public String toString() {
+        return "["
+            + this.getClass().getName()
+            + "  wordTable: " + (wordTable == null ? "null" : wordTable.toString())
+            + ", " + (miniGameClass == null ? "null" : miniGameClass.getName())
+            + ", wordImageLoc: " + wordImageLoc
+            + "]";
+    }
+    
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Get functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
+    /* 
+     * @param lang the language of the word
+     * @return the word in the given language
+     */
+    public String getWord(String lang) {
+        return wordTable.get(lang.toUpperCase());
+    }
+    
+    /* 
+     * @return the MiniGame associated with this word.
+     */
+    public Class<MiniGame> getMiniGameClass() {
+        return miniGameClass;
+    }
+    
+    /* 
+     * @return whether this words has a miniGame associated with it.
+     */
+    public boolean hasMiniGame() {
+        return miniGameClass != null;
+    }
+    
+    /* 
+     * @return the word table of this word.
+     */
+    protected Hashtable getWordTable() {
+        return wordTable;
+    }
+    
+    /* 
+     * @return a random image that is associated with this word.
+     */
+    public BufferedImage getRandomImage() {
+        if (wordImageLoc == null || wordImageLoc.equals("")) return null;
+        
+        try {
+            BufferedImage[][] imgs = LoadImages2.ensureLoadedAndGetImage(wordImageLoc);
+            int x = rand.nextInt(imgs.length);
+            int y = rand.nextInt(imgs[x].length);
+            return imgs[x][y];
+            
+        } catch (IOException e) {
+            Log2.write(new Object[] {
+                ("Failed to load images of word: " + this.toString() + ". Error: "), e
+            }, Log2.ERROR);
+        }
+        
+        return null;
     }
     
 }
