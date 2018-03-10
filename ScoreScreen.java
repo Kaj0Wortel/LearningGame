@@ -21,4 +21,8 @@ public class ScoreScreen extends JPanel {
     public void createGUI() {
         // todo
     }
+    
+    public void begin() {
+        // todo
+    }
 }
