@@ -1,3 +1,4 @@
+
 package learningGame;
 
 
@@ -46,13 +47,22 @@ import javax.swing.SwingUtilities;
 
 
 public class LearningGame extends JFrame {
+    /* 
+     * 
+     * TMP
+     * 
+     */
+    String langQ = "Italian";
+    String langA = "English";
+    
+    
     // The root of where the files are located.
     final public static String workingDir = System.getProperty("user.dir") + "\\learningGame\\";
     final public static String wordFile = workingDir + "data\\words.csv";
     final public static String miniGameDir = workingDir + "miniGame\\";
     final public static String imgSpriteDir = workingDir + "img\\sprites\\";
     final public static String imgWordDir = workingDir + "img\\word_images\\";
-    
+    final public static long TIME_OUT = 5000;
     static {
         Log2.clear();
     }
@@ -99,7 +109,11 @@ public class LearningGame extends JFrame {
     
     // The Word an MiniGame that are currently active.
     Word curWord;
-    MiniGame curMiniGame;
+    MiniGameHandler curMiniGameHandler;
+    
+    // The score of the current session.
+    private Score totalScore = new Score();
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -176,17 +190,16 @@ public class LearningGame extends JFrame {
      * Should be only called by the timer.
      */
     private void update() {
-        MiniGame mg = getMiniGame();
-        if (mg != null) {
-            mg.update();
+        if (curMiniGameHandler != null) {
+            curMiniGameHandler.update();
         }
     }
     
     /* 
-     * @return the minigame that is currently active.
+     * @return the miniGameHandler that is currently active.
      */
-    protected MiniGame getMiniGame() {
-        return curMiniGame;
+    protected MiniGameHandler getMiniGameHandler() {
+        return curMiniGameHandler;
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -224,7 +237,7 @@ public class LearningGame extends JFrame {
     protected void createGUI() {
         this.setLayout(null);
         this.setLocation(500, 100);
-        this.setSize(500, 500);
+        this.setSize(800, 800);
         
         // Set default close operation and make the frame visible
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -341,9 +354,9 @@ public class LearningGame extends JFrame {
     public void updateSizeChildren() {
         Insets in = this.getInsets();
         
-        if (curMiniGame != null) {
-            curMiniGame.setSize(getWidth() - in.left - in.right,
-                                getHeight() - in.top - in.bottom);
+        if (curMiniGameHandler != null) {
+            curMiniGameHandler.setSize(getWidth() - in.left - in.right,
+                                       getHeight() - in.top - in.bottom);
         }
         
         if (startScreen != null) {
@@ -375,42 +388,44 @@ public class LearningGame extends JFrame {
         }
     };
     
-    
     /* 
      * This method is called at the and of a MiniGame.
      */
     private void endMiniGame() {
-        if (curMiniGame != null) {
-            Score score = curMiniGame.getScore();
-            // Todo: do something with the score.
+        if (curMiniGameHandler != null) {
+            totalScore.add(curMiniGameHandler.getScore());
+            curMiniGameHandler = null;
         }
         
-        // Remove old MiniGame from frame
-        if (curMiniGame != null) remove(curMiniGame);
-        
-        do {
-            // Check if the list is finished
-            if (++curWordNum >= wordOrder.length) break;
+        // Select a new word from the list.
+        Word word = null;
+        while (word == null && ++curWordNum < wordOrder.length) {
+            word = wordOrder[curWordNum];
             
-            // Create new MiniGame
-            curMiniGame = wordOrder[curWordNum].createMiniGame(this, () -> endMiniGame());
-            
-        } while (curMiniGame == null);
+            if (!word.hasMiniGame()) {
+                Log2.write("The defined word \"" + word.toString() + " has no MiniGame!", Log2.WARNING);
+                word = null;
+            }
+        }
         
-        if (curMiniGame != null) {
-            // Add new MiniGame to frame
-            add(curMiniGame);
+        if (word != null) {
+            // Create a new MiniGameHandler
+            curMiniGameHandler = new MiniGameHandler(this, word, langQ, langA, () -> endMiniGame(), TIME_OUT);
+            
+            // Add keydetector
+            curMiniGameHandler.useKeyDetector(kd);
+            
             // Update the size of the MiniGame.
             updateSizeChildren();
-            // Add keydetector
-            curMiniGame.useKeyDetector(kd);
             
-            // Start the MiniGame
-            curMiniGame.start();
-            System.out.println("started!");
+            // Start
+            Log2.write("Started MiniGameHandler of word: " + word.toString(), Log2.INFO);
+            curMiniGameHandler.begin();
             
         } else {
-            System.out.println("DONE");
+            Log2.write("Finished word list!");
+            System.out.println("Finished word list!");
+            ScoreScreen ss = new ScoreScreen(totalScore);
             // Todo: show final result screen
         }
         
