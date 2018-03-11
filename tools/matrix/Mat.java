@@ -146,14 +146,17 @@ public class Mat implements Cloneable {
     
     public static Mat multiply(double value, Mat mat, Mat outMat) {
         double[][] values = mat.getValues();
+        double[][] newValues = new double[values.length][];
         
         for (int i = 0; i < values.length; i++) {
+            newValues[i] = new double[values[i].length];
+            
             for (int j = 0; j < values[0].length; j++) {
-                values[i][j] *= value;
+                newValues[i][j] = values[i][j] * value;
             }
         }
         
-        return outMat.setMatrix(values);
+        return outMat.setMatrix(newValues);
     }
     
     /* 
@@ -201,7 +204,7 @@ public class Mat implements Cloneable {
         }
     }
     
-    public static Mat multiplyConstAddMat(double val_1, Mat mat_1, double val_2, Mat mat_2) {
+    public static Mat multiplyConstAddMat(double val_1, Mat mat_1, double val_2, Mat mat_2, Mat outMat) {
         if (mat_1.getNumRows() != mat_2.getNumRows())
             throw new MatrixDimensionException("The number rows of the matrices are not equal.");
         if (mat_1.getNumCols() != mat_2.getNumCols())
@@ -217,7 +220,7 @@ public class Mat implements Cloneable {
             }
         }
         
-        return new Mat(newValues);
+        return outMat.setMatrix(newValues);
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -354,14 +357,18 @@ public class Mat implements Cloneable {
     }
     
     public Mat add(Mat mat, boolean update) {
-        Mat newMat = multiplyConstAddMat(1, this, 1, mat);
+        return add(mat, update, new Mat());
+    }
+    
+    public Mat add(Mat mat, boolean update, Mat outMat) {
+        multiplyConstAddMat(1, this, 1, mat, outMat);
         
         if (update) {
-            this.setMatrix(newMat.getValues());
+            this.setMatrix(outMat.getValues());
             return this;
             
         } else {
-            return newMat;
+            return outMat;
         }
     }
     
@@ -375,14 +382,18 @@ public class Mat implements Cloneable {
     }
     
     public Mat sub(Mat mat, boolean update) {
-        Mat newMat = multiplyConstAddMat(1, this, -1, mat);
+        return sub(mat, update, new Mat());
+    }
+    
+    public Mat sub(Mat mat, boolean update, Mat outMat) {
+        multiplyConstAddMat(1, this, -1, mat, outMat);
         
         if (update) {
-            this.setMatrix(newMat.getValues());
+            this.setMatrix(outMat.getValues());
             return this;
             
         } else {
-            return newMat;
+            return outMat;
         }
     }
     
@@ -398,14 +409,18 @@ public class Mat implements Cloneable {
     }
     
     public Mat multiplyConstAddMat(double val_this, double val_mat, Mat mat, boolean update) {
-        Mat newMat = multiplyConstAddMat(val_this, this, val_mat, mat);
+        return multiplyConstAddMat(val_this, val_mat, mat, update, new Mat());
+    }
+    
+    public Mat multiplyConstAddMat(double val_this, double val_mat, Mat mat, boolean update, Mat outMat) {
+        multiplyConstAddMat(val_this, this, val_mat, mat, outMat);
         
         if (update) {
-            this.setMatrix(newMat.getValues());
+            this.setMatrix(outMat.getValues());
             return this;
             
         } else {
-            return newMat;
+            return outMat;
         }
     }
     

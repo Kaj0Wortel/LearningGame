@@ -143,6 +143,27 @@ public class Vec extends Mat {
         return Math.acos(cosAngle(v1, v2));
     }
     
+    /* 
+     * Multiplies two vectors.
+     * Returns the resulting matrix.
+     * The result is stored in mat.
+     */
+    public static Vec multiplyVec(Vec vecLeft, Vec vecRight) throws MatrixDimensionException {
+        Vec outVec = new Vec();
+        multiply(vecLeft, vecRight, outVec);
+        return outVec;
+    }
+    
+    /* 
+     * Multiplies the matrix with a constant.
+     * Returns the result in the given variable outMat
+     */
+    public static Vec multiplyVec(double value, Vec mat) {
+        Vec outVec = new Vec();
+        multiply(value, mat, outVec);
+        return outVec;
+    }
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Public functions
@@ -166,6 +187,7 @@ public class Vec extends Mat {
             for (int i = 0; i < values[0].length; i++) {
                 length += values[0][i] * values[0][i];
             }
+            
         } else {
             for (int i = 0; i < values.length; i++) {
                 length += values[i][0] * values[i][0];
@@ -189,6 +211,24 @@ public class Vec extends Mat {
      */
     public double dot(Vec v) {
         return dot(this, v);
+    }
+    
+    /* 
+     * Adds two vectors.
+     */
+    public Vec addVec(Vec vec, boolean update) {
+        Vec outVec = new Vec();
+        super.add(vec, update, outVec);
+        return outVec;
+    }
+    
+    /* 
+     * Subtracts two vectors.
+     */
+    public Vec subVec(Vec vec, boolean update) {
+        Vec outVec = new Vec();
+        super.sub(vec, update, outVec);
+        return outVec;
     }
     
     
