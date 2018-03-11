@@ -7,6 +7,7 @@ import learningGame.log.Log2;
 
 import learningGame.tools.KeyDetector;
 import learningGame.tools.ModCursors;
+import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
@@ -134,6 +135,12 @@ public class MiniGameHandler {
             miniGameEnded();
         }, timeOut);
         
+        if (miniGame == null) {
+            throw new TerminalErrorMessage("No mini game was available!",
+                                           "Attempted to create MiniGame \"" + word.getMiniGameClass().getName() + "\"",
+                                           "    of word \"" + word.toString() + "\", but failed.");
+        }
+        
         // Change state
         state = State.STATE_SHOW_MINI_GAME;
         // Set settings of the miniGame and start it
@@ -141,7 +148,6 @@ public class MiniGameHandler {
         miniGame.setLocation(x, y);
         miniGame.setSize(width, height);
         miniGame.useKeyDetector(kd);
-        System.out.println(kd);
         miniGame.start();
     }
     
@@ -309,22 +315,23 @@ public class MiniGameHandler {
         this.height = height;
         
         if (state == State.STATE_SHOW_WORD_SCREEN) {
-            if (wordScreen != null) {
-                wordScreen.setBounds(x, y, width, height);
+            if (wordScreen == null) {
+                Log2.write("Current wordScreen is null while it was active!", Log2.ERROR);
                 
             } else {
-                Log2.write("Current wordScreen is null while it was active!", Log2.ERROR);
+                wordScreen.setBounds(x, y, width, height);
             }
             
         } else if (state == State.STATE_SHOW_MINI_GAME) {
-            if (miniGame != null) {
+            if (miniGame == null) {
                 Log2.write("Current miniGame is null while it was active!", Log2.ERROR);
+                
             } else {
                 miniGame.setBounds(x, y, width, height);
             }
             
         } else if (state == State.STATE_SHOW_SCORE_SCREEN) {
-            if (scoreScreen != null) {
+            if (scoreScreen == null) {
                 Log2.write("Current scoreScreen is null while it was active!", Log2.ERROR);
                 
             } else {
@@ -346,22 +353,22 @@ public class MiniGameHandler {
      */
     public void repaint() {
         if (state == State.STATE_SHOW_WORD_SCREEN) {
-            if (wordScreen != null) {
-                wordScreen.repaint();
+            if (wordScreen == null) {
+                Log2.write("Current wordScreen is null while it was active!", Log2.ERROR);
                 
             } else {
-                Log2.write("Current wordScreen is null while it was active!", Log2.ERROR);
+                wordScreen.repaint();
             }
             
         } else if (state == State.STATE_SHOW_MINI_GAME) {
-            if (miniGame != null) {
+            if (miniGame == null) {
                 Log2.write("Current miniGame is null while it was active!", Log2.ERROR);
             } else {
                 miniGame.repaint();
             }
             
         } else if (state == State.STATE_SHOW_SCORE_SCREEN) {
-            if (scoreScreen != null) {
+            if (scoreScreen == null) {
                 Log2.write("Current scoreScreen is null while it was active!", Log2.ERROR);
                 
             } else {
