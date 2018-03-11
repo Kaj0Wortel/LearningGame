@@ -224,10 +224,9 @@ public class Word {
     public String toString() {
         return "["
             + this.getClass().getName()
-            + "  wordTable: " + (wordTable == null ? "null" : wordTable.toString())
-            + ", " + (miniGameClass == null ? "null" : miniGameClass.getName())
-            + ", wordImageLoc: " + wordImageLoc
-            + "]";
+            + "  wordTable = \"" + (wordTable == null ? "null" : wordTable.toString()) + "\""
+            + ", miniGameClass = \"" + (miniGameClass == null ? "null" : miniGameClass.getName()) + "\""
+            + ", wordImageLoc = \"" + wordImageLoc + "\"]";
     }
     
     
