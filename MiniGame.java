@@ -291,9 +291,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     abstract protected void cleanUp();
     
     /* 
-     * This method returns the score
-     * 
-     * Note: perhaps let it return a Score object.
+     * This method returns the score.
      */
     abstract public Score getScore(); // todo: determine score object
     
