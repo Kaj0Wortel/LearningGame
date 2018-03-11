@@ -38,10 +38,12 @@ public class ShaveLeg extends BaseShave {
      * @return the gravity vector used for the hair.
      * This method is invoked exactly once for each Hair object.
      * Measured in screen size per second.
+     * Note that a positive x coord creates gravity to the right,
+     * while a positive y coord creates gravity downwards
      */
     @Override
     protected Vec getGravity() {
-        return new Vec(0, 0.5);
+        return new Vec(0, 0.09);
     }
     
     /* 
@@ -51,14 +53,18 @@ public class ShaveLeg extends BaseShave {
      */
     @Override
     protected Vec getInitSpeed() {
-        return new Vec(1, 1);
+        //
+        double angle = Math.toRadians(random.nextDouble() * 120 + 30);
+        double initSpeed = 0.03;
+        
+        return new Vec(Math.cos(angle) * initSpeed, -Math.sin(angle) * initSpeed);
     }
     
     /* 
      * @return the image used for the hair.
      */
     @Override
-    protected BufferedImage getHairImageImage() {
+    protected BufferedImage getHairImage() {
         return null;
     }
     
@@ -80,7 +86,8 @@ public class ShaveLeg extends BaseShave {
     
     /* 
      * @return the location of the hair patches on screen.
-     * Each element must be between 0.0 and 1.0.
+     * Each element must contain an array which contains two doubles
+     *     which must each be between 0.0 and 1.0.
      */
     @Override
     protected double[][] getHairLoc() {
@@ -93,11 +100,11 @@ public class ShaveLeg extends BaseShave {
     
     /* 
      * @return the size of a hair patch on screen.
-     * Each element must be between 0.0 and 1.0.
+     * Each element must contain two doubles which must each be between 0.0 and 1.0.
      */
     @Override
     protected double[] getHairSize() {
-        return new double[] {0.05, 0.05};
+        return new double[] {0.025, 0.025};
     }
     
 }

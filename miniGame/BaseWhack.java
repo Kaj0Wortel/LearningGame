@@ -341,12 +341,6 @@ abstract public class BaseWhack extends MiniGame {
             System.out.println("clicked");
             Whack whack = (Whack) e.getSource();
             
-            // tmp
-            /*
-            if (hammer.canWhack()) {
-                whack.showWhackable(500, 200, e.getWhen());
-            }*/
-            
             if (hammer.canWhack() && 
                 whack.whack(e.getWhen()) && 
                 hammer.whack(175, 25, e.getWhen()))
@@ -357,6 +351,7 @@ abstract public class BaseWhack extends MiniGame {
             
         }
     }
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Functions
