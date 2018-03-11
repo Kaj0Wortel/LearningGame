@@ -35,6 +35,10 @@ public class Vec3 extends Vec {
         super(transpose, values);
     }
     
+    public Vec3(Vec3 vec) {
+        super(vec);
+    }
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Static functions
@@ -77,4 +81,13 @@ public class Vec3 extends Vec {
                                                    + ", expected: 1x3 or 3x1.");
         return true;
     }
+    
+    /* 
+     * Clones the object
+     */
+    @Override
+    public Vec3 clone() {
+        return new Vec3(this);
+    }
+    
 }

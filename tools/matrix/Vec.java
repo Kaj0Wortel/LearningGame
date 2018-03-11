@@ -44,6 +44,10 @@ public class Vec extends Mat {
         if (transpose) this.transpose();
     }
     
+    public Vec(Vec vec) {
+        super(vec);
+    }
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Public static functions
@@ -348,6 +352,14 @@ public class Vec extends Mat {
             throw new MatrixDimensionException("Illegal change of matrix size. Found: " + row + "x" + col
                                                    + ", expected: 1xn or nx1.");
         return true;
+    }
+    
+    /* 
+     * Clones the object
+     */
+    @Override
+    public Vec clone() {
+        return new Vec(this);
     }
     
 }

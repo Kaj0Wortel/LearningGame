@@ -35,6 +35,10 @@ public class Vec4 extends Vec {
         super(transpose, values);
     }
     
+    public Vec4(Vec4 vec) {
+        super(vec);
+    }
+    
     /* ----------------------------------------------------------------------------------------------------------------
      * Overridden functions
      * ----------------------------------------------------------------------------------------------------------------
@@ -50,4 +54,14 @@ public class Vec4 extends Vec {
                                                    + ", expected: 1x4 or 4x1.");
         return true;
     }
+    
+    
+    /* 
+     * Clones the object
+     */
+    @Override
+    public Vec4 clone() {
+        return new Vec4(this);
+    }
+    
 }

@@ -21,6 +21,10 @@ public class Mat4 extends Mat {
         super(mat);
     }
     
+    public Mat4(Mat4 mat) {
+        super(mat);
+    }
+    
     /* 
      * Returns a matrix for a counter-clockwise rotation
      * around the x-axis.
@@ -126,4 +130,13 @@ public class Mat4 extends Mat {
             {12, 13, 14, 15}
         });
     }
+    
+    /* 
+     * Clones the object
+     */
+    @Override
+    public Mat4 clone() {
+        return new Mat4(this);
+    }
+    
 }

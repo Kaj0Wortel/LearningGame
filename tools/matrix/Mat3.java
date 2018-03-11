@@ -12,12 +12,16 @@ package learningGame.tools.matrix;
 /* 
  * Represents a 3x3 matrix.
  */
-public class Mat3 extends Mat{
+public class Mat3 extends Mat {
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructors
      * ----------------------------------------------------------------------------------------------------------------
      */
     public Mat3(double[]... mat) {
+        super(mat);
+    }
+    
+    public Mat3(Mat3 mat) {
         super(mat);
     }
     
@@ -71,4 +75,14 @@ public class Mat3 extends Mat{
                                                    + "Expected: 3x3.");
         return true;
     }
+    
+    
+    /* 
+     * Clones the object
+     */
+    @Override
+    public Mat3 clone() {
+        return new Mat3(this);
+    }
+    
 }

@@ -9,7 +9,7 @@
 package learningGame.tools.matrix;
 
 
-public class Mat {
+public class Mat implements Cloneable {
     protected double[][] values;
     protected int row;
     protected int col;
@@ -79,6 +79,11 @@ public class Mat {
         
         setMatrix(newValues);
     }
+    
+    public Mat(Mat mat) {
+        setMatrix(mat.getValues());
+    }
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Public static methods
@@ -190,6 +195,7 @@ public class Mat {
         if (update) {
             mat.setMatrix(newV);
             return mat;
+            
         } else {
             return new Mat(newV);
         }
@@ -460,6 +466,9 @@ public class Mat {
         return transpose(this, true);
     }
     
+    /* 
+     * Calculates teh determinant of the matrix.
+     */
     public double det() {
         if (!square)
             throw new MatrixDimensionException("Determinant is undefined for non-square matrices. "
@@ -585,8 +594,9 @@ public class Mat {
         return new Mat(this.values);
     }
     
+    
+    // tmp
     public static void main(String[] args) {
-        
         Mat mat2 = new Mat(2, 2,
                            1, 2,
                            3, 4);
