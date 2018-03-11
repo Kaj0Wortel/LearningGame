@@ -35,39 +35,31 @@ public class Vec3 extends Vec {
         super(transpose, values);
     }
     
+    
     /* ----------------------------------------------------------------------------------------------------------------
-     * Get functions
+     * Static functions
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * Returns the x coordinate of the vector.
+     * Computes the cross vector of the two vectors.
      */
-    public double x() {
-        return values[0][0];
+    public static Vec3 cross(Vec v1, Vec v2) {
+        if (v1.row != 3 || v1.col != 1 || v2.row != 3 && v1.col != 1)
+            throw new MatrixDimensionException("Cannot take the dot product of two vectors of a different dimension."
+                                                   + "Expected: 1x3 cross 1x3, found: "
+                                                   + v1.row + "x" + v1.col + " dot "
+                                                   + v2.row + "x" + v2.col + ".");
+        return new Vec3(v1.y() * v2.z() - v1.z() * v2.y(),
+                        v1.z() * v2.x() - v1.x() * v2.z(),
+                        v1.x() * v2.y() - v1.y() * v2.x());
     }
     
-    /* 
-     * Returns the y coordinate of the vector.
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Functions
+     * ----------------------------------------------------------------------------------------------------------------
      */
-    public double y() {
-        if (row > col) {
-            return values[1][0];
-            
-        } else {
-            return values[0][1];
-        }
-    }
-    
-    /* 
-     * Returns the z coordinate of the vector.
-     */
-    public double z() {
-        if (row > col) {
-            return values[2][0];
-            
-        } else {
-            return values[0][2];
-        }
+    public Vec3 cross(Vec v) {
+        return cross(this, v);
     }
     
     /* ----------------------------------------------------------------------------------------------------------------

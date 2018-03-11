@@ -102,9 +102,13 @@ public class Mat {
     /* 
      * Multiplies two matrices.
      * Returns the resulting matrix.
+     * The result is stored in mat.
      */
     public static Mat multiply(Mat matLeft, Mat matRight) throws MatrixDimensionException {
-        // Bound checking
+        return multiply(matLeft, matRight, new Mat());
+    }
+    
+    public static Mat multiply(Mat matLeft, Mat matRight, Mat mat) throws MatrixDimensionException {
         if (matLeft.col != matRight.row)
             throw new MatrixDimensionException("Number of colums of the left matrix ("+ matLeft.col
                                                    + ") is not equal to the number of rows of the right matrix ("
@@ -124,21 +128,27 @@ public class Mat {
             }
         }
         
-        return new Mat(newMat);
+        return mat.setMatrix(newMat);
     }
     
     /* 
      * Multiplies the matrix with a constant.
-     * Returns the resulting matrix
+     * Returns the result in the given variable outMat
      */
     public static Mat multiply(double value, Mat mat) {
+        return multiply(value, mat, new Mat());
+    }
+    
+    public static Mat multiply(double value, Mat mat, Mat outMat) {
         double[][] values = mat.getValues();
         
         for (int i = 0; i < values.length; i++) {
-            values[i][i] *= value;
+            for (int j = 0; j < values[0].length; j++) {
+                values[i][j] *= value;
+            }
         }
         
-        return new Mat(values);
+        return outMat.setMatrix(values);
     }
     
     /* 
@@ -224,6 +234,14 @@ public class Mat {
      * Sets the values of the matrix.
      */
     protected Mat setMatrix(double[][] mat) {
+        if (mat.length == 0) {
+            row = 0;
+            col = 0;
+            square = true;
+            values = new double[0][0];
+            return this;
+        }
+        
         if (mat == null)
             throw new NullPointerException("Variable 'mat' is not allowed to be null.");
         

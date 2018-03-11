@@ -44,8 +44,9 @@ public class Vec extends Mat {
         if (transpose) this.transpose();
     }
     
+    
     /* ----------------------------------------------------------------------------------------------------------------
-     * Public static methods
+     * Public static functions
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
@@ -54,26 +55,18 @@ public class Vec extends Mat {
      * v1 dot v2 == v1^T x v2
      */
     public static double dot(Vec v1, Vec v2) {
-        // Bound checking
         if (v1.col != 1 || v2.col != 1)
-            throw new MatrixDimensionException("cannot take the dot product of a transposed vector."
+            throw new MatrixDimensionException("Cannot take the dot product of a transposed vector."
                                                    + "Expected: 1xn dot 1xn, found: "
                                                    + v1.row + "x" + v1.col + " dot "
-                                                   + v1.row + "x" + v1.col + ".");
+                                                   + v2.row + "x" + v2.col + ".");
         if (v1.row != v2.row)
-            throw new MatrixDimensionException("cannot take the dot product of two vectors of a different dimension."
+            throw new MatrixDimensionException("Cannot take the dot product of two vectors of a different dimension."
                                                    + "Expected: 1xn dot 1xn, found: "
                                                    + v1.row + "x" + v1.col + " dot "
-                                                   + v1.row + "x" + v1.col + ".");
+                                                   + v2.row + "x" + v2.col + ".");
         
         return multiply(transpose(v1, false), v2).getValues()[0][0];
-    }
-    
-    /* 
-     * Computes the cross vector of the two vectors.
-     */
-    public static Vec cross(Vec v1, Vec v2) {
-        return new Vec(0);
     }
     
     /* 
@@ -83,7 +76,7 @@ public class Vec extends Mat {
      * Default is true.
      */
     public static Vec normalize(Vec v) {
-        return normalize(v, true);
+        return normalize(v, false);
     }
     
     public static Vec normalize(Vec v, boolean update) {
@@ -116,22 +109,39 @@ public class Vec extends Mat {
     }
     
     /* 
-     * Calculates the angle between two vectors
+     * Calculates the angle between two vectors.
      */
-    public static double cosAngle(Vec v1, Vec v2) {
+    public static double cosAngle(Vec v1, Vec v2) throws MatrixDimensionException {
         return v1.dot(v2) / (v1.length() * v2.length());
     }
     
-    public static double sinAngle(Vec v1, Vec v2) {
-        return ((Vec) multiply(1.0 / (v1.length() * v2.length()), cross(v1, v2))).length();
+    public static double sinAngle(Vec v1, Vec v2) throws MatrixDimensionException {
+        if (v1.col != 1 || v2.col != 1)
+            throw new MatrixDimensionException("Cannot calculate the angle between a transposed vector."
+                                                   + "Expected: 1xn dot 1xn, found: "
+                                                   + v1.row + "x" + v1.col + " dot "
+                                                   + v2.row + "x" + v2.col + ".");
+        if (v1.row != v2.row)
+            throw new MatrixDimensionException("Cannot calculate the angle between two vectors of a different dimension."
+                                                   + "Expected: 1xn dot 1xn, found: "
+                                                   + v1.row + "x" + v1.col + " dot "
+                                                   + v2.row + "x" + v2.col + ".");
+        
+        if (v1.row == 3 || v1.col == 3) {
+            return ((Vec) multiply(1.0 / (v1.length() * v2.length()), Vec3.cross(v1, v2), new Vec())).length();
+            
+        } else {
+            return Math.sin(angle(v1, v2));
+        }
     }
     
-    public static double angle(Vec v1, Vec v2) {
+    public static double angle(Vec v1, Vec v2) throws MatrixDimensionException {
         return Math.acos(cosAngle(v1, v2));
     }
     
+    
     /* ----------------------------------------------------------------------------------------------------------------
-     * Public methods
+     * Public functions
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
@@ -169,74 +179,143 @@ public class Vec extends Mat {
         return Math.sqrt(lengthSqr());
     }
     
+    /* 
+     * @param v the vector to take the cross product of.
+     * @return the dot product of the current vector with the given vector.
+     */
     public double dot(Vec v) {
         return dot(this, v);
     }
     
+    
     /* ----------------------------------------------------------------------------------------------------------------
      * Get functions
      * ----------------------------------------------------------------------------------------------------------------
-     * 
-    // rgba-coordinate system variables (colors)
-    final public static int R_COORD = 0;
-    final public static int G_COORD = 1;
-    final public static int B_COORD = 2;
-    final public static int A_COORD = 3;
-    
-    // stpq-coordinate system variables (texture)
-    final public static int S_COORD = 0;
-    final public static int T_COORD = 1;
-    final public static int P_COORD = 2;
      */
     /* 
-     * Returns the coordinates of the vector in:
-     * - vector notation  : xyzw
-     * - color notation   : rgba
-     * - texture notation : stpq
+     * Returns the  x coordinate of the vector in:
+     * - vector notation  : [x]yzw
+     * - color notation   : [r]gba
+     * - texture notation : [s]tpq
      */
-    
-    
     public double x() {
         return values[0][0];
     }
-    public double r() {return x();}
-    public double s() {return x();}
+    
+    public double r() {
+        return x();
+    }
+    
+    public double s() {
+        return x();
+    }
     
     /* 
-     * Returns the y coordinate of the vector.
+     * @return the y coordinate of the vector in:
+     * - vector notation  : x[y]zw
+     * - color notation   : r[g]ba
+     * - texture notation : s[t]pq
+     * 
+     * @throws MatrixDimensionException iff the vector is not in R2 or higher.
      */
-    public double y() {
+    public double y() throws MatrixDimensionException {
         if (row > col) {
+            if (col != 1 && row < 2)
+                throw new MatrixDimensionException
+                ("Expected vector dimensions 1xn or nx1, with n >= 2, but found vector dimensions "
+                     + row + "x" + col + ".");
+            
             return values[1][0];
             
         } else {
+            if (row != 1 && col < 2)
+                throw new MatrixDimensionException
+                ("Expected vector dimensions 1xn or nx1, with n >= 2, but found vector dimensions "
+                     + row + "x" + col + ".");
+            
             return values[0][1];
         }
     }
     
+    public double g() throws MatrixDimensionException {
+        return y();
+    }
+    
+    public double t() throws MatrixDimensionException {
+        return y();
+    }
+    
     /* 
-     * Returns the z coordinate of the vector.
+     * @return the z coordinate of the vector in:
+     * - vector notation  : xy[z]w
+     * - color notation   : rg[b]a
+     * - texture notation : st[p]q
+     * 
+     * @throws MatrixDimensionException iff the vector is not in R3 or higher.
      */
-    public double z() {
+    public double z() throws MatrixDimensionException {
         if (row > col) {
+            if (col != 1 && row < 2)
+                throw new MatrixDimensionException
+                ("Expected vector dimensions 1xn or nx1, with n >= 3, but found vector dimensions "
+                     + row + "x" + col + ".");
+            
             return values[2][0];
             
         } else {
+            if (row != 1 && col < 2)
+                throw new MatrixDimensionException
+                ("Expected vector dimensions 1xn or nx1, with n >= 3, but found vector dimensions "
+                     + row + "x" + col + ".");
+            
             return values[0][2];
         }
     }
     
+    public double b() throws MatrixDimensionException {
+        return z();
+    }
+    
+    public double p() throws MatrixDimensionException {
+        return z();
+    }
+    
     /* 
-     * Returns the w coordinate of the vector.
+     * Returns the w coordinate of the vector in:
+     * - vector notation  : xyz[w]
+     * - color notation   : rgb[a]
+     * - texture notation : stp[q]
+     * 
+     * @throws MatrixDimensionException iff the vector is not in R4 or higher.
      */
-    public double w() {
+    public double w() throws MatrixDimensionException {
         if (row > col) {
+            if (col != 1 && row < 2)
+                throw new MatrixDimensionException
+                ("Expected vector dimensions 1xn or nx1, with n >= 4, but found vector dimensions "
+                     + row + "x" + col + ".");
+            
             return values[3][0];
             
         } else {
+            if (row != 1 && col < 2)
+                throw new MatrixDimensionException
+                ("Expected vector dimensions 1xn or nx1, with n >= 4, but found vector dimensions "
+                     + row + "x" + col + ".");
+            
             return values[0][3];
         }
     }
+    
+    public double a() throws MatrixDimensionException {
+        return w();
+    }
+    
+    public double q() throws MatrixDimensionException {
+        return w();
+    }
+    
+    
     /* 
      * Returns the coordinate represented by i.
      */
@@ -254,6 +333,7 @@ public class Vec extends Mat {
         }
     }
     
+    
     /* ----------------------------------------------------------------------------------------------------------------
      * Overridden functions
      * ----------------------------------------------------------------------------------------------------------------
@@ -270,11 +350,4 @@ public class Vec extends Mat {
         return true;
     }
     
-    public static void main(String[] args) {
-        Vec v1 = new Vec(1, 1, 1);
-        Vec v2 = new Vec(2, 3, 4);
-        System.out.println(v1);
-        System.out.println(v2);
-        System.out.println(v1.dot(v2));
-    }
 }
