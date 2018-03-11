@@ -36,20 +36,6 @@ import javax.swing.JPanel;
 
 
 abstract public class BaseWhack extends MiniGame {
-    /*
-    // The original images
-    final private BufferedImage[] originalHammerSheet;
-    final private BufferedImage[] originalWhackSheet;
-    final private BufferedImage originalWhacked;
-    
-    // The resized images
-    private BufferedImage[] hammerSheet;
-    private BufferedImage[] whackSheet;
-    private BufferedImage whacked;
-    
-    // The image creation thread
-    private Thread imageCreateThread;
-    */
     // The whacks
     protected Whack[][] whacks;
     
