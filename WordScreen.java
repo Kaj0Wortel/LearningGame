@@ -78,16 +78,16 @@ public class WordScreen extends JPanel {
             // Create the correct word button
             int x = rand.nextInt(wordOptionButtons.length);
             int y = rand.nextInt(wordOptionButtons[x].length);
-            if (wordOptionButtons[x][y] != null) {
+            if (wordOptionButtons[x][y] != null)
                 throw new TerminalErrorMessage("The correct answer button has already been initiated!",
                                                "Button [" + x + "][" + y + "] was already initiated!");
-            }
+                
             Button2 corBtn = wordOptionButtons[x][y]
                 = new Button2(10, LoadImages2.ensureLoadedAndGetImage
                                   (goodButtonImgsLoc,
                                    0, 0,   // Start x/y
                                    48, 80, // End x/y
-                                   16, 16) // Width/height)
+                                   16, 16) // Width/height
                              );
             corBtn.setImage(word.getRandomImage(), true);
             corBtn.addActionListener((e) -> {
