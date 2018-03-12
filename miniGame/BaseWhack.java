@@ -119,7 +119,7 @@ abstract public class BaseWhack extends MiniGame {
                     if (delta > moveTime * ((double) curHammerImageNum + 1.0) / hammerSheet.length) {
                         // Increase the image counter.
                         // If the end of the hammerSheet has been reached, set the state to {@code WAITING}.
-                        if (++curHammerImageNum >= hammerSheet.length - 1) {
+                        if (++curHammerImageNum > hammerSheet.length - 1) {
                             curHammerImageNum = hammerSheet.length - 1;
                             state = WAITING;
                         }
