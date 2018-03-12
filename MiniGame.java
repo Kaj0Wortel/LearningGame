@@ -16,6 +16,7 @@ import learningGame.tools.KeyDetector;
 
 
 // Java packages
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -33,20 +34,23 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     // The working directory
     final protected String workingDir = LearningGame.workingDir;
     
+    // The font used to display the text.
+    final private static Font textFont = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
+    
     // The action that is executed after the minigame has ended.
     final private Runnable r;
     
-    // The KeyDetector used to detect the key presses between updates.
-    private KeyDetector kd;
+    // The time to complete the miniGame
+    final protected long timeOut;
     
     // Instance of the parent.
     final protected LearningGame lg;
     
+    // The KeyDetector used to detect the key presses between updates.
+    private KeyDetector kd;
+    
     // The time stamp from when the start() method was invoked.
     protected long startTimeStamp;
-    
-    // The time to complete the miniGame
-    final protected long timeOut;
     
     // The total time left to complete the MiniGame.
     protected Long timeLeft;
@@ -56,9 +60,9 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     // Deonotes whether the application has ended.
     private boolean stopped = false;
     
-    // The font used to display the text.
-    final private static Font textFont = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
-    
+    // The color of the background and the counter
+    protected Color backgroundColor;
+    protected Color counterColor;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -66,10 +70,14 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      */
     public MiniGame(LearningGame lg, Runnable r, long timeOut) {
         super();
+        
         this.setLayout(null);
         this.lg = lg;
         this.r = r;
         this.timeOut = timeOut;
+        
+        backgroundColor = new Color(190, 190, 190);
+        counterColor = Color.BLACK;
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -97,6 +105,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     public void mousePressed(MouseEvent e) { }
     @Override
     public void mouseReleased(MouseEvent e) { }
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Get functions
@@ -133,6 +142,17 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     final private void addListeners() {
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
+    }
+    
+    /* 
+     * Shows the instructions
+     */
+    final public void showInstr() {
+        
+    }
+    
+    public String getInstructionText() {
+        return "";
     }
     
     /* 
@@ -192,7 +212,8 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             stopped = true;
             cleanUp();
         }
-    } 
+    }
+    
     /* 
      * This method is called when the MiniGame is resized/relocated.
      */
@@ -225,6 +246,10 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         // Convert graphics object
         Graphics2D g2d = (Graphics2D) g;
         
+        // Paint the background
+        g2d.setPaint(backgroundColor);
+        g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+        
         // Retrieve the current g2d transformation.
         AffineTransform g2dTrans = g2d.getTransform();
         
@@ -242,11 +267,12 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             } else {
                 text = "Time's Up !";
             }
-            // todo: center text
             // todo: add bar for text
             // todo: change size of the font
+            g2d.setPaint(counterColor);
             g2d.setFont(textFont.deriveFont(50F));
-            g2d.drawString(text, 300, 50);
+            int textWidth = g2d.getFontMetrics().stringWidth(text);
+            g2d.drawString(text, (getWidth() - textWidth) / 2, 50);
         }
     }
     
