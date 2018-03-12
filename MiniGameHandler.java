@@ -21,6 +21,8 @@ public class MiniGameHandler {
     final private Runnable r;
     final private long timeOut;
     
+    final private double ASPECT_RATIO = 4.0/3.0; // width / height
+    
     // State enum class
     private enum State {
         STATE_NONE,
@@ -314,12 +316,27 @@ public class MiniGameHandler {
         this.width = width;
         this.height = height;
         
+        int panelWidth;
+        int panelHeight;
+        if (height * ASPECT_RATIO > width) {
+            panelWidth = width;
+            panelHeight = (int) (width / ASPECT_RATIO);
+            
+        } else {
+            panelWidth = (int) (height * ASPECT_RATIO);
+            panelHeight = height;
+        }
+        
+        int panelX = (width  - panelWidth)  / 2;
+        int panelY = (height - panelHeight) / 2;
+        
+        
         if (state == State.STATE_SHOW_WORD_SCREEN) {
             if (wordScreen == null) {
                 Log2.write("Current wordScreen is null while it was active!", Log2.ERROR);
                 
             } else {
-                wordScreen.setBounds(x, y, width, height);
+                wordScreen.setBounds(panelX, panelY, panelWidth, panelHeight);
             }
             
         } else if (state == State.STATE_SHOW_MINI_GAME) {
@@ -327,7 +344,7 @@ public class MiniGameHandler {
                 Log2.write("Current miniGame is null while it was active!", Log2.ERROR);
                 
             } else {
-                miniGame.setBounds(x, y, width, height);
+                miniGame.setBounds(panelX, panelY, panelWidth, panelHeight);
             }
             
         } else if (state == State.STATE_SHOW_SCORE_SCREEN) {
@@ -335,7 +352,7 @@ public class MiniGameHandler {
                 Log2.write("Current scoreScreen is null while it was active!", Log2.ERROR);
                 
             } else {
-                scoreScreen.setBounds(x, y, width, height);
+                scoreScreen.setBounds(panelX, panelY, panelWidth, panelHeight);
             }
             
         } else if (!(state == State.STATE_NONE ||
