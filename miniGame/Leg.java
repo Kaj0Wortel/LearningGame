@@ -8,6 +8,8 @@ import learningGame.Score;
 
 import learningGame.log.Log2;
 
+import learningGame.music.PlayMusic;
+
 import learningGame.tools.LoadImages2;
 import learningGame.tools.TerminalErrorMessage;
 import learningGame.tools.matrix.Vec;
@@ -18,14 +20,16 @@ import java.awt.image.BufferedImage;
 
 import java.io.IOException;
 
+import javax.sound.sampled.Clip;
 
-public class ShaveLeg extends BaseShave {
+
+public class Leg extends BaseShave {
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public ShaveLeg(LearningGame lg, Runnable r, long timeOut) {
+    public Leg(LearningGame lg, Runnable r, long timeOut) {
         super(lg, r, timeOut);
     }
     
@@ -91,7 +95,7 @@ public class ShaveLeg extends BaseShave {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Hair image of class " + this.getClass() + " could not be loaded.");
         }
     }
     
@@ -103,14 +107,14 @@ public class ShaveLeg extends BaseShave {
         try {
             return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
                                                        workingDir + "img\\sprites\\Leg.png_trimmer",
-                                                       0, 0,       // startX, startY
-                                                       8, 14,     // endX, endY
+                                                       0, 0,      // startX, startY
+                                                       8, 28,     // endX, endY
                                                        8, 14)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Trimmer sheet images of class " + this.getClass() + " could not be loaded.");
         }
     }
     
@@ -129,7 +133,7 @@ public class ShaveLeg extends BaseShave {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Background sheet images of class " + this.getClass() + " could not be loaded.");
         }
     }
     
@@ -176,6 +180,16 @@ public class ShaveLeg extends BaseShave {
     @Override
     protected double getTrimmerHeightAdjustmentFactor() {
         return 0.0;
+    }
+    
+    /* 
+     * @return the clip used to play the trimmer sound.
+     */
+    @Override
+    protected Clip getTrimmerSoundClip() {
+        Clip clip = PlayMusic.createClip(LearningGame.workingDir + "music\\sfx\\trimmer_sfx.wav");
+        clip.loop(-1);
+        return clip;
     }
     
 }

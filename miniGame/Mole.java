@@ -23,10 +23,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 
-public class WhackAMole extends BaseWhack {
+public class Mole extends BaseWhack {
     final private static String whackFile = LearningGame.workingDir + "music\\sfx\\whack_sfx.wav";
     
-    public WhackAMole(LearningGame lg, Runnable r, long timeOut) {
+    public Mole(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
     
@@ -103,7 +103,7 @@ public class WhackAMole extends BaseWhack {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            throw new TerminalErrorMessage("Whack image sheet of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Whack image sheet of class " + this.getClass() + " could not be loaded.");
         }
     }
     
@@ -121,7 +121,7 @@ public class WhackAMole extends BaseWhack {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            throw new TerminalErrorMessage("Whacked image sheet of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Whacked image sheet of class " + this.getClass() + " could not be loaded.");
         }
     }
     
@@ -140,7 +140,7 @@ public class WhackAMole extends BaseWhack {
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
-            throw new TerminalErrorMessage("Hammer image sheet of class" + this.getClass() + " could not be loaded.");
+            throw new TerminalErrorMessage("Hammer image sheet of class " + this.getClass() + " could not be loaded.");
         }
     }
     
