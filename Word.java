@@ -270,7 +270,7 @@ public class Word {
         if (wordImageLoc == null || wordImageLoc.equals("")) return null;
         
         try {
-            BufferedImage[][] imgs = LoadImages2.ensureLoadedAndGetImage(wordImageLoc);
+            BufferedImage[][] imgs = LoadImages2.ensureLoadedAndGetImage(wordImageLoc, 250, 250);
             int x = rand.nextInt(imgs.length);
             int y = rand.nextInt(imgs[x].length);
             return imgs[x][y];
