@@ -106,7 +106,7 @@ public class RowBoat extends BaseTopDownScroller {
                                                        22, 0,      // startX, startY
                                                        41, 26,     // endX, endY
                                                        19, 13)[0]; // sizeX, sizeY
-                
+            
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();

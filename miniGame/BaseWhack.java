@@ -427,8 +427,6 @@ abstract public class BaseWhack extends MiniGame {
             
             hammer.update(timeStamp);
         }
-        
-        repaint();
     }
     
     /* 

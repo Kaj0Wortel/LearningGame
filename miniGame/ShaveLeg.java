@@ -8,11 +8,15 @@ import learningGame.Score;
 
 import learningGame.log.Log2;
 
+import learningGame.tools.LoadImages2;
+import learningGame.tools.TerminalErrorMessage;
 import learningGame.tools.matrix.Vec;
 
 // Java packages
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+
+import java.io.IOException;
 
 
 public class ShaveLeg extends BaseShave {
@@ -25,6 +29,18 @@ public class ShaveLeg extends BaseShave {
         super(lg, r, timeOut);
     }
     
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
+    /* 
+     * @return the dimension of the Trimmer.
+     */
+    @Override
+    protected Dimension calcTrimmerDim(int newWidth, int newHeight) {
+        return super.calcTrimmerDim(newWidth, newHeight);
+    }
     
     /* 
      * This method returns the score.
@@ -65,15 +81,37 @@ public class ShaveLeg extends BaseShave {
      */
     @Override
     protected BufferedImage getHairImage() {
-        return null;
+        try {
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
+                                                       workingDir + "img\\sprites\\Leg.png_hair",
+                                                       50, 0,  // startX, startY
+                                                       65, 3,  // endX, endY
+                                                       15, 3)[0][0]; // sizeX, sizeY
+            
+        } catch (IOException | IllegalArgumentException e) {
+            Log2.write(e);
+            e.printStackTrace();
+            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+        }
     }
     
     /* 
      * @return the image used for the shave object.
      */
     @Override
-    protected BufferedImage getShaveItemImage() {
-        return null;
+    protected BufferedImage[] getTrimmerSheet() {
+        try {
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
+                                                       workingDir + "img\\sprites\\Leg.png_trimmer",
+                                                       0, 0,       // startX, startY
+                                                       8, 14,     // endX, endY
+                                                       8, 14)[0]; // sizeX, sizeY
+            
+        } catch (IOException | IllegalArgumentException e) {
+            Log2.write(e);
+            e.printStackTrace();
+            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+        }
     }
     
     /*
@@ -81,7 +119,18 @@ public class ShaveLeg extends BaseShave {
      */
     @Override
     protected BufferedImage getBackgroundImage() {
-        return null;
+        try {
+            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
+                                                       workingDir + "img\\sprites\\Leg.png_leg",
+                                                       8, 0,       // startX, startY
+                                                       50, 43,     // endX, endY
+                                                       42, 43)[0][0]; // sizeX, sizeY
+            
+        } catch (IOException | IllegalArgumentException e) {
+            Log2.write(e);
+            e.printStackTrace();
+            throw new TerminalErrorMessage("Player sheet images of class" + this.getClass() + " could not be loaded.");
+        }
     }
     
     /* 
@@ -104,7 +153,29 @@ public class ShaveLeg extends BaseShave {
      */
     @Override
     protected double[] getHairSize() {
-        return new double[] {0.025, 0.025};
+        return new double[] {0.2, 0.04}; // image must be in ratio 5 : 1
+    }
+    
+    
+    /* 
+     * @return the height adjustment factor for the hammer image.
+     *     0 means no adjustment, -1 means pushing the image downwards with it's height,
+     *     and 1 means pushing the image upwards with it's height.
+     */
+    @Override
+    protected double getTrimmerWidthAdjustmentFactor() {
+        return 0.0;
+    }
+    
+    
+    /* 
+     * @return the width adjustment factor for the hammer image.
+     *     0 means no adjustment, -1 means pushing the image to the left with it's height,
+     *     and 1 means pushing the image to the right with it's height.
+     */
+    @Override
+    protected double getTrimmerHeightAdjustmentFactor() {
+        return 0.0;
     }
     
 }

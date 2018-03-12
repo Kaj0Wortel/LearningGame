@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 
 abstract public class BaseShave extends MiniGame {
     protected Hair[] hair;
+    protected Trimmer trimmer;
     
     // Whether mouse button 1 is pressed or not.
     protected boolean mouseButton1Pressed = false;
@@ -76,8 +77,10 @@ abstract public class BaseShave extends MiniGame {
          */
         public Hair(double x, double y, double width,  double height) {
             super(null);
+            
             setBoundsRel(x, y, width, height);
-            this.setBackground(Color.RED);
+            setBackground(new Color(0, 0, 0, 0));
+            setOpaque(false);
         }
         
         /* 
@@ -148,10 +151,108 @@ abstract public class BaseShave extends MiniGame {
             
             BufferedImage hair = getHairImage();
             if (hair != null) {
-                g2d.scale(((double) getWidth()) / hair.getWidth(), ((double) getWidth()) / hair.getHeight());
+                g2d.scale(((double) getWidth()) / hair.getWidth(), ((double) getHeight()) / hair.getHeight());
                 g2d.drawImage(hair, 0, 0, null);
             }
         }
+    }
+    
+    
+    
+    
+    
+    
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Trimmer class
+     * ----------------------------------------------------------------------------------------------------------------
+     */
+    protected class Trimmer extends JPanel {
+        final private static int NOTHING = 0;
+        final private static int TRIMMING = 1;
+        
+        // The current state
+        private int state = NOTHING;
+        
+        // The image to show
+        private int curTrimmerImageNum = 0;
+        
+        // The time stamp (in ms) of when the trimmer started to swing.
+        private long trimStartedTime = 0L;
+        // The time (in ms) it takes for a trimmer to fully swing.
+        private int moveTime = 0;
+        // The time (in ms) it takes before the trimmer is back to it's initial position.
+        private int waitTime = 0;
+        
+        /* ------------------------------------------------------------------------------------------------------------
+         * Trimmer constructor
+         * ------------------------------------------------------------------------------------------------------------
+         */
+        public Trimmer() {
+            super(null);
+            setBackground(new Color(0, 0, 0, 0));
+            setOpaque(false);
+        }
+        
+        /* 
+         * Sets the state of the trimmer.
+         */
+        public void setTrim(long timeStamp, int state) {
+            if (this.state != state) {
+                trimStartedTime = timeStamp;
+                this.state = state;
+            }
+        }
+        
+        /* 
+         * This method updates the trimmer.
+         */
+        public void update(long timeStamp) {
+            long delta = timeStamp - trimStartedTime;
+            
+            if (state == TRIMMING) {
+                BufferedImage[] trimmerSheet = getTrimmerSheet();
+                
+                if (trimmerSheet != null && 
+                    delta > moveTime * ((double) curTrimmerImageNum + 1.0) / trimmerSheet.length) {
+                    // Increase the image counter.
+                    // If the end of the hammerSheet has been reached, set the state to {@code WAITING}.
+                    if (++curTrimmerImageNum >= trimmerSheet.length - 1) {
+                        curTrimmerImageNum = trimmerSheet.length - 1;
+                    }
+                }
+            }
+        }
+        
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            
+            BufferedImage[] trimmerSheet = getTrimmerSheet();
+            
+            // If there is nothing to draw, return immediately.
+            if (trimmerSheet == null || trimmerSheet.length <= 0) return;
+            
+            int draw = -1;
+            if (state == NOTHING) {
+                if (trimmerSheet[0] != null) draw = 0;
+                
+            } else if (state == TRIMMING) {
+                if (trimmerSheet[curTrimmerImageNum] != null) draw = curTrimmerImageNum;
+            }
+            
+            if (draw >= 0) {
+                Graphics2D g2d = (Graphics2D) g;
+                
+                // Scale the graphics
+                g2d.scale(getWidth()  / trimmerSheet[draw].getWidth(),
+                          getHeight() / trimmerSheet[draw].getHeight());
+                
+                // Draw the image
+                g2d.drawImage(trimmerSheet[draw], 0, 0, null);
+            }
+        }
+        
     }
     
     
@@ -162,7 +263,8 @@ abstract public class BaseShave extends MiniGame {
     @Override
     public void mouseEntered(MouseEvent e) {
         if (e.getSource() instanceof Hair && mouseButton1Pressed) {
-            ((Hair) e.getSource()).shave(System.currentTimeMillis());
+            Hair hair = (Hair) e.getSource();
+            if (hair != null) hair.shave(e.getWhen());
         }
     }
     
@@ -170,17 +272,21 @@ abstract public class BaseShave extends MiniGame {
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseButton1Pressed = true;
+            if (trimmer != null) trimmer.setTrim(e.getWhen(), Trimmer.TRIMMING);
             
             if (e.getSource() instanceof Hair) {
-                ((Hair) e.getSource()).shave(System.currentTimeMillis());
+                Hair hair = (Hair) e.getSource();
+                if (hair != null) hair.shave(e.getWhen());
             }
         }
+        
     }
     
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseButton1Pressed = false;
+            if (trimmer != null) trimmer.setTrim(e.getWhen(), Trimmer.NOTHING);
         }
     }
     
@@ -190,47 +296,35 @@ abstract public class BaseShave extends MiniGame {
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * 
+     * Registers the hair as detatched.
      */
     protected void detatchHair(Hair h) {
+        if (h == null) return;
         h.removeMouseListener(this);
         remove(h);
         
+        boolean allRemoved = true;
         for (int i = 0; i < hair.length; i++) {
-            if (hair[i] != null && hair[i].equals(h)) {
+            if (hair!= null && hair[i] != null && hair[i].equals(h)) {
                 System.out.println("deleted");
                 hair[i] = null;
+                
+            } else if (hair[i] != null) {
+                allRemoved = false;
             }
         }
+        
+        if (allRemoved) finish();
     }
-    
-    
-    /* 
-     * Updates the frame for the minigame.
-     */
-    @Override
-    public void update(Key[] keys, long timeStamp) {
-        if (hair != null) {
-            for (int i = 0; i < hair.length; i++) {
-                if (hair[i] != null) hair[i].update(timeStamp);
-            }
-        }
-    }
-    
-    /* 
-     * This method is called when the MiniGame is resized.
-     * 
-     * @param width the new width of the MiniGame.
-     * @param height the new height of the MiniGame.
-     */
-    @Override
-    public void resized(int width, int height) { }
     
     /* 
      * This method is invoked to create the GUI of the application.
      */
     @Override
-    public void createGUI() {
+    final public void createGUI() {
+        trimmer = new Trimmer();
+        trimmer.setSize(calcTrimmerDim(getWidth(), getHeight()));
+        
         double[] size = getHairSize();
         if (size == null)
             throw new TerminalErrorMessage("Invallid method implementation!",
@@ -257,6 +351,59 @@ abstract public class BaseShave extends MiniGame {
             this.add(hair[i], i);
             hair[i].addMouseListener(this);
         }
+    }
+    
+    /* 
+     * Updates the frame for the minigame.
+     */
+    @Override
+    public void update(Key[] keys, long timeStamp) {
+        if (hair != null) {
+            for (int i = 0; i < hair.length; i++) {
+                if (hair[i] != null) hair[i].update(timeStamp);
+            }
+        }
+        
+        // Update the trimmer
+        if (trimmer != null) {
+            try {
+                int mouseOnScreenX = MouseInfo.getPointerInfo().getLocation().x;
+                int mouseOnScreenY = MouseInfo.getPointerInfo().getLocation().y;
+                int thisX = this.getLocationOnScreen().x;
+                int thisY = this.getLocationOnScreen().y;
+                Dimension trimmerDim = calcTrimmerDim(getWidth(), getHeight());
+                int dx = (int) (getTrimmerWidthAdjustmentFactor()  * trimmerDim.getWidth());
+                int dy = (int) (getTrimmerHeightAdjustmentFactor() * trimmerDim.getHeight());
+                
+                trimmer.setLocation(mouseOnScreenX - thisX + dx, mouseOnScreenY - thisY + dy);
+                trimmer.setSize(trimmerDim);
+                
+            } catch (IllegalStateException e) {
+                // This might occur when the window is going to or from full screen.
+                // No action should be taken.
+            }
+            
+            trimmer.update(timeStamp);
+        }
+    }
+    
+    /* 
+     * This method is called when the MiniGame is resized.
+     * 
+     * @param width the new width of the MiniGame.
+     * @param height the new height of the MiniGame.
+     */
+    @Override
+    public void resized(int width, int height) {
+        if (trimmer != null) trimmer.setSize(calcTrimmerDim(width, height));
+    }
+    
+    /* 
+     * @return the dimension of the Trimmer.
+     */
+    protected Dimension calcTrimmerDim(int newWidth, int newHeight) {
+        return new Dimension((int) (0.1 * newWidth),
+                             (int) (0.2 * newHeight));
     }
     
     /* 
@@ -296,9 +443,9 @@ abstract public class BaseShave extends MiniGame {
     abstract protected BufferedImage getHairImage();
     
     /* 
-     * @return the image used for the shave object.
+     * @return the image used for the trimmer object.
      */
-    abstract protected BufferedImage getShaveItemImage();
+    abstract protected BufferedImage[] getTrimmerSheet();
     
     /* 
      * @return the location of the hair patches on screen.
@@ -312,5 +459,20 @@ abstract public class BaseShave extends MiniGame {
      * Each element must contain two doubles which must each be between 0.0 and 1.0.
      */
     abstract protected double[] getHairSize();
+    
+    /* 
+     * @return the height adjustment factor for the hammer image.
+     *     0 means no adjustment, -1 means pushing the image downwards with it's height,
+     *     and 1 means pushing the image upwards with it's height.
+     */
+    abstract protected double getTrimmerWidthAdjustmentFactor();
+    
+    
+    /* 
+     * @return the width adjustment factor for the hammer image.
+     *     0 means no adjustment, -1 means pushing the image to the left with it's height,
+     *     and 1 means pushing the image to the right with it's height.
+     */
+    abstract protected double getTrimmerHeightAdjustmentFactor();
 }
 

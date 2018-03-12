@@ -17,6 +17,7 @@ import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException;
@@ -32,6 +33,14 @@ public class WhackAMole extends BaseWhack {
     @Override
     public Score getScore() {
         return null;
+    }
+    
+    /* 
+     * @return the dimension of the Hammer.
+     */
+    @Override
+    protected Dimension calcHammerDim(int newWidth, int newHeight) {
+        return super.calcHammerDim(newWidth, newHeight);
     }
     
     /* 
