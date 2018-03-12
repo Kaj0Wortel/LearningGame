@@ -8,8 +8,11 @@ import learningGame.MiniGame;
 
 import learningGame.log.Log2;
 
+import learningGame.music.PlayMusic;
+
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
+import learningGame.tools.ModCursors;
 import learningGame.tools.TerminalErrorMessage;
 import learningGame.tools.matrix.Vec;
 
@@ -26,6 +29,8 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import java.util.Random;
+
+import javax.sound.sampled.Clip;
 
 import javax.swing.JPanel;
 
@@ -186,10 +191,8 @@ abstract public class BaseShave extends MiniGame {
         
         // The time stamp (in ms) of when the trimmer started to swing.
         private long trimStartedTime = 0L;
-        // The time (in ms) it takes for a trimmer to fully swing.
-        private int moveTime = 0;
-        // The time (in ms) it takes before the trimmer is back to it's initial position.
-        private int waitTime = 0;
+        // The time (in ms) it takes to cycle through all trimmer images.
+        private int moveTime = 100;
         
         /* ------------------------------------------------------------------------------------------------------------
          * Trimmer constructor
@@ -219,14 +222,13 @@ abstract public class BaseShave extends MiniGame {
             
             if (state == TRIMMING) {
                 BufferedImage[] trimmerSheet = getTrimmerSheet();
-                
                 if (trimmerSheet != null && 
                     delta > moveTime * ((double) curTrimmerImageNum + 1.0) / trimmerSheet.length) {
-                    // Increase the image counter.
-                    // If the end of the hammerSheet has been reached, set the state to {@code WAITING}.
-                    if (++curTrimmerImageNum >= trimmerSheet.length - 1) {
-                        curTrimmerImageNum = trimmerSheet.length - 1;
-                        this.repaint();
+                    // Increase the image counter. If the end of the trimmerSheet has been reached,
+                    // set the counter to 0 and reset the timer.
+                    if (++curTrimmerImageNum > trimmerSheet.length - 1) {
+                        curTrimmerImageNum = 0;
+                        trimStartedTime = timeStamp;
                     }
                 }
             }
@@ -281,6 +283,7 @@ abstract public class BaseShave extends MiniGame {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseButton1Pressed = true;
             if (trimmer != null) trimmer.setTrim(e.getWhen(), Trimmer.TRIMMING);
+            PlayMusic.play(getTrimmerSoundClip());
             
             if (e.getSource() instanceof Hair) {
                 Hair hair = (Hair) e.getSource();
@@ -295,6 +298,7 @@ abstract public class BaseShave extends MiniGame {
         if (e.getButton() == MouseEvent.BUTTON1) {
             mouseButton1Pressed = false;
             if (trimmer != null) trimmer.setTrim(e.getWhen(), Trimmer.NOTHING);
+            PlayMusic.stop(getTrimmerSoundClip());
         }
     }
     
@@ -415,16 +419,22 @@ abstract public class BaseShave extends MiniGame {
     }
     
     /* 
-     * This method is always called when the MiniGame is about to shut down.
-     */
-    @Override
-    public void cleanUp() { }
-    
-    /* 
      * This method is invoked when the minigame is started.
      */
     @Override
-    public void startMiniGame() { }
+    protected void startMiniGame() {
+        // Set the empty cursor
+        lg.setCursor(ModCursors.EMPTY_CURSOR);
+    }
+    
+    /* 
+     * This method is always called when the MiniGame is about to shut down.
+     */
+    @Override
+    protected void cleanUp() {
+        // Set the default cursor.
+        lg.setCursor(ModCursors.DEFAULT_CURSOR);
+    }
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -482,5 +492,10 @@ abstract public class BaseShave extends MiniGame {
      *     and 1 means pushing the image to the right with it's height.
      */
     abstract protected double getTrimmerHeightAdjustmentFactor();
+    
+    /* 
+     * @return the clip used to play the trimmer sound.
+     */
+    abstract protected Clip getTrimmerSoundClip();
 }
 
