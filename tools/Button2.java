@@ -86,6 +86,7 @@ public class Button2 extends AbstractButton {
     public Button2(int barSize) throws IOException {
         this(0, 0, barSize);
     }
+    
     public Button2(int sizeX, int sizeY, int barSize) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
