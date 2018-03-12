@@ -123,8 +123,6 @@ abstract public class BaseWhack extends MiniGame {
                             curHammerImageNum = hammerSheet.length - 1;
                             state = WAITING;
                         }
-                        
-                        //BaseWhack.this.repaint();
                     }
                 }
                 
@@ -133,7 +131,6 @@ abstract public class BaseWhack extends MiniGame {
                 if (delta > moveTime + waitTime) {
                     state = NOTHING;
                     curHammerImageNum = 0;
-                    BaseWhack.this.repaint();
                 }
             }
         }
@@ -254,8 +251,6 @@ abstract public class BaseWhack extends MiniGame {
                         curWhackImageNum = whackSheet.length - 1;
                         state = OUT;
                     }
-                    
-                    BaseWhack.this.repaint();
                 }
                 
             } else if (state == OUT) {
@@ -274,14 +269,11 @@ abstract public class BaseWhack extends MiniGame {
                         curWhackImageNum = 0;
                         state = NOTHING;
                     }
-                    
-                    BaseWhack.this.repaint();
                 }
                 
             } else if (state == WHACKED) {
                 if (delta > 750) {
                     state = NOTHING;
-                    BaseWhack.this.repaint();
                 }
             }
         }

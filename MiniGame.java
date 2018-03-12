@@ -257,8 +257,8 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     protected void drawBackground(Graphics g, BufferedImage background) {
         if (background != null) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.scale(getWidth()  / background.getWidth(),
-                      getHeight() / background.getHeight());
+            g2d.scale(((double) getWidth())  / background.getWidth(),
+                      ((double) getHeight()) / background.getHeight());
             g.drawImage(background, 0, 0, null);
         }
     }

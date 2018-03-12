@@ -91,6 +91,9 @@ abstract public class BaseShave extends MiniGame {
                 long delta = timeStamp - prevTimeStamp;
                 speed.addVec(Vec.multiplyVec(delta / 1000.0, GRAVITY), true);
                 setLocationRel(xRel + speed.x(), yRel + speed.y());
+                
+            } else {
+                setLocationRel(xRel, yRel);
             }
             
             prevTimeStamp = timeStamp;
@@ -121,20 +124,28 @@ abstract public class BaseShave extends MiniGame {
          * For the object to be completely visible, all values must be between 0.0 and 1.0.
          */
         public void setBoundsRel(double x, double y, double width, double height) {
-            xRel = x;
-            yRel = y;
-            widthRel = width;
-            heightRel = height;
+            boolean resized = (getWidth() != width || getHeight() != height);
+            boolean relocated = (getX() != x || getY() != y);
             
-            if (xRel < -widthRel  || widthRel  > xRel ||
-                yRel < -heightRel || heightRel > yRel) {
-                BaseShave.this.detatchHair(this);
+            
+            if (resized || relocated) {
+                xRel = x;
+                yRel = y;
+                widthRel = width;
+                heightRel = height;
+                
+                BaseShave base = BaseShave.this;
+                
+                super.setBounds((int) ((x - width) * base.getWidth()),
+                                (int) ((y - height) * base.getHeight()),
+                                (int) (width * base.getWidth()),
+                                (int) (height * base.getHeight()));
+                
+                if (getX() - getWidth( ) < 0 || getX() > base.getWidth() ||
+                    getY() - getHeight() < 0 || getY() > base.getHeight()) {
+                    BaseShave.this.detatchHair(this);
+                }
             }
-            
-            super.setBounds((int) ((x - width) * BaseShave.this.getWidth()),
-                            (int) ((y - height) * BaseShave.this.getHeight()),
-                            (int) (width * BaseShave.this.getWidth()),
-                            (int) (height * BaseShave.this.getHeight()));
         }
         
         @Override
@@ -151,16 +162,12 @@ abstract public class BaseShave extends MiniGame {
             
             BufferedImage hair = getHairImage();
             if (hair != null) {
-                g2d.scale(((double) getWidth()) / hair.getWidth(), ((double) getHeight()) / hair.getHeight());
+                g2d.scale(((double) getWidth()) / hair.getWidth(),
+                          ((double) getHeight()) / hair.getHeight());
                 g2d.drawImage(hair, 0, 0, null);
             }
         }
     }
-    
-    
-    
-    
-    
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -219,6 +226,7 @@ abstract public class BaseShave extends MiniGame {
                     // If the end of the hammerSheet has been reached, set the state to {@code WAITING}.
                     if (++curTrimmerImageNum >= trimmerSheet.length - 1) {
                         curTrimmerImageNum = trimmerSheet.length - 1;
+                        this.repaint();
                     }
                 }
             }
@@ -245,8 +253,8 @@ abstract public class BaseShave extends MiniGame {
                 Graphics2D g2d = (Graphics2D) g;
                 
                 // Scale the graphics
-                g2d.scale(getWidth()  / trimmerSheet[draw].getWidth(),
-                          getHeight() / trimmerSheet[draw].getHeight());
+                g2d.scale(((double) getWidth())  / trimmerSheet[draw].getWidth(),
+                          ((double) getHeight()) / trimmerSheet[draw].getHeight());
                 
                 // Draw the image
                 g2d.drawImage(trimmerSheet[draw], 0, 0, null);
@@ -306,7 +314,6 @@ abstract public class BaseShave extends MiniGame {
         boolean allRemoved = true;
         for (int i = 0; i < hair.length; i++) {
             if (hair!= null && hair[i] != null && hair[i].equals(h)) {
-                System.out.println("deleted");
                 hair[i] = null;
                 
             } else if (hair[i] != null) {
@@ -324,6 +331,7 @@ abstract public class BaseShave extends MiniGame {
     final public void createGUI() {
         trimmer = new Trimmer();
         trimmer.setSize(calcTrimmerDim(getWidth(), getHeight()));
+        this.add(trimmer);
         
         double[] size = getHairSize();
         if (size == null)
