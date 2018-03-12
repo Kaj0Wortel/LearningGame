@@ -16,6 +16,7 @@ import learningGame.tools.TimerTool;
 
 
 // Java packages
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -63,6 +64,7 @@ public class LearningGame extends JFrame {
     final public static String imgSpriteDir = workingDir + "img\\sprites\\";
     final public static String imgWordDir = workingDir + "img\\word_images\\";
     final public static long TIME_OUT = 5000;
+    
     static {
         Log2.clear();
     }
@@ -121,6 +123,8 @@ public class LearningGame extends JFrame {
      */
     public LearningGame() {
         super(appName);
+        
+        this.getContentPane().setBackground(new Color(0, 0, 0, 255)); // Black
         
         SwingUtilities.invokeLater(() -> {
             // Set application image
