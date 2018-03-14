@@ -326,7 +326,7 @@ abstract public class BaseShave extends MiniGame {
             }
         }
         
-        if (allRemoved) finish();
+        if (allRemoved) finish(true);
     }
     
     /* 

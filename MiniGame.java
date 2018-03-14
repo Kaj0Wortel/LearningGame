@@ -75,8 +75,8 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     protected Color backgroundColor;
     protected Color counterColor;
     
-    // Denotes whether the time is up or not.
-    boolean timeIsUp = false;
+    // Whether the MiniGame succeded or not.
+    boolean succes = false;
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         timeLeft = timeOut - (time - startTimeStamp);
         
         if (started && (finished || timeLeft < 0)) {
-            finish();
+            finish(false);
         }
         
         if (started && !stopped) {
@@ -232,10 +232,13 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * This method is called when the mini game is finished.
      * No action is taken when not yet started, already finished, or already stopped,
      *     except for when the time up count down has finished. Then it calls the stop() method.
+     * 
+     * @param succes
      */
-    final public void finish() {
+    final public void finish(boolean succes) {
         if (started && !finished && !stopped) {
             finished = true;
+            this.succes = succes;
             removeListeners();
             
             if (timeLeft == null) {
@@ -355,7 +358,10 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
                     g2d.drawString(text, (getWidth() - textWidth) / 2, 50);
                     
                 } else {
-                    String text = "Time's Up !";
+                    String text = (succes
+                                       ? "felicitazioni!"
+                                       : "Time's up!");
+                    
                     g2d.setFont(textFont.deriveFont(100F));
                     Rectangle2D bounds = g2d.getFontMetrics().getStringBounds(text, g2d);
                     double textWidth = bounds.getWidth();
