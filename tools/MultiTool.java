@@ -321,7 +321,7 @@ public class MultiTool {
      * @return the elements from the output ArrayList in the same order as in the input array.
      *     Returns null iff the given array or class are null.
      * 
-     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED!
      * If you get class cast exceptions (e.g. cannot convert/cast Object[] to XXX[]), here's you problem.
      */
     @SuppressWarnings("unchecked")
@@ -341,7 +341,7 @@ public class MultiTool {
      * Makes a copy of an arrayList.
      * 
      * @param list ArrayList to copy
-     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED!
      */
     public static <T> ArrayList<T> copyArrayList(ArrayList<T> list) {
         if (list == null) return null;
@@ -359,7 +359,7 @@ public class MultiTool {
      * Makes a copy of an array.
      * 
      * @param array array to copy.
-     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED YET!
+     * WARNING! THIS FUNCTION HAS NOT BEEN EXTENSIVLY TESTED!
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] copyArray(T[] array) {
@@ -516,6 +516,15 @@ public class MultiTool {
         }
         
         return text;
+    }
+    
+    /* 
+     * Converts all spaces in the input String to spaces that are visible in html.
+     * 
+     * @param text text to process.
+     */
+    public static String toHTMLSpace(String text) {
+        return text.replaceAll(" ", "" + ((char) 0x00A0));
     }
     
     /*
