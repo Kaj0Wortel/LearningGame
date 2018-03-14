@@ -411,12 +411,18 @@ abstract public class BaseTopDownScroller extends MiniGame {
     }
     
     /* 
+     * This method is invoked when the listeners of the sub components should be added.
+     */
+    @Override
+    protected void addSubListeners() { }
+    
+    /* 
      * This method is invoked when the minigame is started.
      */
     @Override
     protected void startMiniGame() {
         // Set the empty cursor
-        lg.setCursor(ModCursors.EMPTY_CURSOR);
+        LG.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -424,7 +430,8 @@ abstract public class BaseTopDownScroller extends MiniGame {
      */
     @Override
     public void cleanUp() {
-        lg.setCursor(ModCursors.DEFAULT_CURSOR);
+        // Set the default cursor.
+        LG.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     /* 

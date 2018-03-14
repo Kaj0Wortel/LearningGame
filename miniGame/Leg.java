@@ -86,8 +86,8 @@ public class Leg extends BaseShave {
     @Override
     protected BufferedImage getHairImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
-                                                       workingDir + "img\\sprites\\Leg.png_hair",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Leg.png",
+                                                       WORKING_DIR + "img\\sprites\\Leg.png_hair",
                                                        50, 0,  // startX, startY
                                                        65, 3,  // endX, endY
                                                        15, 3)[0][0]; // sizeX, sizeY
@@ -105,8 +105,8 @@ public class Leg extends BaseShave {
     @Override
     protected BufferedImage[] getTrimmerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
-                                                       workingDir + "img\\sprites\\Leg.png_trimmer",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Leg.png",
+                                                       WORKING_DIR + "img\\sprites\\Leg.png_trimmer",
                                                        0, 0,      // startX, startY
                                                        8, 28,     // endX, endY
                                                        8, 14)[0]; // sizeX, sizeY
@@ -124,8 +124,8 @@ public class Leg extends BaseShave {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Leg.png",
-                                                       workingDir + "img\\sprites\\Leg.png_leg",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Leg.png",
+                                                       WORKING_DIR + "img\\sprites\\Leg.png_leg",
                                                        8, 0,       // startX, startY
                                                        50, 43,     // endX, endY
                                                        42, 43)[0][0]; // sizeX, sizeY
@@ -187,9 +187,18 @@ public class Leg extends BaseShave {
      */
     @Override
     protected Clip getTrimmerSoundClip() {
-        Clip clip = PlayMusic.createClip(LearningGame.workingDir + "music\\sfx\\trimmer_sfx.wav");
+        Clip clip = PlayMusic.createClip(LearningGame.WORKING_DIR + "music\\sfx\\trimmer_sfx.wav");
         clip.loop(-1);
         return clip;
+    }
+    
+    /* 
+     * @return the text to be displayed for the instruction panel. Supports HTML.
+     */
+    @Override
+    protected String getInstruction() {
+        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
+            + "<font color='orange'>O</font>: make<br>instruction";
     }
     
 }

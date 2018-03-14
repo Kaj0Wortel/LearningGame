@@ -42,7 +42,11 @@ abstract public class BaseShave extends MiniGame {
     // Whether mouse button 1 is pressed or not.
     protected boolean mouseButton1Pressed = false;
     
+    // The random object of this object.
     protected Random random = new Random();
+    
+    // Denotes whether the listeners were added.
+    protected boolean listenersAdded = false;
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -361,7 +365,19 @@ abstract public class BaseShave extends MiniGame {
             
             hair[i] = new Hair(loc[0], loc[1], size[0], size[1]);
             this.add(hair[i], i);
-            hair[i].addMouseListener(this);
+        }
+        
+        // No listeners can be attatched when the objects were null.
+        if (listenersAdded) addSubListeners();
+    }
+    
+    /* 
+     * This method is invoked when the listeners of the sub components should be added.
+     */
+    @Override
+    protected void addSubListeners() {
+        for (int i = 0; hair != null && i < hair.length; i++) {
+            if (hair[i] != null) hair[i].addMouseListener(this);
         }
     }
     
@@ -424,7 +440,7 @@ abstract public class BaseShave extends MiniGame {
     @Override
     protected void startMiniGame() {
         // Set the empty cursor
-        lg.setCursor(ModCursors.EMPTY_CURSOR);
+        LG.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -433,7 +449,7 @@ abstract public class BaseShave extends MiniGame {
     @Override
     protected void cleanUp() {
         // Set the default cursor.
-        lg.setCursor(ModCursors.DEFAULT_CURSOR);
+        LG.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     

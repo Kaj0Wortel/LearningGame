@@ -41,8 +41,8 @@ public class ToRow extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
-                                                       workingDir + "img\\sprites\\Row.png_background",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
+                                                       WORKING_DIR + "img\\sprites\\Row.png_background",
                                                        41, 0,         // startX, startY
                                                        91, 50,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
@@ -61,8 +61,8 @@ public class ToRow extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
-                                                    workingDir + "img\\sprites\\Row.png_obstacle",
+                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
+                                                    WORKING_DIR + "img\\sprites\\Row.png_obstacle",
                                                     9, 0,       // startX, startY
                                                     22, 57,     // endX, endY
                                                     13, 19)[0]  // sizeX, sizeY
@@ -82,8 +82,8 @@ public class ToRow extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
-                                                        workingDir + "img\\sprites\\Row.png_collectable",
+                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
+                                                        WORKING_DIR + "img\\sprites\\Row.png_collectable",
                                                         0, 0,    // startX, startY
                                                         9, 72,   // endX, endY
                                                         9, 9)[0] // sizeX, sizeY
@@ -102,8 +102,8 @@ public class ToRow extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Row.png",
-                                                       workingDir + "img\\sprites\\Row.png_player",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
+                                                       WORKING_DIR + "img\\sprites\\Row.png_player",
                                                        22, 0,      // startX, startY
                                                        41, 26,     // endX, endY
                                                        19, 13)[0]; // sizeX, sizeY
@@ -163,7 +163,7 @@ public class ToRow extends BaseTopDownScroller {
      */
     @Override
     protected Clip getDamagedClip(int type) {
-        return PlayMusic.createClip(workingDir + "music\\sfx\\breaking_wood_sfx.wav");
+        return PlayMusic.createClip(WORKING_DIR + "music\\sfx\\breaking_wood_sfx.wav");
     }
     
     /* 
@@ -171,7 +171,7 @@ public class ToRow extends BaseTopDownScroller {
      */
     @Override
     protected Clip getCollectedClip(int type) {
-        return PlayMusic.createClip(workingDir + "music\\sfx\\coin_sfx.wav");
+        return PlayMusic.createClip(WORKING_DIR + "music\\sfx\\coin_sfx.wav");
     }
     
     /* 
@@ -179,7 +179,7 @@ public class ToRow extends BaseTopDownScroller {
      */
     @Override
     protected Clip getBackgroundClip() {
-        Clip clip = PlayMusic.createClip(workingDir + "music\\background\\water_background.wav");
+        Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\water_background.wav");
         PlayMusic.setVolume(clip, 0.5F);
         return clip;
     }
@@ -187,6 +187,15 @@ public class ToRow extends BaseTopDownScroller {
     @Override
     protected double getPlayerAngle() {
         return 20;
+    }
+    
+    /* 
+     * @return the text to be displayed for the instruction panel. Supports HTML.
+     */
+    @Override
+    protected String getInstruction() {
+        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
+            + "<font color='orange'>O</font>: make<br>instruction";
     }
     
 }

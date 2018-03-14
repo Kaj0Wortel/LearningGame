@@ -45,6 +45,9 @@ abstract public class BaseWhack extends MiniGame {
     // The chance that a whackable spawns in spawns / sec
     protected double spawnChance = 0.5;
     
+    // Denotes whether the listeners were added.
+    protected boolean listenersAdded = false;
+    
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
@@ -371,8 +374,25 @@ abstract public class BaseWhack extends MiniGame {
             }
         }
         
+        // No listeners can be attatched when the objects were null.
+        if (listenersAdded) addSubListeners();
+        
         updateWhackBounds(width, height, calcWhackDim(width, height));
-        resized(getWidth(), getHeight());
+        //resized(getWidth(), getHeight());
+    }
+    
+    /* 
+     * This method is invoked when the listeners of the sub components should be added.
+     */
+    @Override
+    protected void addSubListeners() {
+        for (int i = 0; whacks != null && i < whacks.length; i++) {
+            for (int j = 0; whacks[i] != null && j < whacks[i].length; j++) {
+                if (whacks[i][j] != null) whacks[i][j].addMouseListener(this);
+            }
+        }
+        
+        listenersAdded = true;
     }
     
     /* 
@@ -489,7 +509,7 @@ abstract public class BaseWhack extends MiniGame {
     @Override
     protected void startMiniGame() {
         // Set the empty cursor
-        lg.setCursor(ModCursors.EMPTY_CURSOR);
+        LG.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -498,7 +518,8 @@ abstract public class BaseWhack extends MiniGame {
      */
     @Override
     protected void cleanUp() {
-        lg.setCursor(ModCursors.DEFAULT_CURSOR);
+        // Set the default cursor.
+        LG.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     

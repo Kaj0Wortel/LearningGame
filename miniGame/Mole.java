@@ -24,7 +24,7 @@ import java.io.IOException;
 
 
 public class Mole extends BaseWhack {
-    final private static String whackFile = LearningGame.workingDir + "music\\sfx\\whack_sfx.wav";
+    final private static String WHACK_FILE = LearningGame.WORKING_DIR + "music\\sfx\\whack_sfx.wav";
     
     public Mole(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
@@ -79,7 +79,7 @@ public class Mole extends BaseWhack {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(LearningGame.workingDir + "img\\green_dot.png")[0][0];
+            return LoadImages2.ensureLoadedAndGetImage(LearningGame.WORKING_DIR + "img\\green_dot.png")[0][0];
             
         } catch (IOException e) {
             Log2.write(e);
@@ -94,8 +94,8 @@ public class Mole extends BaseWhack {
     @Override
     protected BufferedImage[] getWhackSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
-                                                       workingDir + "img\\sprites\\Mole.png_whack",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Mole.png",
+                                                       WORKING_DIR + "img\\sprites\\Mole.png_whack",
                                                        26, 0,      // startX, startY
                                                        57, 56,     // endX, endY
                                                        31, 14)[0]; // sizeX, sizeY
@@ -113,8 +113,8 @@ public class Mole extends BaseWhack {
     @Override
     protected BufferedImage getWhackedImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
-                                                       workingDir + "img\\sprites\\Mole.png_whacked",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Mole.png",
+                                                       WORKING_DIR + "img\\sprites\\Mole.png_whacked",
                                                        57, 0,         // startX, startY
                                                        96, 13,        // endX, endY
                                                        39, 13)[0][0]; // sizeX, sizeY
@@ -131,8 +131,8 @@ public class Mole extends BaseWhack {
     @Override
     protected BufferedImage[] getHammerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(workingDir + "img\\sprites\\Mole.png",
-                                                       workingDir + "img\\sprites\\Mole.png_hammer",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Mole.png",
+                                                       WORKING_DIR + "img\\sprites\\Mole.png_hammer",
                                                        0, 0,       // startX, startY
                                                        26, 156,    // endX, endY
                                                        26, 39)[0]; // sizeX, sizeY
@@ -149,7 +149,7 @@ public class Mole extends BaseWhack {
      */
     @Override
     protected String getWhackMusicFile() {
-        return whackFile; 
+        return WHACK_FILE; 
     }
     
     /* 
@@ -162,4 +162,14 @@ public class Mole extends BaseWhack {
     protected void whackEvent(long timeStamp) {
         
     }
+    
+    /* 
+     * @return the text to be displayed for the instruction panel. Supports HTML.
+     */
+    @Override
+    protected String getInstruction() {
+        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
+            + "<font color='orange'>O</font>: make<br>instruction";
+    }
+    
 }
