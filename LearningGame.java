@@ -97,6 +97,9 @@ public class LearningGame extends JFrame {
     // The start screen
     private StartScreen startScreen;
     
+    // The score screen
+    private ScoreScreen scoreScreen;
+    
     // Array containing all different MiniGame classes.
     final private static Word[] words = MultiTool.listToArray
         (Word.createWordList(WORD_FILE, MINIGAME_DIR, IMG_WORD_DIR), Word.class);
@@ -129,15 +132,7 @@ public class LearningGame extends JFrame {
             this.setIconImage(new ImageIcon(appIconFile).getImage());
             
             createGUI();
-            
-            // Create and add the StartScreen
-            startScreen = new StartScreen(() -> {
-                remove(startScreen);
-                startScreen = null;
-                startMiniGames();
-            });
-            
-            this.add(startScreen);
+            reset();
             
             addKeyBindings();
             addListeners();
@@ -181,9 +176,6 @@ public class LearningGame extends JFrame {
                                 null, () -> PlayMusic.play(clip)); // start/stop clip
             PlayMusic.play(clip);
             /**/
-            //---------------------------------------------------------------------------------------------------------
-            //tmp
-            this.invalidate();
         });
     }
     
@@ -365,6 +357,11 @@ public class LearningGame extends JFrame {
             startScreen.setSize(getWidth() - in.left - in.right,
                                 getHeight() - in.top - in.bottom);
         }
+        
+        if (scoreScreen != null) {
+            scoreScreen.setSize(getWidth() - in.left - in.right,
+                                getHeight() - in.top - in.bottom);
+        }
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -386,7 +383,6 @@ public class LearningGame extends JFrame {
         public void componentResized(ComponentEvent e) {
             // Do resize stuff.
             updateSizeChildren();
-            
         }
     };
     
@@ -417,9 +413,6 @@ public class LearningGame extends JFrame {
             // Add keydetector
             curMiniGameHandler.useKeyDetector(kd);
             
-            // Update the size of the MiniGame.
-            updateSizeChildren();
-            
             // Start
             Log2.write("Started MiniGameHandler of word: " + word.toString(), Log2.INFO);
             curMiniGameHandler.begin();
@@ -427,10 +420,29 @@ public class LearningGame extends JFrame {
         } else {
             Log2.write("Finished word list!");
             System.out.println("Finished word list!");
-            ScoreScreen ss = new ScoreScreen(totalScore);
-            // Todo: show final result screen
+            scoreScreen = new ScoreScreen(totalScore, langQ, langA, "Again?", true, () -> reset());
+            this.add(scoreScreen);
         }
         
+        // Update the size of the active children.
+        updateSizeChildren();
+    }
+    
+    /* 
+     * Resets the application to the 
+     */
+    public void reset() {
+        curMiniGameHandler = null;
+        totalScore = new Score();
+        
+        // Create and add the StartScreen
+        startScreen = new StartScreen(() -> {
+            remove(startScreen);
+            startScreen = null;
+            startMiniGames();
+        });
+        
+        this.add(startScreen);
     }
     
     
