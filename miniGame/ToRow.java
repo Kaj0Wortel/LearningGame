@@ -27,12 +27,23 @@ import javax.sound.sampled.Clip;
 
 public class ToRow extends BaseTopDownScroller {
     
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Constructor
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     public ToRow(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
     
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     /* 
-     * This method returns the score.
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
      */
     @Override
     public Score getScore(Word word, int mistakes) {

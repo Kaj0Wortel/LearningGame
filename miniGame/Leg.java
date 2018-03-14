@@ -40,7 +40,9 @@ public class Leg extends BaseShave {
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * @return the dimension of the Trimmer.
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
      */
     @Override
     protected Dimension calcTrimmerDim(int newWidth, int newHeight) {
@@ -48,7 +50,10 @@ public class Leg extends BaseShave {
     }
     
     /* 
-     * This method returns the score.
+     * @return the score of this miniGame
+     * 
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
      */
     @Override
     public Score getScore(Word word, int mistakes) {

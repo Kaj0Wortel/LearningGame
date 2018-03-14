@@ -25,14 +25,24 @@ import java.io.IOException;
 
 
 public class Mole extends BaseWhack {
-    final private static String WHACK_FILE = LearningGame.WORKING_DIR + "music\\sfx\\whack_sfx.wav";
     
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Constructor
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     public Mole(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
     
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Functions
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     /* 
-     * This method returns the score.
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
      */
     @Override
     public Score getScore(Word word, int mistakes) {
@@ -153,7 +163,7 @@ public class Mole extends BaseWhack {
      */
     @Override
     protected String getWhackMusicFile() {
-        return WHACK_FILE; 
+        return WORKING_DIR + "music\\sfx\\whack_sfx.wav"; 
     }
     
     /* 

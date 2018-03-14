@@ -5,6 +5,7 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.Score;
+import learningGame.Word;
 
 import learningGame.log.Log2;
 
@@ -47,11 +48,13 @@ public class Harvest extends BaseShave {
     }
     
     /* 
-     * This method returns the score.
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
      */
     @Override
-    public Score getScore() {
-        return null;
+    public Score getScore(Word word, int mistakes) {
+        return new Score(100, 10, word, mistakes);
     }
     
     /* 
