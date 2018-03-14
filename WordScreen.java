@@ -31,14 +31,23 @@ import java.util.ArrayList;
 
 
 public class WordScreen extends JPanel {
+    // The location of the button sheet files for the good and the wrong button.
     final private static String GOOD_BTN_IMG_LOC = LearningGame.WORKING_DIR + "\\img\\button2_img_good_answer.png";
     final private static String WRONG_BTN_IMG_LOC = LearningGame.WORKING_DIR + "\\img\\button2_img_wrong_answer.png";
     
+    // The word to be questioned.
     final private Word word;
+    
+    // The question language.
     final private String langQ;
+    
+    // The answer language.
     final private String langA;
+    
+    // The action that is executed when the good word was choosen.
     final private Runnable r;
     
+    // The number of mistakes.
     private int mistakeCounter = 0;
     
     // GUI
@@ -186,7 +195,7 @@ public class WordScreen extends JPanel {
     /* 
      * This function is invoked when the correct button has been pressed.
      */
-    public void correctWord() {
+    protected void correctWord() {
         for (int i = 0; i < wordOptionButtons.length; i++) {
             for (int j = 0; j < wordOptionButtons[i].length; j++) {
                 wordOptionButtons[i][j].setEnabled(false);
@@ -205,8 +214,12 @@ public class WordScreen extends JPanel {
     /* 
      * This function is invoked when a wrong button has been pressed.
      */
-    public void wrongWord() {
+    protected void wrongWord() {
         mistakeCounter++;
+    }
+    
+    public int getNumMistakes() {
+        return mistakeCounter;
     }
     
     /* 
