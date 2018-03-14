@@ -14,16 +14,28 @@ import learningGame.tools.TerminalErrorMessage;
 
 
 public class MiniGameHandler {
-    final private Word word;
-    final private LearningGame lg;
-    final private String langQ;
-    final private String langA;
-    final private Runnable r;
-    final private long timeOut;
-    
+    // Screen aspect ratio.
     final private double ASPECT_RATIO = 4.0/3.0; // width / height
     
-    // State enum class
+    // The word.
+    final private Word word;
+    
+    // The learningGame.
+    final private LearningGame lg;
+    
+    // The question language.
+    final private String langQ;
+    
+    // The answer language.
+    final private String langA;
+    
+    // The action that is executed when the correct button has been pressed.
+    final private Runnable r;
+    
+    // The time out for the MiniGame.
+    final private long timeOut;
+    
+    // State enum class.
     private enum State {
         STATE_NONE,
             STATE_SHOW_WORD_SCREEN, STATE_END_WORD_SCREEN,
@@ -47,10 +59,13 @@ public class MiniGameHandler {
     private ScoreScreen scoreScreen;
     
     // The keydetecor used for this application
-    KeyDetector kd = null;
+    private KeyDetector kd = null;
     
     // The score of the MiniGame;
-    Score score;
+    private Score score;
+    
+    // The number of wrong choices were made in the wordScreen.
+    private int mistakes = 0;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -115,6 +130,7 @@ public class MiniGameHandler {
         // Remove wordscreen actions
         lg.remove(wordScreen);
         lg.setCursor(ModCursors.DEFAULT_CURSOR);
+        mistakes = wordScreen.getNumMistakes();
         
         startMiniGame();
     }
@@ -164,7 +180,7 @@ public class MiniGameHandler {
         state = State.STATE_END_MINI_GAME;
         
         // Remove miniGame actions
-        score = miniGame.getScore();
+        score = miniGame.getScore(word, 0); // xxx todo
         lg.remove(miniGame);
         lg.setCursor(ModCursors.DEFAULT_CURSOR);
         
@@ -185,7 +201,7 @@ public class MiniGameHandler {
             return;
             
         } else {
-            scoreScreen = new ScoreScreen(score);
+            scoreScreen = new ScoreScreen(score, langQ, langA, "Continue", false, () -> endScoreScreen());
         }
         
         // Change state
@@ -193,8 +209,6 @@ public class MiniGameHandler {
         
         // Set settings of the score screen
         lg.add(scoreScreen);
-        
-        scoreScreen.begin();
     }
     
     /* 
