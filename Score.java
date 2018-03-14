@@ -26,7 +26,8 @@ public class Score {
      * Creates an empty score object with no scores.
      */
     public Score() {
-        gamePoints = 0;
+        gamePoints = 0.0;
+        obtainableGamePoints = 0.0;
     }
     
     /* 
@@ -58,8 +59,6 @@ public class Score {
             Word word = entry.getKey();
             ArrayList<Integer> curList = wordTable.get(word);
             ArrayList<Integer> addList = entry.getValue();
-            System.out.println(curList);
-            System.out.println(addList);
             
             if (curList == null) {
                 if (addList != null) {
@@ -98,7 +97,7 @@ public class Score {
     /* 
      * @return the list containing the wrong words of this score.
      */
-    protected HashMap<Word, ArrayList<Integer>> getWordTable() {
+    public HashMap<Word, ArrayList<Integer>> getWordTable() {
         return wordTable;
     }
     
@@ -128,11 +127,26 @@ public class Score {
     }
     
     /* 
-     * Calculates the average number of mistakes per word
+     * Calculates the total number of mistakes.
+     */
+    public int calcMistakes() {
+        int mistakeCounter = 0;
+        
+        for (Map.Entry<Word, ArrayList<Integer>> entry : wordTable.entrySet()) {
+            for (Integer elem : entry.getValue()) {
+                mistakeCounter += elem;
+            }
+        }
+        
+        return mistakeCounter;
+    }
+    
+    /* 
+     * Calculates the average number of mistakes per word.
      */
     public double calcAvgMistakes() {
-        double wordCount = 0;
-        double mistakeCounter = 0;
+        int wordCount = 0;
+        int mistakeCounter = 0;
         
         for (Map.Entry<Word, ArrayList<Integer>> entry : wordTable.entrySet()) {
             for (Integer elem : entry.getValue()) {
@@ -142,7 +156,7 @@ public class Score {
             wordCount++;
         }
         
-        return mistakeCounter / wordCount;
+        return ((double) mistakeCounter) / wordCount;
     }
     
     /* 
