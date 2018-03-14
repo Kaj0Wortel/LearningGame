@@ -36,10 +36,10 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     final protected String WORKING_DIR = LearningGame.WORKING_DIR;
     
     // The font used to display the text.
-    final private static Font textFont = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
+    final private static Font TEXT_FONT = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
     
     // The total time left that the time is up text is displayed
-    final private static long TIME_UP_TOTAL = 1000;
+    final private static long TIME_UP_TOTAL = 1500;
     
     // The action that is executed after the minigame has ended.
     final private Runnable r;
@@ -353,7 +353,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
                 
                 if (timeLeft > 0) {
                     String text = timeLeft.toString();
-                    g2d.setFont(textFont.deriveFont(50F));
+                    g2d.setFont(TEXT_FONT.deriveFont(50F));
                     int textWidth = g2d.getFontMetrics().stringWidth(text);
                     g2d.drawString(text, (getWidth() - textWidth) / 2, 50);
                     
@@ -362,7 +362,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
                                        ? "felicitazioni!"
                                        : "Time's up!");
                     
-                    g2d.setFont(textFont.deriveFont(100F));
+                    g2d.setFont(TEXT_FONT.deriveFont(100F));
                     Rectangle2D bounds = g2d.getFontMetrics().getStringBounds(text, g2d);
                     double textWidth = bounds.getWidth();
                     double textHeight = bounds.getHeight();
