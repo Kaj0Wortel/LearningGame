@@ -6,6 +6,7 @@ package learningGame.miniGame;
 import learningGame.LearningGame;
 import learningGame.MiniGame;
 import learningGame.Score;
+import learningGame.Word;
 
 import learningGame.log.Log2;
 
@@ -30,9 +31,12 @@ public class ToRow extends BaseTopDownScroller {
        super(lg, r, timeOut);
     }
     
+    /* 
+     * This method returns the score.
+     */
     @Override
-    public Score getScore() {
-        return null;
+    public Score getScore(Word word, int mistakes) {
+        return new Score(100, 10, word, mistakes);
     }
     
     /* 

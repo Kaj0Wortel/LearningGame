@@ -5,6 +5,7 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.Score;
+import learningGame.Word;
 
 import learningGame.log.Log2;
 
@@ -50,8 +51,8 @@ public class Leg extends BaseShave {
      * This method returns the score.
      */
     @Override
-    public Score getScore() {
-        return null;
+    public Score getScore(Word word, int mistakes) {
+        return new Score(100, 10, word, mistakes);
     }
     
     /* 

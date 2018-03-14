@@ -373,8 +373,11 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     
     /* 
      * This method returns the score.
+     * 
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
      */
-    abstract public Score getScore(); // todo: determine score object
+    abstract public Score getScore(Word word, int mistakes);
     
     /* 
      * This method is called when the MiniGame is resized.
