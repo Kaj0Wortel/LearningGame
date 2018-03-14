@@ -141,8 +141,25 @@ public class Score {
         return mistakeCounter;
     }
     
+    public double calcCorrectRatio() {
+        int wordCounter = 0;
+        int correctCounter = 0;
+        
+        for (Map.Entry<Word, ArrayList<Integer>> entry : wordTable.entrySet()) {
+            for (Integer elem : entry.getValue()) {
+                if (elem == 0) correctCounter++;
+                
+                wordCounter++;
+            }
+        }
+        
+        return ((double) correctCounter) / wordCounter;
+    }
+    
     /* 
      * Calculates the average number of mistakes per word.
+     * 
+     * Note: Not tested yet.
      */
     public double calcAvgMistakes() {
         int wordCount = 0;
@@ -156,11 +173,13 @@ public class Score {
             wordCount++;
         }
         
-        return ((double) mistakeCounter) / wordCount;
+        return ((double) mistakeCounter) / ((double) wordCount);
     }
     
     /* 
      * Calculates the avarage number of wrong words.
+     * 
+     * Note: Not tested yet.
      */
     public double calcAvgWrongWords() {
         double wordCount = 0;

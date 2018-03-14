@@ -15,7 +15,7 @@ import learningGame.tools.TerminalErrorMessage;
 
 public class MiniGameHandler {
     // Screen aspect ratio.
-    final private double ASPECT_RATIO = 4.0/3.0; // width / height
+    final public static double ASPECT_RATIO = 4.0/3.0; // width / height
     
     // The word.
     final private Word word;
@@ -113,8 +113,7 @@ public class MiniGameHandler {
         
         // Set settings of the wordScreen
         lg.add(wordScreen);
-        wordScreen.setSize(lg.getWidth(), lg.getHeight());
-        wordScreen.setBounds(x, y, width, height);
+        setBounds(x, y, width, height);
     }
     
     /* 
@@ -161,7 +160,7 @@ public class MiniGameHandler {
         miniGame.setSize(width, height);
         miniGame.useKeyDetector(kd);
         miniGame.start();
-        repaint();
+        setBounds(x, y, width, height);
     }
     
     /* 
@@ -175,7 +174,7 @@ public class MiniGameHandler {
         state = State.STATE_END_MINI_GAME;
         
         // Remove miniGame actions
-        score = miniGame.getScore(word, 0); // xxx todo
+        score = miniGame.getScore(word, mistakes);
         lg.remove(miniGame);
         lg.setCursor(ModCursors.DEFAULT_CURSOR);
         
@@ -205,7 +204,7 @@ public class MiniGameHandler {
         
         // Set settings of the score screen
         lg.add(scoreScreen);
-        repaint();
+        setBounds(x, y, width, height);
     }
     
     /* 

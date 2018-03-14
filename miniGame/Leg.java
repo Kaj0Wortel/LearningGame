@@ -57,7 +57,7 @@ public class Leg extends BaseShave {
      */
     @Override
     public Score getScore(Word word, int mistakes) {
-        return new Score(100, 10, word, mistakes);
+        return new Score(50, 100, word, mistakes);
     }
     
     /* 

@@ -222,13 +222,16 @@ public class Word {
      */
     @Override
     public String toString() {
+        return "[" + (wordTable == null ? "null" : wordTable.toString()) + "]";
+    }
+    
+    public String toLongString() {
         return "["
             + this.getClass().getName()
             + "  wordTable = \"" + (wordTable == null ? "null" : wordTable.toString()) + "\""
             + ", miniGameClass = \"" + (miniGameClass == null ? "null" : miniGameClass.getName()) + "\""
             + ", wordImageLoc = \"" + wordImageLoc + "\"]";
     }
-    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Get functions

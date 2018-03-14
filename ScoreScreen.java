@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 // note: update order of imports!
 // tmp
@@ -90,6 +91,11 @@ public class ScoreScreen extends JPanel {
         this.r = r;
         
         createGUI();
+        
+        // JScrollPane's have some display issues when created and then directly shown directly after.
+        if (wrongWordsScrollPane != null) {
+            SwingUtilities.invokeLater(() -> wrongWordsScrollPane.getViewport().revalidate());
+        }
     }
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -104,7 +110,8 @@ public class ScoreScreen extends JPanel {
         Font fontUsed = FontLoader.getLocalFont("cousine\\Cousine-Bold.ttf").deriveFont(fontSize);
         
         if (full) {
-            String wrongWordsText = "<html><br>   " + MultiTool.fillSpaceRight(langQ, 30) + "   " + langA;
+            String wrongWordsText = "<html><br>   Incorrect words:"
+                + "<br><br>   " + MultiTool.fillSpaceRight(langQ, 30) + "   " + langA;
             ArrayList<Word> list = score.listWrongWords();
             for (int i = 0; i < list.size(); i++) {
                 String question = list.get(i).getWord(langQ);
@@ -123,18 +130,16 @@ public class ScoreScreen extends JPanel {
             
             add(wrongWordsScrollPane);
             
-            correctWordRatio = new JLabel("<html>Mistakes made: " + score.calcMistakes() + "</html>");
-            correctWordRatio.setFont(fontUsed);
-            correctWordRatio.setHorizontalAlignment(SwingConstants.CENTER);
-            add(correctWordRatio);
+            String ratio = MultiTool.doubleToStringDecimals(100*score.calcCorrectRatio(), 2) + "%";
+            correctWordRatio = new JLabel("<html>Words correct: " + ratio + "</html>");
             
         } else {
-            String ratio = MultiTool.doubleToStringDecimals(100*Math.abs(score.calcAvgMistakes() - 1), 2) + "%";
-            correctWordRatio = new JLabel("<html>Words correct: " + ratio + "</html>");
-            correctWordRatio.setFont(fontUsed);
-            correctWordRatio.setHorizontalAlignment(SwingConstants.CENTER);
-            add(correctWordRatio);
+            correctWordRatio = new JLabel("<html>Mistakes made: " + score.calcMistakes() + "</html>");
         }
+        
+        correctWordRatio.setFont(fontUsed);
+        correctWordRatio.setHorizontalAlignment(SwingConstants.CENTER);
+        add(correctWordRatio);
         
         String gameScore = MultiTool.doubleToStringDecimals(100*score.calcAvgGameScore(), 2) + "%";
         gameRatio = new JLabel("<html>Game score: " + gameScore + "</html>");
@@ -144,6 +149,7 @@ public class ScoreScreen extends JPanel {
         
         try {
             continueBtn = new Button2(0, 0, 20, continueName);
+            
         } catch (IOException e) {
             Log2.write(e);
             e.printStackTrace();
@@ -166,6 +172,25 @@ public class ScoreScreen extends JPanel {
     
     @Override
     public void setBounds(int x, int y, int width, int height) {
+        if (full) {
+            int newWidth;
+            int newHeight;
+            
+            if (height * MiniGameHandler.ASPECT_RATIO > width) {
+                newWidth = width;
+                newHeight = (int) (width / MiniGameHandler.ASPECT_RATIO);
+                
+            } else {
+                newWidth = (int) (height * MiniGameHandler.ASPECT_RATIO);
+                newHeight = height;
+            }
+            
+            x = (width  - newWidth)  / 2;
+            y = (height - newHeight) / 2;
+            width = newWidth;
+            height = newHeight;
+        }
+        
         super.setBounds(x, y, width, height);
         
         int compWidth = width - 2*BAR_SIZE;
@@ -220,22 +245,22 @@ public class ScoreScreen extends JPanel {
         frame.setLocation(50, 50);
         frame.setSize(800, 800);
         
-        Score score = new Score(50, 100,
+        Score score = new Score(100, 100,
                                 new Word(new String[] {"appel", "apple"},
                                          new String[] {"Dutch", "English"},
-                                         MiniGame.class, "test"), 1);
+                                         MiniGame.class, "test"), 0);
         
-        Score score_add1 = new Score(50, 100,
+        Score score_add1 = new Score(75, 100,
                                      new Word(new String[] {"broodrooster", "toaster"},
                                               new String[] {"Dutch", "English"},
                                               MiniGame.class, "test"), 0);
         
-        Score score_add2 = new Score(50, 100,
+        Score score_add2 = new Score(25, 100,
                                      new Word(new String[] {"1", "2"},
                                               new String[] {"Dutch", "English"},
                                               MiniGame.class, "test"), 1);
         
-        Score score_add3 = new Score(50, 100,
+        Score score_add3 = new Score(0, 100,
                                      new Word(new String[] {"3", "4"},
                                               new String[] {"Dutch", "English"},
                                               MiniGame.class, "test"), 1);

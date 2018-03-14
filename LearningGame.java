@@ -213,14 +213,25 @@ public class LearningGame extends JFrame {
      * Adds the keybindings to the frame.
      */
     private void addKeyBindings() {
-        // Add keybinding for full screen (F5 key)
+        // Add keybinding for switching full screen (F5 key)
         this.getRootPane().getInputMap().put(Key.F5.toKeyStroke(),
-                                             "full_screen");
-        this.getRootPane().getActionMap().put("full_screen", 
+                                             "toggle_full_screen");
+        this.getRootPane().getActionMap().put("toggle_full_screen", 
                                               new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setFullScreen(!fullScreen);
+            }
+        });
+        
+        // Add keybinding for exiting full screen (ESC key)
+        this.getRootPane().getInputMap().put(Key.ESC.toKeyStroke(),
+                                             "exit_full_screen");
+        this.getRootPane().getActionMap().put("exit_full_screen", 
+                                              new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setFullScreen(false);
             }
         });
     }
@@ -301,6 +312,8 @@ public class LearningGame extends JFrame {
      * @param fs determines whether the frame must be set in full screen or not.
      */
     public void setFullScreen(boolean fs) {
+        if (fs == fullScreen) return;
+        
         fullScreen = fs;
         
         //setVisible(false);
@@ -425,16 +438,31 @@ public class LearningGame extends JFrame {
             // Start
             Log2.write("Started MiniGameHandler of word: " + word.toString(), Log2.INFO);
             curMiniGameHandler.begin();
+            repaint();
             
         } else {
             Log2.write("Finished word list!");
-            System.out.println("Finished word list!");
             
             // Log results
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(RESULT_FILE_LOC, true))) {
-                String logText = totalScore.toString();
-                bw.write(logText, 0, logText.length());
-                bw.newLine();
+                String[] logText = new String[] {
+                    "----------------------------------------",
+                        "Total game points: " + totalScore.getGamePoints() + " / " + totalScore.getObtainableGamePoints(),
+                        "Avg game score: " + totalScore.calcAvgGameScore(),
+                        "Total mistakes: " + totalScore.calcMistakes(),
+                        "Wrong words: "
+                };
+                
+                for (String text : logText) {
+                    bw.write(text, 0, text.length());
+                    bw.newLine();
+                }
+                
+                for (Word logWord : totalScore.listWrongWords()) {
+                    String text = logWord.toString();
+                    bw.write(text, 0, text.length());
+                    bw.newLine();
+                }
                 
             } catch (IOException e) {
                 Log2.write(e);
@@ -467,7 +495,6 @@ public class LearningGame extends JFrame {
             startMiniGames();
         });
         
-        System.out.println("reset!");
         add(startScreen);
         
         // Update the size of the active children.
