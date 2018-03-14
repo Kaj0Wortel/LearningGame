@@ -31,7 +31,7 @@ import java.util.Hashtable;
 
 
 public class FontLoader {
-    final private static String staticPath = LearningGame.workingDir + "font\\";
+    final private static String staticPath = LearningGame.WORKING_DIR + "font\\";
     final public static Hashtable<String, Font> fonts = new Hashtable<String, Font>();
     
     

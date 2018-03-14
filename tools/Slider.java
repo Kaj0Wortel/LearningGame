@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 
 
 public class Slider extends JPanel{
-    public static String workingPath = LearningGame.workingDir + "img\\";
+    public static String WORKING_DIR = LearningGame.WORKING_DIR + "img\\";
     private static double SPACING_FACTOR = 0.25;
     private int spacing = 0;
     
@@ -79,27 +79,27 @@ public class Slider extends JPanel{
     public Slider(final int st, final int bt) throws IOException, IIOException {
         this(// leftEnd
              LoadImages2.ensureLoadedAndGetImage
-                 (workingPath + "slider_img_TYPE_00" + st + ".png", // File loc
-                  workingPath + "slider_img_TYPE_00" + st + ".png_left_right_end", // Name
+                 (WORKING_DIR + "slider_img_TYPE_00" + st + ".png", // File loc
+                  WORKING_DIR + "slider_img_TYPE_00" + st + ".png_left_right_end", // Name
                   0, 0,   // Start X/Y
                   12, 48, // End X/Y
                   12, 24  // Size X/Y per image
                  )[0][0],
              // middle
              LoadImages2.ensureLoadedAndGetImage
-                 (workingPath + "slider_img_TYPE_00" + st + ".png",  // File loc
-                  workingPath + "slider_img_TYPE_00" + st + ".png_middle_bar", // Name
+                 (WORKING_DIR + "slider_img_TYPE_00" + st + ".png",  // File loc
+                  WORKING_DIR + "slider_img_TYPE_00" + st + ".png_middle_bar", // Name
                   12, 0,  // Start X/Y
                   36, 24, // End X/Y
                   24, 24  // Size X/Y per image
                  )[0][0],
              // rightEnd
              LoadImages2.ensureLoadedAndGetImage
-                 (workingPath + "slider_img_TYPE_00" + st + ".png_left_right_end")[0][1], // Name
+                 (WORKING_DIR + "slider_img_TYPE_00" + st + ".png_left_right_end")[0][1], // Name
              // button
              LoadImages2.ensureLoadedAndGetImage
-                 (workingPath + "slider_img_TYPE_00" + bt + ".png", // File loc
-                  workingPath + "slider_img_TYPE_00" + bt + ".png_middle_button", // name
+                 (WORKING_DIR + "slider_img_TYPE_00" + bt + ".png", // File loc
+                  WORKING_DIR + "slider_img_TYPE_00" + bt + ".png_middle_button", // name
                   12, 24,  // Start X/Y
                   36, 48, // End X/Y
                   24, 24  // Size X/Y per image

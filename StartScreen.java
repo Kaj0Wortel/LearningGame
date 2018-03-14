@@ -31,7 +31,7 @@ public class StartScreen extends JPanel {
     
     // Background image and file location.
     private BufferedImage background;
-    final private static String backgroundLoc = LearningGame.workingDir + "img\\blue_dot.png";
+    final private static String backgroundLoc = LearningGame.WORKING_DIR + "img\\blue_dot.png";
     
     
     /* 

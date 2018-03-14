@@ -49,20 +49,18 @@ import javax.swing.SwingUtilities;
 
 public class LearningGame extends JFrame {
     /* 
-     * 
      * TMP
-     * 
      */
     String langQ = "Italian";
     String langA = "English";
     
     
     // The root of where the files are located.
-    final public static String workingDir = System.getProperty("user.dir") + "\\learningGame\\";
-    final public static String wordFile = workingDir + "data\\words.csv";
-    final public static String miniGameDir = workingDir + "miniGame\\";
-    final public static String imgSpriteDir = workingDir + "img\\sprites\\";
-    final public static String imgWordDir = workingDir + "img\\word_images\\";
+    final public static String WORKING_DIR = System.getProperty("user.dir") + "\\learningGame\\";
+    final public static String WORD_FILE = WORKING_DIR + "data\\words.csv";
+    final public static String MINIGAME_DIR = WORKING_DIR + "miniGame\\";
+    final public static String IMG_SPRITE_DIR = WORKING_DIR + "img\\sprites\\";
+    final public static String IMG_WORD_DIR = WORKING_DIR + "img\\word_images\\";
     final public static long TIME_OUT = 5000;
     
     static {
@@ -73,7 +71,7 @@ public class LearningGame extends JFrame {
     final public static String appName = "application name";
     
     // The image file name for the application.
-    final public static String appIconFile = workingDir + "img\\icon.png";
+    final public static String appIconFile = WORKING_DIR + "img\\icon.png";
     
     // The frames per second.
     final public static int FPS = 30;
@@ -101,7 +99,7 @@ public class LearningGame extends JFrame {
     
     // Array containing all different MiniGame classes.
     final private static Word[] words = MultiTool.listToArray
-        (Word.createWordList(wordFile, miniGameDir, imgWordDir), Word.class);
+        (Word.createWordList(WORD_FILE, MINIGAME_DIR, IMG_WORD_DIR), Word.class);
     
     // Array containing the order in which the words are asked.
     private Word[] wordOrder;
@@ -154,7 +152,7 @@ public class LearningGame extends JFrame {
             
             /** DONT EVER USE ANY METHODS FROM THE "Clip" CLASS! **/
             /*
-            String clipFileName = workingDir + "music\\test.wav";
+            String clipFileName = WORKING_DIR + "music\\test.wav";
             Clip clip = PlayMusic.createClip(clipFileName);
             
             /* Only play a clip *//*

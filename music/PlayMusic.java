@@ -27,7 +27,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class PlayMusic {
     // Working directory for the music files.
-    final protected static String workingDir = LearningGame.workingDir + "music\\";
+    final protected static String WORKING_DIR = LearningGame.WORKING_DIR + "music\\";
     
     // Table containing all file names which correspond to a currently created clips.
     protected static Hashtable<String, Clip> clipTable = new Hashtable<String, Clip>();

@@ -25,44 +25,57 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JLayeredPane;
 
 
 abstract public class MiniGame extends JLayeredPane implements MouseMotionListener, MouseListener {
-    // The working directory
-    final protected String workingDir = LearningGame.workingDir;
-    
     // The font used to display the text.
     final private static Font textFont = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
     
+    // The total time left that the time is up text is displayed
+    final private static long TIME_UP_TOTAL = 1000;
+    
     // The action that is executed after the minigame has ended.
-    final private Runnable r;
+    final private Runnable R;
     
-    // The time to complete the miniGame
-    final protected long timeOut;
-    
-    // Instance of the parent.
-    final protected LearningGame lg;
-    
-    // The KeyDetector used to detect the key presses between updates.
-    private KeyDetector kd;
-    
-    // The time stamp from when the start() method was invoked.
-    protected long startTimeStamp;
-    
-    // The total time left to complete the MiniGame.
-    protected Long timeLeft;
+    // The instruction panel
+    private InstructionPanel ip;
     
     // Denotes whether the application has started.
     private boolean started = false;
     // Deonotes whether the application has ended.
     private boolean stopped = false;
     
+    // The KeyDetector used to detect the key presses between updates.
+    private KeyDetector kd;
+    
+    // The time stamp from when the time was up.
+    private Long timeUpTimeStamp;
+    
+    
+    // The working directory
+    final protected String WORKING_DIR = LearningGame.WORKING_DIR;
+    
+    // Instance of the parent.
+    final protected LearningGame LG;
+    
+    // The time to complete the miniGame
+    final protected long TIME_OUT;
+    
+    // The time stamp from when the start() method was invoked.
+    protected long startTimeStamp;
+    
+    // The total time left to complete the MiniGame.
+    // Must be an instance of Object to check for initialisation.
+    protected Long timeLeft;
+    
     // The color of the background and the counter
     protected Color backgroundColor;
     protected Color counterColor;
+    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -72,9 +85,9 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         super();
         
         this.setLayout(null);
-        this.lg = lg;
-        this.r = r;
-        this.timeOut = timeOut;
+        this.LG = lg;
+        this.R = r;
+        this.TIME_OUT = timeOut;
         
         backgroundColor = new Color(190, 190, 190);
         counterColor = Color.BLACK;
@@ -145,29 +158,31 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     }
     
     /* 
-     * Shows the instructions
-     */
-    final public void showInstr() {
-        
-    }
-    
-    public String getInstructionText() {
-        return "";
-    }
-    
-    /* 
      * Starts the current minigame.
      */
     final public void start() {
         if (!started && !stopped) {
             createGUI();
-            addListeners();
-            resized(getWidth(), getHeight());
-            startMiniGame();
-            timeLeft = timeOut;
-            startTimeStamp = System.currentTimeMillis();
-            started = true;
+            ip = new InstructionPanel(getInstruction(), "Start!", () -> instructionRead());
+            this.add(ip, 0);
+            // Update size and location of the instruction panel.
+            setBounds(getX(), getY(), getWidth(), getHeight());
         }
+    }
+    
+    /* 
+     * Shows the instructions
+     */
+    final private void instructionRead() {
+        this.remove(ip);
+        ip = null;
+        resized(getWidth(), getHeight());
+        startMiniGame();
+        timeLeft = TIME_OUT;
+        startTimeStamp = System.currentTimeMillis();
+        addListeners();
+        addSubListeners();
+        started = true;
     }
     
     /* 
@@ -176,7 +191,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     final public void update() {
         if (started) {
             long time = System.currentTimeMillis();
-            timeLeft = timeOut - (time - startTimeStamp);
+            timeLeft = TIME_OUT - (time - startTimeStamp);
             
             if (kd != null) {
                 kd.update();
@@ -198,7 +213,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         if (!stopped) {
             stopped = true;
             cleanUp();
-            if (r != null) r.run();
+            if (R != null) R.run();
         }
     }
     
@@ -223,6 +238,10 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
                            (height != getHeight() && getHeight() != 0);
         
         super.setBounds(x, y, width, height);
+        if (ip != null) {
+            ip.setSize((int) (width * 0.6), (int) (height * 0.6));
+            ip.setLocation((int) (width * 0.2), (int) (height * 0.2));
+        }
         
         if (resized) {
             resized(width, height);
@@ -258,22 +277,53 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         
         // Restore the g2d transformation.
         g2d.setTransform(g2dTrans);
+    }
+    
+    /* 
+     * Overrides the paint method.
+     * Note:
+     * - ONLY use this method to draw something on top of all components.
+     * - PUT ALL OTHER STUFF IN {@code paintComponent}!
+     * - NEVER remove the call to the super method.
+     */
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        
+        // Convert graphics object
+        Graphics2D g2d = (Graphics2D) g;
+        
+        // Retrieve the current g2d transformation.
+        AffineTransform g2dTrans = g2d.getTransform();
         
         if (timeLeft != null) {
-            String text;
+            g2d.setPaint(counterColor);
+            
             if (timeLeft > 0) {
-                text = timeLeft.toString();
+                String text = timeLeft.toString();
+                g2d.setFont(textFont.deriveFont(50F));
+                int textWidth = g2d.getFontMetrics().stringWidth(text);
+                g2d.drawString(text, (getWidth() - textWidth) / 2, 50);
                 
             } else {
-                text = "Time's Up !";
+                String text = "Time's Up !";
+                g2d.setFont(textFont.deriveFont(100F));
+                Rectangle2D bounds = g2d.getFontMetrics().getStringBounds(text, g2d);
+                double textWidth = bounds.getWidth();
+                double textHeight = bounds.getHeight();
+                //g2d.getFontMetrics().getAscent() + g2d.getFontMetrics().getDescent();
+                int ascent = g2d.getFontMetrics().getAscent();
+                
+                double angle = Math.PI/12.0 * Math.sin
+                         ((System.currentTimeMillis() % 500L) / 500.0 * 2*Math.PI);
+                
+                g2d.rotate(angle, getWidth() / 2, getHeight() / 2);
+                g2d.drawString(text, (int) ((getWidth() - textWidth) / 2), (int) ((getHeight() - textHeight) / 2 + ascent));
             }
-            // todo: add bar for text
-            // todo: change size of the font
-            g2d.setPaint(counterColor);
-            g2d.setFont(textFont.deriveFont(50F));
-            int textWidth = g2d.getFontMetrics().stringWidth(text);
-            g2d.drawString(text, (getWidth() - textWidth) / 2, 50);
         }
+        
+        // Restore the g2d transformation.
+        g2d.setTransform(g2dTrans);
     }
     
     /* 
@@ -302,6 +352,11 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * This method is invoked when the minigame is started.
      */
     abstract protected void startMiniGame();
+    
+    /* 
+     * This method is invoked when the listeners of the sub components should be added.
+     */
+    abstract protected void addSubListeners();
     
     /* 
      * The update method. Put all time based stuff in here.
@@ -333,6 +388,12 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * @return the background image.
      */
     abstract protected BufferedImage getBackgroundImage();
+    
+    /* 
+     * @return the text to be displayed for the instruction panel. Supports HTML.
+     */
+    abstract protected String getInstruction();
+    
     
     // tmp
     public static void main(String[] args) {

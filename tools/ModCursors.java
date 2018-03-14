@@ -26,9 +26,9 @@ import javax.imageio.ImageIO;
 
 
 public class ModCursors {
-    final public static String workingDir = LearningGame.workingDir;
+    final public static String WORKING_DIR = LearningGame.WORKING_DIR;
     
-    final public static Cursor EMPTY_CURSOR = createCursor(workingDir + "img\\", "empty_square.png");
+    final public static Cursor EMPTY_CURSOR = createCursor(WORKING_DIR + "img\\", "empty_square.png");
     final public static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
     
     private static Cursor createCursor(String path, String fileName) {

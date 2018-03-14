@@ -36,7 +36,7 @@ import javax.swing.SwingUtilities;
 
 
 public class Button2 extends AbstractButton {
-    final protected static String imgLoc = LearningGame.workingDir + "img\\";
+    final protected static String IMG_LOC = LearningGame.WORKING_DIR + "img\\";
     final private Button2 thisButton = this;
     
     final public static int NORMAL = 0;
@@ -90,7 +90,7 @@ public class Button2 extends AbstractButton {
     public Button2(int sizeX, int sizeY, int barSize) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
-                 (imgLoc + "button2_img_TYPE_001.png", 16, 16),
+                 (IMG_LOC + "button2_img_TYPE_001.png", 16, 16),
              Button2.TYPE_TURNED);
     }
     
@@ -101,7 +101,7 @@ public class Button2 extends AbstractButton {
     public Button2(int sizeX, int sizeY, int barSize, String text) throws IOException {
         this(sizeX, sizeY, barSize,
              LoadImages2.ensureLoadedAndGetImage
-                 (imgLoc + "button2_img_TYPE_001.png", 16, 16),
+                 (IMG_LOC + "button2_img_TYPE_001.png", 16, 16),
              Button2.TYPE_TURNED, text);
     }
     

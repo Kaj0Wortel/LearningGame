@@ -31,8 +31,8 @@ import java.util.ArrayList;
 
 
 public class WordScreen extends JPanel {
-    final private static String goodButtonImgsLoc = LearningGame.workingDir + "\\img\\button2_img_good_answer.png";
-    final private static String wrongButtonImgsLoc = LearningGame.workingDir + "\\img\\button2_img_wrong_answer.png";
+    final private static String GOOD_BTN_IMG_LOC = LearningGame.WORKING_DIR + "\\img\\button2_img_good_answer.png";
+    final private static String WRONG_BTN_IMG_LOC = LearningGame.WORKING_DIR + "\\img\\button2_img_wrong_answer.png";
     
     final private Word word;
     final private String langQ;
@@ -84,7 +84,7 @@ public class WordScreen extends JPanel {
                 
             Button2 corBtn = wordOptionButtons[x][y]
                 = new Button2(10, LoadImages2.ensureLoadedAndGetImage
-                                  (goodButtonImgsLoc,
+                                  (GOOD_BTN_IMG_LOC,
                                    0, 0,   // Start x/y
                                    48, 80, // End x/y
                                    16, 16) // Width/height
@@ -142,7 +142,7 @@ public class WordScreen extends JPanel {
                     // Create new buttons
                     wordOptionButtons[i][j]
                         = new Button2(10, LoadImages2.ensureLoadedAndGetImage
-                                          (wrongButtonImgsLoc,
+                                          (WRONG_BTN_IMG_LOC,
                                            0, 0,   // Start x/y
                                            48, 80, // End x/y
                                            16, 16) // Width/height

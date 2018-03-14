@@ -324,7 +324,7 @@ public class Log2 {
         // NOTE: do NOT use a static constant for this.
         // There will be problems when the class is loaded.
         if (!initiated) {
-            if (logFile == null) logFile = new File(LearningGame.workingDir + "log\\log.log");
+            if (logFile == null) logFile = new File(LearningGame.WORKING_DIR + "log\\log.log");
             initiated = true;
         }
     }
