@@ -45,9 +45,6 @@ abstract public class BaseShave extends MiniGame {
     // The random object of this object.
     protected Random random = new Random();
     
-    // Denotes whether the listeners were added.
-    protected boolean listenersAdded = false;
-    
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -312,7 +309,7 @@ abstract public class BaseShave extends MiniGame {
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * Registers the hair as detatched.
+     * Registers the hair as detatched (fallen of the screen).
      */
     protected void detatchHair(Hair h) {
         if (h == null) return;
@@ -366,9 +363,15 @@ abstract public class BaseShave extends MiniGame {
             hair[i] = new Hair(loc[0], loc[1], size[0], size[1]);
             this.add(hair[i], i);
         }
-        
-        // No listeners can be attatched when the objects were null.
-        if (listenersAdded) addSubListeners();
+    }
+    
+    /* 
+     * This method is invoked when the minigame is started.
+     */
+    @Override
+    protected void startMiniGame() {
+        // Set the empty cursor
+        lg.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -378,6 +381,16 @@ abstract public class BaseShave extends MiniGame {
     protected void addSubListeners() {
         for (int i = 0; hair != null && i < hair.length; i++) {
             if (hair[i] != null) hair[i].addMouseListener(this);
+        }
+    }
+    
+    /* 
+     * This method is invoked when the listeners of the sub components should be removed.
+     */
+    @Override
+    protected void removeSubListeners() {
+        for (int i = 0; hair != null && i < hair.length; i++) {
+            if (hair[i] != null) hair[i].removeMouseListener(this);
         }
     }
     
@@ -435,21 +448,12 @@ abstract public class BaseShave extends MiniGame {
     }
     
     /* 
-     * This method is invoked when the minigame is started.
-     */
-    @Override
-    protected void startMiniGame() {
-        // Set the empty cursor
-        LG.setCursor(ModCursors.EMPTY_CURSOR);
-    }
-    
-    /* 
      * This method is always called when the MiniGame is about to shut down.
      */
     @Override
     protected void cleanUp() {
         // Set the default cursor.
-        LG.setCursor(ModCursors.DEFAULT_CURSOR);
+        lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     

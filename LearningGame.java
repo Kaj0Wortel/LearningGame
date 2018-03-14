@@ -29,7 +29,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 //import java.lang.reflect.Constructor;
@@ -47,6 +49,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 
+
+
+
+
 public class LearningGame extends JFrame {
     /* 
      * TMP
@@ -55,12 +61,15 @@ public class LearningGame extends JFrame {
     String langA = "English";
     
     
-    // The root of where the files are located.
+    // All used files
     final public static String WORKING_DIR = System.getProperty("user.dir") + "\\learningGame\\";
     final public static String WORD_FILE = WORKING_DIR + "data\\words.csv";
     final public static String MINIGAME_DIR = WORKING_DIR + "miniGame\\";
     final public static String IMG_SPRITE_DIR = WORKING_DIR + "img\\sprites\\";
     final public static String IMG_WORD_DIR = WORKING_DIR + "img\\word_images\\";
+    final public static String RESULT_FILE_LOC = WORKING_DIR + "data\\data_log.log";
+    
+    // The time out of the minigames
     final public static long TIME_OUT = 5000;
     
     static {
@@ -420,6 +429,14 @@ public class LearningGame extends JFrame {
         } else {
             Log2.write("Finished word list!");
             System.out.println("Finished word list!");
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(RESULT_FILE_LOC, true))) {
+                String logText = totalScore.toString();
+                bw.write(logText, 0, logText.length());
+                
+            } catch (IOException e) {
+                Log2.write(e);
+            }
+            
             scoreScreen = new ScoreScreen(totalScore, langQ, langA, "Again?", true, () -> reset());
             this.add(scoreScreen);
         }
@@ -432,6 +449,11 @@ public class LearningGame extends JFrame {
      * Resets the application to the 
      */
     public void reset() {
+        if (scoreScreen != null) {
+            remove(scoreScreen);
+            scoreScreen = null;
+        }
+        
         curMiniGameHandler = null;
         totalScore = new Score();
         
@@ -441,8 +463,9 @@ public class LearningGame extends JFrame {
             startScreen = null;
             startMiniGames();
         });
-        
+        System.out.println("reset!");
         this.add(startScreen);
+        repaint();
     }
     
     

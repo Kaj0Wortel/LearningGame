@@ -144,12 +144,6 @@ public class MiniGameHandler {
         
         // Create new miniGame
         miniGame = word.createMiniGame(lg, () -> {
-            try {
-                Thread.sleep(1000);
-                
-            } catch (InterruptedException e) {
-                
-            }
             miniGameEnded();
         }, timeOut);
         
@@ -167,6 +161,7 @@ public class MiniGameHandler {
         miniGame.setSize(width, height);
         miniGame.useKeyDetector(kd);
         miniGame.start();
+        repaint();
     }
     
     /* 
@@ -202,6 +197,7 @@ public class MiniGameHandler {
             
         } else {
             scoreScreen = new ScoreScreen(score, langQ, langA, "Continue", false, () -> endScoreScreen());
+            scoreScreen.setSize(width, height);
         }
         
         // Change state
@@ -209,6 +205,7 @@ public class MiniGameHandler {
         
         // Set settings of the score screen
         lg.add(scoreScreen);
+        repaint();
     }
     
     /* 

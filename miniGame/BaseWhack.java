@@ -45,8 +45,6 @@ abstract public class BaseWhack extends MiniGame {
     // The chance that a whackable spawns in spawns / sec
     protected double spawnChance = 0.5;
     
-    // Denotes whether the listeners were added.
-    protected boolean listenersAdded = false;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -302,7 +300,7 @@ abstract public class BaseWhack extends MiniGame {
                 
              } else if (whackSheet != null && whackSheet.length > 0) {
                  if (state == NOTHING) {
-                     //if (whackSheet[0] != null) g.drawImage(whackSheet[0], 0, 0, null);
+                     //if (whackSheet[0] != null) g.drawImage(whackSheet[0], 0, 0, null); // tmp
                      //if (whacked != null) g.drawImage(whacked, 0, 0, null);// tmp
                      
                  } else if (curWhackImageNum < whackSheet.length && whackSheet[curWhackImageNum] != null) {
@@ -333,7 +331,7 @@ abstract public class BaseWhack extends MiniGame {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() instanceof Whack) {
-            System.out.println("clicked");
+            System.out.println("kak");
             Whack whack = (Whack) e.getSource();
             
             if (hammer.canWhack() && 
@@ -374,11 +372,7 @@ abstract public class BaseWhack extends MiniGame {
             }
         }
         
-        // No listeners can be attatched when the objects were null.
-        if (listenersAdded) addSubListeners();
-        
         updateWhackBounds(width, height, calcWhackDim(width, height));
-        //resized(getWidth(), getHeight());
     }
     
     /* 
@@ -391,8 +385,27 @@ abstract public class BaseWhack extends MiniGame {
                 if (whacks[i][j] != null) whacks[i][j].addMouseListener(this);
             }
         }
-        
-        listenersAdded = true;
+    }
+    
+    /* 
+     * This method is invoked when the listeners of the sub components should be removed.
+     */
+    @Override
+    protected void removeSubListeners() {
+        for (int i = 0; whacks != null && i < whacks.length; i++) {
+            for (int j = 0; whacks[i] != null && j < whacks[i].length; j++) {
+                if (whacks[i][j] != null) whacks[i][j].removeMouseListener(this);
+            }
+        }
+    }
+    
+    /* 
+     * This method is invoked when the minigame is started.
+     */
+    @Override
+    protected void startMiniGame() {
+        // Set the empty cursor
+        lg.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -504,22 +517,13 @@ abstract public class BaseWhack extends MiniGame {
     }
     
     /* 
-     * This method is invoked when the minigame is started.
-     */
-    @Override
-    protected void startMiniGame() {
-        // Set the empty cursor
-        LG.setCursor(ModCursors.EMPTY_CURSOR);
-    }
-    
-    /* 
      * This method is always called when the MiniGame is about to shut down.
      * Only resets the mouse to it's default cursor.
      */
     @Override
     protected void cleanUp() {
         // Set the default cursor.
-        LG.setCursor(ModCursors.DEFAULT_CURSOR);
+        lg.setCursor(ModCursors.DEFAULT_CURSOR);
     }
     
     

@@ -353,8 +353,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
             BufferedImage[] playerSheet = getPlayerSheet();
             if (playerSheet != null && playerSheet[animNum] != null) {
                 Graphics2D g2d = (Graphics2D) g;
-                // tmp
-                //g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
                 
                 // Scale the graphics
                 double imgW = playerSheet[animNum].getWidth();
@@ -417,12 +415,18 @@ abstract public class BaseTopDownScroller extends MiniGame {
     protected void addSubListeners() { }
     
     /* 
+     * This method is invoked when the listeners of the sub components should be removed.
+     */
+    @Override
+    protected void removeSubListeners() { }
+    
+    /* 
      * This method is invoked when the minigame is started.
      */
     @Override
     protected void startMiniGame() {
         // Set the empty cursor
-        LG.setCursor(ModCursors.EMPTY_CURSOR);
+        lg.setCursor(ModCursors.EMPTY_CURSOR);
     }
     
     /* 
@@ -431,7 +435,10 @@ abstract public class BaseTopDownScroller extends MiniGame {
     @Override
     public void cleanUp() {
         // Set the default cursor.
-        LG.setCursor(ModCursors.DEFAULT_CURSOR);
+        lg.setCursor(ModCursors.DEFAULT_CURSOR);
+        
+        // Stop the clip
+        PlayMusic.stop(getBackgroundClip());
     }
     
     /* 
