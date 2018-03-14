@@ -15,6 +15,7 @@ import learningGame.tools.LoadImages2;
 import learningGame.tools.TerminalErrorMessage;
 import learningGame.tools.matrix.Vec;
 
+
 // Java packages
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
@@ -76,7 +77,6 @@ public class Harvest extends BaseShave {
      */
     @Override
     protected Vec getInitSpeed() {
-        //
         double angle = Math.toRadians(random.nextDouble() * 120 + 30);
         double initSpeed = 0.03;
         
@@ -108,8 +108,8 @@ public class Harvest extends BaseShave {
     @Override
     protected BufferedImage[] getTrimmerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Leg.png",
-                                                       WORKING_DIR + "img\\sprites\\Leg.png_trimmer",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Harvest.png",
+                                                       WORKING_DIR + "img\\sprites\\Harvest.png_trimmer",
                                                        16, 0,      // startX, startY
                                                        42, 18,     // endX, endY
                                                        26, 18)[0]; // sizeX, sizeY
@@ -121,14 +121,14 @@ public class Harvest extends BaseShave {
         }
     }
     
-    /*
+    /* 
      * @return the background image.
      */
     @Override
-    protected BufferedImage getBackgroundImage() {
+    protected BufferedImage getBackgroundImage() {/*
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Leg.png",
-                                                       WORKING_DIR + "img\\sprites\\Leg.png_leg",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Harvest.png",
+                                                       WORKING_DIR + "img\\sprites\\Harvest.png_leg",
                                                        42, 0,       // startX, startY
                                                        92, 50,     // endX, endY
                                                        40, 50)[0][0]; // sizeX, sizeY
@@ -137,7 +137,9 @@ public class Harvest extends BaseShave {
             Log2.write(e);
             e.printStackTrace();
             throw new TerminalErrorMessage("Background sheet images of class " + this.getClass() + " could not be loaded.");
-        }
+        }*/
+        
+        return null;
     }
     
     /* 

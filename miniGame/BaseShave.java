@@ -309,7 +309,7 @@ abstract public class BaseShave extends MiniGame {
      * ----------------------------------------------------------------------------------------------------------------
      */
     /* 
-     * Registers the hair as detatched (fallen of the screen).
+     * Registers the hair as detatched (fallen off the screen).
      */
     protected void detatchHair(Hair h) {
         if (h == null) return;

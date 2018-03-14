@@ -237,10 +237,16 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         if (started && !finished && !stopped) {
             finished = true;
             removeListeners();
-            startTimeStamp -= timeLeft;
+            
+            if (timeLeft == null) {
+                startTimeStamp = 0;
+                
+            } else {
+                startTimeStamp -= timeLeft;
+            }
         }
         
-        if (timeLeft + TIME_UP_TOTAL <= 0) {
+        if (timeLeft == null || timeLeft + TIME_UP_TOTAL <= 0) {
             stop();
         }
     }
