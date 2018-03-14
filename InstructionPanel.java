@@ -9,6 +9,7 @@ import learningGame.log.Log2;
 
 import learningGame.tools.Button2;
 import learningGame.tools.LoadImages2;
+import learningGame.tools.MultiTool;
 
 
 // Java packages
@@ -42,7 +43,7 @@ public class InstructionPanel extends JPanel {
         setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(),
                                                      BorderFactory.createLoweredBevelBorder()));
         
-        label = new JLabel("<html>" + text + "</html>");
+        label = new JLabel("<html>" + MultiTool.toHTMLSpace(text) + "</html>");
         add(label);
         
         try {
