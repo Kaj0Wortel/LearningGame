@@ -15,6 +15,8 @@ import learningGame.tools.LoadImages2;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException;
@@ -54,8 +56,13 @@ public class StartScreen extends JPanel {
             startButton.setLocation(250, 170);
             startButton.setFont(FontLoader.getLocalFont("cousine\\Cousine-Regular.ttf"));
             startButton.setTextSize(30);
-            startButton.addActionListener((e) -> {
-                if (r != null) r.run();
+            
+            startButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (r != null) r.run();
+                    startButton.removeActionListener(this);
+                }
             });
             
         } catch (IOException e) {
