@@ -429,9 +429,12 @@ public class LearningGame extends JFrame {
         } else {
             Log2.write("Finished word list!");
             System.out.println("Finished word list!");
+            
+            // Log results
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(RESULT_FILE_LOC, true))) {
                 String logText = totalScore.toString();
                 bw.write(logText, 0, logText.length());
+                bw.newLine();
                 
             } catch (IOException e) {
                 Log2.write(e);
@@ -463,9 +466,12 @@ public class LearningGame extends JFrame {
             startScreen = null;
             startMiniGames();
         });
+        
         System.out.println("reset!");
-        this.add(startScreen);
-        repaint();
+        add(startScreen);
+        
+        // Update the size of the active children.
+        updateSizeChildren();
     }
     
     

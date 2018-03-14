@@ -331,7 +331,6 @@ abstract public class BaseWhack extends MiniGame {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() instanceof Whack) {
-            System.out.println("kak");
             Whack whack = (Whack) e.getSource();
             
             if (hammer.canWhack() && 
@@ -368,7 +367,6 @@ abstract public class BaseWhack extends MiniGame {
             for (int j = 0; j < whacks[i].length; j++) {
                 whacks[i][j] = new Whack();
                 this.add(whacks[i][j], i + j*whacks[i].length + 1);
-                whacks[i][j].addMouseListener(this);
             }
         }
         
