@@ -644,28 +644,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
                              (int) ((1.0/5.0) * newHeight));
     }
     
-    /* 
-     * This method draws a scrolling background.
-     */
-    @Override
-    protected void drawBackground(Graphics2D g, BufferedImage background) {
-        if (background != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            
-            // Retrieve the current g2d transformation.
-            AffineTransform g2dTrans = g2d.getTransform();
-            
-            double widthRatio = ((double) getWidth()) / background.getWidth();
-            double heightRatio = ((double) getHeight()) / background.getHeight();
-            
-            g2d.scale(widthRatio, heightRatio);
-            g2d.drawImage(background, 0, (int) ((curPos - 1.0) * background.getHeight()), null);
-            g2d.drawImage(background, 0, (int) (curPos * background.getHeight()), null);
-            
-            // Restore the g2d transformation.
-            g2d.setTransform(g2dTrans);
-        }
-    }
     
     
     /* ----------------------------------------------------------------------------------------------------------------
