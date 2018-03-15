@@ -125,21 +125,19 @@ public class Harvest extends BaseShave {
      * @return the background image.
      */
     @Override
-    protected BufferedImage getBackgroundImage() {/*
+    protected BufferedImage getBackgroundImage() {
         try {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Harvest.png",
                                                        WORKING_DIR + "img\\sprites\\Harvest.png_leg",
                                                        42, 0,       // startX, startY
-                                                       92, 50,     // endX, endY
-                                                       40, 50)[0][0]; // sizeX, sizeY
+                                                       58, 50,     // endX, endY
+                                                       16, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
             throw new TerminalErrorMessage("Background sheet images of class " + this.getClass() + " could not be loaded.");
-        }*/
-        
-        return null;
+        }
     }
     
     /* 
@@ -150,46 +148,47 @@ public class Harvest extends BaseShave {
     @Override
     protected double[][] getHairLoc() {
         return new double[][] {
-            new double[] {0.15, 0.45},
-            new double[] {0.2, 0.5},
-            new double[] {0.25, 0.5},
-            new double[] {0.3, 0.45},
-            new double[] {0.35, 0.5},
-            new double[] {0.4, 0.5},
-            new double[] {0.5, 0.45},
-            new double[] {0.55, 0.5},
-            new double[] {0.6, 0.5},
-            new double[] {0.65, 0.45},    
-            new double[] {0.15, 0.55},
-            new double[] {0.2, 0.3},
-            new double[] {0.25, 0.55},
+            new double[] {0.05, 0.6},
+            new double[] {0.1, 0.6},
+            new double[] {0.15, 0.6},
+            new double[] {0.2, 0.6},
+            new double[] {0.25, 0.6},
             new double[] {0.3, 0.6},
             new double[] {0.35, 0.6},
-            new double[] {0.4, 0.55},
-            new double[] {0.5, 0.3},
-            new double[] {0.55, 0.55},
+            new double[] {0.4, 0.6},
+            new double[] {0.45, 0.6},
+            new double[] {0.5, 0.6},    
+            new double[] {0.55, 0.6},
             new double[] {0.6, 0.6},
-            new double[] {0.65, 0.55},  
-            new double[] {0.15, 0.35},
-            new double[] {0.2, 0.2},
-            new double[] {0.25, 0.35},
-            new double[] {0.3, 0.2},
-            new double[] {0.35, 0.3},
-            new double[] {0.4, 0.35},
-            new double[] {0.5, 0.2},
-            new double[] {0.55, 0.35},
-            new double[] {0.6, 0.1},
-            new double[] {0.65, 0.2},
-            new double[] {0.15, 0.25},
-            new double[] {0.2, 0.1},
-            new double[] {0.25, 0.25},
-            new double[] {0.3, 0.2},
-            new double[] {0.35, 0.1},
-            new double[] {0.4, 0.25},
-            new double[] {0.5, 0.1},
-            new double[] {0.55, 0.25},
-            new double[] {0.6, 0.1},
-            new double[] {0.65, 0.25},  
+            new double[] {0.65, 0.6},
+            new double[] {0.7, 0.6},
+            new double[] {0.75, 0.6},
+            new double[] {0.8, 0.6},
+            new double[] {0.85, 0.6},
+            new double[] {0.9, 0.6},
+            new double[] {0.95, 0.6},
+            new double[] {1.0, 0.6},  
+            new double[] {0.015, 0.6},
+            new double[] {-0.1, 0.6},
+            new double[] {-0.2, 0.6},
+            new double[] {-0.3, 0.6},
+            new double[] {-0.35, 0.6},
+            new double[] {-0.4, 0.6},
+            new double[] {-0.6, 0.6},
+            new double[] {-0.65, 0.6},
+            new double[] {-0.6, 0.6},
+            new double[] {-0.65, 0.6},
+            new double[] {-0.15, 0.6},
+            new double[] {-0.2, 0.6},
+            new double[] {-0.25, 0.6},
+            new double[] {-0.3, 0.6},
+            new double[] {-0.035, 0.6},
+            new double[] {-0.4, 0.6},
+            new double[] {-0.6, 0.6},
+            new double[] {0.-85, 0.6},
+            new double[] {-0.76, 0.6},
+            new double[] {-0.95, 0.6},  
+            new double[] {-1.0,0.6}
         };
     }
     
