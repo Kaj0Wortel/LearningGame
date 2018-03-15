@@ -62,6 +62,14 @@ public class LearningGame extends JFrame {
     
     static {
         Log2.clear();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown-Thread") {
+            @Override
+            public void run() {
+                Log2.write(" === Started final shutdown === ", Log2.INFO);
+                Log2.close();
+            }
+        });
     }
     
     // The name of the application.

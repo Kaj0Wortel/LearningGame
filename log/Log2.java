@@ -49,6 +49,9 @@ public class Log2 {
     // The lock of the current log class. Use {@code syhcnronized} to lock the object.
     private static volatile Object writeTextLock = new Object();
     
+    // The writer used to write the log data to the file.
+    private static PrintWriter writer;
+    
     /* 
      * This is a singleton class. No instances should be made.
      */
@@ -133,7 +136,7 @@ public class Log2 {
                         write((Object[]) objArr[0], showDate, type);
                         
                     } else {
-                        write(objArr[0], showDate, type);
+                        writeText(objArr[0].toString(), showDate, type);
                     }
                     
                     for (int i = 1; i < objArr.length; i++) {
@@ -141,7 +144,7 @@ public class Log2 {
                             write((Object[]) objArr[i], showDate, NONE);
                             
                         } else {
-                            write(objArr[i], showDate, NONE);
+                            writeText(objArr[i].toString(), showDate, NONE);
                         }
                     }
                 }
@@ -210,70 +213,66 @@ public class Log2 {
         String dateLine;
         String infoLine;
         
-        // Check if the log file was initiated.
-        checkLogFileInit();
+        // Check if there is a writer active.
+        // Append if not yet created.
+        checkWriter(true);
         
         if (logFile == null || !logFile.exists()) {
             System.err.println("Invallid log file!");
             return;
         }
         
-        // Create file writer
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)))) {
+        if (showDate) {
+            // Determine and print date
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+            Date date = new Date();
+            dateLine = dateFormat.format(date) + " ";
             
-            if (showDate) {
-                // Determine and print date
-                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
-                Date date = new Date();
-                dateLine = dateFormat.format(date) + " ";
-                
-            } else {
-                dateLine = "             ";
-            }
-            
-            if (type == INFO) {
-                infoLine = "[INFO]    ";
-                
-            } else if (type == WARNING) {
-                infoLine = "[WARNING] ";
-                
-            } else if (type == ERROR) {
-                infoLine = "[ERROR]   ";
-                
-            } else if (type == DEBUG) {
-                infoLine = "[DEBUG]   ";
-                
-            } else {
-                infoLine = "          ";
-            }
-            
-            // Print text
-            writer.println(dateLine + infoLine + text);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new TerminalErrorMessage("Could not create/append the log file: access denied.");
+        } else {
+            dateLine = "             ";
         }
+        
+        if (type == INFO) {
+            infoLine = "[INFO]    ";
+            
+        } else if (type == WARNING) {
+            infoLine = "[WARNING] ";
+            
+        } else if (type == ERROR) {
+            infoLine = "[ERROR]   ";
+            
+        } else if (type == DEBUG) {
+            infoLine = "[DEBUG]   ";
+            
+        } else {
+            infoLine = "          ";
+        }
+        
+        // Print text
+        writer.println(dateLine + infoLine + text);
+        flush();
     }
     
     /* 
      * Clears the logfile and puts the current date and time at the top.
      * If the file(-path) does not yet exist, create it.
+     * 
+     * Leave the writer open for later use.
      */
     public static void clear() {
-        checkLogFileInit();
-        
-        // Create file writer (overwrite/create file)
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, false)))) {
+        synchronized(writeTextLock) {
+            // Close old writer
+            if (writer != null) {
+                writer = null;
+                writer.close();
+            }
+            
+            // Create a new writer and delete file by default.
+            checkWriter(false);
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy - HH:mm:ss:SSS");
             Date date = new Date();
             writer.println(dateFormat.format(date));
             writer.println();
-            writer.close();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new TerminalErrorMessage("Could not clear the log file: access denied.");
         }
     }
     
@@ -319,14 +318,55 @@ public class Log2 {
         return writeTextLock;
     }
     
-    private static void checkLogFileInit() {
-        // If no logFile was initiated, use the default log file.
-        // NOTE: do NOT use a static constant for this.
-        // There will be problems when the class is loaded.
-        if (!initiated) {
-            if (logFile == null) logFile = new File(LearningGame.WORKING_DIR + "log\\log.log");
-            initiated = true;
+    /* 
+     * Closes the stream to the logfile.
+     */
+    public static void close() {
+        synchronized(writeTextLock) {
+            if (writer != null) {
+                write(" === Closing Log file === ", Log2.INFO);
+                writer.close();
+                writer = null;
+            }
         }
     }
     
+    /* 
+     * Checks if the writer has been initialized.
+     */
+    private static void checkWriter(boolean append) {
+        synchronized(writeTextLock) {
+            try {
+                if (!initiated) {
+                    // If no logFile was initiated, use the default log file.
+                    // NOTE: do NOT use a static constant for this.
+                    // There will be problems when the class is loaded.
+                    logFile = new File(LearningGame.WORKING_DIR + "log\\log.log");
+                    writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, append)));
+                    initiated = true;
+                    
+                } else if (logFile == null) {
+                    throw new TerminalErrorMessage("Could not create log file: null logfile!");
+                    
+                } else if (writer == null) {
+                    writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, true)));
+                    
+                } else if (!append) {
+                    writer.close();
+                    writer = new PrintWriter(new BufferedWriter(new FileWriter(logFile, false)));
+                }
+                
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new TerminalErrorMessage("Could not create log file: access denied.");
+            }
+        }
+    }
+    
+    /* 
+     * Flushes the writer.
+     */
+    public static void flush() {
+        if (writer != null) writer.flush();
+    }
 }
