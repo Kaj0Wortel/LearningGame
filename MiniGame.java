@@ -76,7 +76,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
     protected Color counterColor;
     
     // Whether the MiniGame succeded or not.
-    boolean succes = false;
+    protected boolean succes = false;
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -366,7 +366,6 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
                     Rectangle2D bounds = g2d.getFontMetrics().getStringBounds(text, g2d);
                     double textWidth = bounds.getWidth();
                     double textHeight = bounds.getHeight();
-                    //g2d.getFontMetrics().getAscent() + g2d.getFontMetrics().getDescent();
                     int ascent = g2d.getFontMetrics().getAscent();
                     
                     double angle = Math.PI/12.0 * Math.sin
