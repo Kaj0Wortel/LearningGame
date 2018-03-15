@@ -25,13 +25,13 @@ import java.io.IOException;
 import javax.sound.sampled.Clip;
 
 
-public class Crash extends BaseTopDownScroller {
+public class ToCrash extends BaseTopDownScroller {
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public Crash(LearningGame lg, Runnable r, long timeOut) {
+    public ToCrash(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
     
@@ -117,8 +117,8 @@ public class Crash extends BaseTopDownScroller {
                     LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Crash.png",
                                                         WORKING_DIR + "img\\sprites\\Crash.png_collectable",
                                                         13, 0,    // startX, startY
-                                                        20, 11,   // endX, endY
-                                                        7, 11)[4] // sizeX, sizeY
+                                                        20, 44,   // endX, endY
+                                                        7, 11)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -137,8 +137,8 @@ public class Crash extends BaseTopDownScroller {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Crash.png",
                                                        WORKING_DIR + "img\\sprites\\Crash.png_player",
                                                        20, 0,      // startX, startY
-                                                       38, 18,     // endX, endY
-                                                       18, 18)[2]; // sizeX, sizeY
+                                                       38, 36,     // endX, endY
+                                                       18, 18)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -169,7 +169,7 @@ public class Crash extends BaseTopDownScroller {
      */
     @Override
     protected int getObstacleFrameSpeed(int type) {
-        return 1000 * 1/12;
+        return 100;
     }
     
     /* 
@@ -187,7 +187,7 @@ public class Crash extends BaseTopDownScroller {
      */
     @Override
     protected int getPlayerFrameSpeed() {
-        return 1000 * 1/4;
+        return 80;
     }
     
     /* 
