@@ -18,7 +18,6 @@ import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
-import java.awt.geom.AffineTransform;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -224,18 +223,12 @@ public class ToRow extends BaseTopDownScroller {
         if (background != null) {
             Graphics2D g2d = (Graphics2D) g;
             
-            // Retrieve the current g2d transformation.
-            AffineTransform g2dTrans = g2d.getTransform();
-            
             double widthRatio = ((double) getWidth()) / background.getWidth();
             double heightRatio = ((double) getHeight()) / background.getHeight();
             
             g2d.scale(widthRatio, heightRatio);
             g2d.drawImage(background, 0, (int) ((curPos - 1.0) * background.getHeight()), null);
             g2d.drawImage(background, 0, (int) (curPos * background.getHeight()), null);
-            
-            // Restore the g2d transformation.
-            g2d.setTransform(g2dTrans);
         }
     }
     
