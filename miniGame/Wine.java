@@ -59,7 +59,7 @@ public class Wine extends BaseTopDownScroller {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                        WORKING_DIR + "img\\sprites\\Wine.png_background",
                                                        32, 0,         // startX, startY
-                                                       82, 49,        // endX, endY
+                                                       82, 50,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -79,7 +79,7 @@ public class Wine extends BaseTopDownScroller {
                 LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                     WORKING_DIR + "img\\sprites\\Wine.png_obstacle",
                                                     0, 0,       // startX, startY
-                                                    13, 12,     // endX, endY
+                                                    14, 13,     // endX, endY
                                                     14, 13)[0]  // sizeX, sizeY
             };
             
@@ -100,7 +100,7 @@ public class Wine extends BaseTopDownScroller {
                     LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                         WORKING_DIR + "img\\sprites\\Wine.png_collectable",
                                                         24, 0,    // startX, startY
-                                                        31, 9,   // endX, endY
+                                                        32, 10,   // endX, endY
                                                         8, 10)[0] // sizeX, sizeY
             };
             
@@ -120,7 +120,7 @@ public class Wine extends BaseTopDownScroller {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                        WORKING_DIR + "img\\sprites\\Wine.png_player",
                                                        14, 0,      // startX, startY
-                                                       23, 15,     // endX, endY
+                                                       24, 16,     // endX, endY
                                                        10, 16)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -195,7 +195,7 @@ public class Wine extends BaseTopDownScroller {
     @Override
     protected Clip getBackgroundClip() {
         Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\water_background.wav");
-        PlayMusic.setVolume(clip, 0.5F);
+        PlayMusic.setVolume(clip, 0);
         return clip;
     }
     
@@ -210,7 +210,7 @@ public class Wine extends BaseTopDownScroller {
     @Override
     protected String getInstruction() {
         return "Fill your wine glass! <br> Use the left and right arrow keys"
-            + " to avoid the sheep <br> and collect the sheep";
+            + " to avoid the sheep <br> and collect the wine drops!";
     }
     
 }
