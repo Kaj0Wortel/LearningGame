@@ -229,7 +229,7 @@ public class Harvest extends BaseShave {
      */
     @Override
     protected Clip getTrimmerSoundClip() {
-        Clip clip = PlayMusic.createClip(LearningGame.WORKING_DIR + "music\\sfx\\trimmer_sfx.wav");
+        Clip clip = PlayMusic.createClip(LearningGame.WORKING_DIR + "music\\sfx\\slive_sfx.wav");
         clip.loop(-1);
         return clip;
     }
