@@ -229,6 +229,18 @@ public class Wine extends BaseTopDownScroller {
             + " to avoid the sheep <br> and collect the wine drops!";
     }
     
+    /* 
+     * This function is called to damage the player.
+     */
+    protected void damage() {
+        super.damage(); // only prints debug text
+    }
     
+    /* 
+     * This function is called when a collectable was picked up.
+     */
+    protected void collectedCollectable() {
+        super.collectedCollectable(); // only prints debug text
+    }
     
 }

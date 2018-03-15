@@ -337,15 +337,6 @@ abstract public class BaseTopDownScroller extends MiniGame {
             setLocation((int) (widthLoc * (panelWidth - getWidth())), (int) heightLoc * (panelHeight - getHeight()));
         }
         
-        /* 
-         * This function is called to damage the player.
-         */
-        public void damage() {
-            System.out.println("damaged!");
-            // damage the player
-            // todo
-        }
-        
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -465,19 +456,46 @@ abstract public class BaseTopDownScroller extends MiniGame {
             // Play damaged sound.
             PlayMusic.play(getDamagedClip(spawn.getType()));
             
-            player.damage();
+            // Damage the player.
+            damage();
+            
+            if (despawnObstacles()) {
+                // Remove the spawnable from the list.
+                destroySpawnable(spawn);
+            }
             
         } else if (spawn instanceof Collectable) {
             // Play collected sound.
             PlayMusic.play(getCollectedClip(spawn.getType()));
             
-            // todo: add points
+            // Add points
+            collectedCollectable();
+            
+            // Remove the spawnable from the list.
+            destroySpawnable(spawn);
         }
-        
-        // Remove the spawnable from the list.
-        destroySpawnable(spawn);
     }
     
+    /* 
+     * Whether to despawn an obstacle when it hits the player
+     */
+    protected boolean despawnObstacles() {
+        return true;
+    }
+    
+    /* 
+     * This function is called to damage the player.
+     */
+    protected void damage() {
+        System.out.println("damaged!");
+    }
+    
+    /* 
+     * This function is called when a collectable was picked up.
+     */
+    protected void collectedCollectable() {
+        System.out.println("collect!");
+    }
     
     /* 
      * The update method. Put all time based stuff in here.
@@ -714,6 +732,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * when the right directional button is pressed.
      */
     abstract protected double getPlayerAngle();
+    
 }
 
 
