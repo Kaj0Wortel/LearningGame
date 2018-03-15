@@ -196,7 +196,7 @@ public class ToCrash extends BaseTopDownScroller {
      */
     @Override
     protected Clip getDamagedClip(int type) {
-        return PlayMusic.createClip(WORKING_DIR + "music\\sfx\\breaking_wood_sfx.wav");
+        return PlayMusic.createClip(WORKING_DIR + "music\\sfx\\oil_slip_sfx.wav");
     }
     
     /* 
