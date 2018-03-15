@@ -25,13 +25,13 @@ import java.io.IOException;
 import javax.sound.sampled.Clip;
 
 
-public class ToCrash extends BaseTopDownScroller {
+public class Ice extends BaseTopDownScroller {
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public ToCrash(LearningGame lg, Runnable r, long timeOut) {
+    public Ice(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
        scrollSpeed = 1;
     }
@@ -58,10 +58,10 @@ public class ToCrash extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Crash.png",
-                                                       WORKING_DIR + "img\\sprites\\Crash.png_background",
-                                                       38, 0,         // startX, startY
-                                                       88, 50,        // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Ice.png",
+                                                       WORKING_DIR + "img\\sprites\\Ice.png_background",
+                                                       53, 0,         // startX, startY
+                                                       103, 50,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -94,11 +94,11 @@ public class ToCrash extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Crash.png",
-                                                    WORKING_DIR + "img\\sprites\\Crash.png_obstacle",
-                                                    0, 1,       // startX, startY
-                                                    13, 11,     // endX, endY
-                                                    13, 10)[0]  // sizeX, sizeY
+                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Ice.png",
+                                                    WORKING_DIR + "img\\sprites\\Ice.png_obstacle",
+                                                    21, 0,       // startX, startY
+                                                    53, 22,     // endX, endY
+                                                    32, 22)[0]  // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -115,11 +115,11 @@ public class ToCrash extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Crash.png",
-                                                        WORKING_DIR + "img\\sprites\\Crash.png_collectable",
-                                                        13, 0,    // startX, startY
-                                                        20, 44,   // endX, endY
-                                                        7, 11)[0] // sizeX, sizeY
+                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Ice.png",
+                                                        WORKING_DIR + "img\\sprites\\Ice.png_collectable",
+                                                        0, 0,    // startX, startY
+                                                        9, 72,   // endX, endY
+                                                        9, 9)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -135,11 +135,11 @@ public class ToCrash extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Crash.png",
-                                                       WORKING_DIR + "img\\sprites\\Crash.png_player",
-                                                       20, 0,      // startX, startY
-                                                       38, 36,     // endX, endY
-                                                       18, 18)[0]; // sizeX, sizeY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Ice.png",
+                                                       WORKING_DIR + "img\\sprites\\Ice.png_player",
+                                                       9, 0,      // startX, startY
+                                                       21, 13,     // endX, endY
+                                                       12, 13)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -227,8 +227,8 @@ public class ToCrash extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "Drive the car <br> Use the left and right arrow keys"
-            + " to avoid the oil on the road <br> and crash into the pedestrians!";
+        return "Skate over the ice <br> Use the left and right arrow keys"
+            + " to avoid the holes <br> and collect the coins!";
     }
     
     
