@@ -54,11 +54,16 @@ public class Wine extends BaseTopDownScroller {
      * Override this method to paint something else then the background.
      */
     @Override
-    protected void drawBackground(Graphics2D g2d, BufferedImage background) {
+    protected void drawBackground(Graphics2D g, BufferedImage background) {
         if (background != null) {
-            g2d.scale(((double) getWidth())  / background.getWidth(),
-                      ((double) getHeight()) / background.getHeight());
-            g2d.drawImage(background, 0, 0, null);
+            Graphics2D g2d = (Graphics2D) g;
+            
+            double widthRatio = ((double) getWidth()) / background.getWidth();
+            double heightRatio = ((double) getHeight()) / background.getHeight();
+            
+            g2d.scale(widthRatio, heightRatio);
+            g2d.drawImage(background, 0, (int) (curPos), null);
+            g2d.drawImage(background, 0, (int) (curPos), null);
         }
     }
     /* 
