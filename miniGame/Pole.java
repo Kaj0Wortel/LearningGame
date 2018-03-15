@@ -177,6 +177,7 @@ public class Pole extends BaseWhack {
         
     }
     
+    
     /* 
      * @return the text to be displayed for the instruction panel. Supports HTML.
      */

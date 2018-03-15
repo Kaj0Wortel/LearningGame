@@ -111,8 +111,8 @@ public class Pie extends BaseWhack {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pie.png",
                                                        WORKING_DIR + "img\\sprites\\Pie.png_whack",
                                                        26, 0,       // startX, startY
-                                                       46, 10,     // endX, endY
-                                                       20, 10)[0]; // sizeX, sizeY
+                                                       51, 4,     // endX, endY
+                                                       25, 4)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -129,9 +129,9 @@ public class Pie extends BaseWhack {
         try {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pie.png",
                                                        WORKING_DIR + "img\\sprites\\Pie.png_whacked",
-                                                       27, 0,         // startX, startY
-                                                       47, 10,        // endX, endY
-                                                       20, 10)[0][0]; // sizeX, sizeY
+                                                       50, 0,         // startX, startY
+                                                       77, 8,        // endX, endY
+                                                       27, 8)[0][0]; // sizeX, sizeY
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
@@ -182,7 +182,7 @@ public class Pie extends BaseWhack {
      */
     @Override
     protected String getInstruction() {
-        return "Smash a pie! <br> Click on the pie with the plus shaped cursor and smash it with <br> the foot";
+        return "Smash a pie! <br> Click on the pie and smash it with <br> the foot";
     }
     
 }
