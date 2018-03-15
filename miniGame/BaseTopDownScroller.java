@@ -648,7 +648,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * This method draws a scrolling background.
      */
     @Override
-    protected void drawBackground(Graphics g, BufferedImage background) {
+    protected void drawBackground(Graphics2D g, BufferedImage background) {
         if (background != null) {
             Graphics2D g2d = (Graphics2D) g;
             
