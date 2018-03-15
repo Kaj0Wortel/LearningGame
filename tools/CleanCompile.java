@@ -3,7 +3,7 @@ package learningGame.tools;
 
 
 // Own packages
-import tools.MultiTool;
+import learningGame.tools.MultiTool;
 
 
 // Java packages
