@@ -182,8 +182,7 @@ public class Mole extends BaseWhack {
      */
     @Override
     protected String getInstruction() {
-        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
-            + "<font color='orange'>O</font>: make<br>instruction";
+        return "Wack a mole! <br> Click on the mole with the plus shaped cursor and wack them with <br> the hammer";
     }
     
 }

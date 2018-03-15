@@ -209,8 +209,8 @@ public class ToRow extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
-            + "<font color='orange'>O</font>: make<br>instruction";
+        return "Row Row Row your boat! <br> Use the left and right arrow keys"
+            + " to avoid the obstacles <br> and collect the coins";
     }
     
 }
