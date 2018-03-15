@@ -21,7 +21,6 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -49,18 +48,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 
-
-
-
-
 public class LearningGame extends JFrame {
-    /* 
-     * TMP
-     */
-    String langQ = "Italian";
-    String langA = "English";
-    
-    
     // All used files
     final public static String WORKING_DIR = System.getProperty("user.dir") + "\\learningGame\\";
     final public static String WORD_FILE = WORKING_DIR + "data\\words.csv";
@@ -77,7 +65,7 @@ public class LearningGame extends JFrame {
     }
     
     // The name of the application.
-    final public static String appName = "application name";
+    final public static String appName = "Learning game - v0.1 alpha";
     
     // The image file name for the application.
     final public static String appIconFile = WORKING_DIR + "img\\icon.png";
@@ -125,6 +113,10 @@ public class LearningGame extends JFrame {
     
     // The score of the current session.
     private Score totalScore = new Score();
+    
+    // The language to be questioned/asked.
+    private String langQ = "Italian";
+    private String langA = "English";
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -491,6 +483,8 @@ public class LearningGame extends JFrame {
         // Create and add the StartScreen
         startScreen = new StartScreen(() -> {
             remove(startScreen);
+            langQ = startScreen.getLangQ();
+            langA = startScreen.getLangA();
             startScreen = null;
             startMiniGames();
         });
