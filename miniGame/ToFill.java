@@ -79,8 +79,8 @@ public class ToFill extends BaseTopDownScroller {
                 LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
                                                     WORKING_DIR + "img\\sprites\\Fill.png_obstacle",
                                                     0, 0,       // startX, startY
-                                                    13, 8,     // endX, endY
-                                                    13, 8)[0]  // sizeX, sizeY
+                                                    13, 10,     // endX, endY
+                                                    13, 10)[0]  // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -100,8 +100,8 @@ public class ToFill extends BaseTopDownScroller {
                     LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
                                                         WORKING_DIR + "img\\sprites\\Fill.png_collectable",
                                                         30, 0,    // startX, startY
-                                                        37, 12,   // endX, endY
-                                                        7, 12)[0] // sizeX, sizeY
+                                                        37, 10,   // endX, endY
+                                                        7, 10)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -210,7 +210,7 @@ public class ToFill extends BaseTopDownScroller {
     @Override
     protected String getInstruction() {
         return "Fill it! <br> Use the left and right arrow keys"
-            + " to avoid the obstacles <br> and collect the water drops";
+            + " to avoid the falling sheep <br> and collect the water drops";
     }
     
 }
