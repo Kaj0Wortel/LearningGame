@@ -108,10 +108,10 @@ public class Pole extends BaseWhack {
     @Override
     protected BufferedImage[] getWhackSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\PiePole.png",
-                                                       WORKING_DIR + "img\\sprites\\PiePole.png_whack",
-                                                       50, 0,      // startX, startY
-                                                       57, 10,     // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pole.png",
+                                                       WORKING_DIR + "img\\sprites\\Pole.png_whack",
+                                                       0, 0,      // startX, startY
+                                                       7, 10,     // endX, endY
                                                        7, 10)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -127,10 +127,10 @@ public class Pole extends BaseWhack {
     @Override
     protected BufferedImage getWhackedImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\PiePole.png",
-                                                       WORKING_DIR + "img\\sprites\\PiePole.png_whacked",
-                                                       89, 0,         // startX, startY
-                                                       96, 13,        // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pole.png",
+                                                       WORKING_DIR + "img\\sprites\\Pole.png_whacked",
+                                                       8, 0,         // startX, startY
+                                                       15, 13,        // endX, endY
                                                        7, 13)[0][0]; // sizeX, sizeY
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);

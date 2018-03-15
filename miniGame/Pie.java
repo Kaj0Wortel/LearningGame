@@ -108,9 +108,11 @@ public class Pie extends BaseWhack {
     @Override
     protected BufferedImage[] getWhackSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\PiePole.png",
-                                                       WORKING_DIR + "img\\sprites\\PiePole.png_whack",
-                                                       50, 40,     // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pie.png",
+                                                       WORKING_DIR + "img\\sprites\\Pie.png_whack",
+                                                       26, 0,       // startX, startY
+                                                       46, 10,     // endX, endY
+                                                       20, 10)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -125,10 +127,11 @@ public class Pie extends BaseWhack {
     @Override
     protected BufferedImage getWhackedImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\PiePole.png",
-                                                       WORKING_DIR + "img\\sprites\\PiePole.png_whacked",
-                                                       59, 0,         // startX, startY
-                                                       89, 13,        // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pie.png",
+                                                       WORKING_DIR + "img\\sprites\\Pie.png_whacked",
+                                                       27, 0,         // startX, startY
+                                                       47, 10,        // endX, endY
+                                                       20, 10)[0][0]; // sizeX, sizeY
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
             e.printStackTrace();
@@ -142,8 +145,8 @@ public class Pie extends BaseWhack {
     @Override
     protected BufferedImage[] getHammerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\PiePole.png",
-                                                       WORKING_DIR + "img\\sprites\\PiePole.png_hammer",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Pie.png",
+                                                       WORKING_DIR + "img\\sprites\\Pie.png_hammer",
                                                        0, 0,       // startX, startY
                                                        26, 156,    // endX, endY
                                                        26, 39)[0]; // sizeX, sizeY
