@@ -7,7 +7,7 @@ import learningGame.LearningGame;
 import learningGame.MiniGame;
 import learningGame.Score;
 import learningGame.Word;
-
+import java.awt.Graphics2D;
 import learningGame.log.Log2;
 
 import learningGame.music.PlayMusic;
@@ -49,7 +49,18 @@ public class Wine extends BaseTopDownScroller {
     public Score getScore(Word word, int mistakes) {
         return new Score(50, 100, word, mistakes);
     }
-    
+        /* 
+     * This method draws the background.
+     * Override this method to paint something else then the background.
+     */
+    @Override
+    protected void drawBackground(Graphics2D g2d, BufferedImage background) {
+        if (background != null) {
+            g2d.scale(((double) getWidth())  / background.getWidth(),
+                      ((double) getHeight()) / background.getHeight());
+            g2d.drawImage(background, 0, 0, null);
+        }
+    }
     /* 
      * @return the background image.
      */
@@ -59,7 +70,7 @@ public class Wine extends BaseTopDownScroller {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                        WORKING_DIR + "img\\sprites\\Wine.png_background",
                                                        32, 0,         // startX, startY
-                                                       81, 49,        // endX, endY
+                                                       82, 50,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -79,7 +90,7 @@ public class Wine extends BaseTopDownScroller {
                 LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                     WORKING_DIR + "img\\sprites\\Wine.png_obstacle",
                                                     0, 0,       // startX, startY
-                                                    13, 12,     // endX, endY
+                                                    14, 13,     // endX, endY
                                                     14, 13)[0]  // sizeX, sizeY
             };
             
@@ -100,7 +111,7 @@ public class Wine extends BaseTopDownScroller {
                     LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                         WORKING_DIR + "img\\sprites\\Wine.png_collectable",
                                                         24, 0,    // startX, startY
-                                                        31, 9,   // endX, endY
+                                                        32, 10,   // endX, endY
                                                         8, 10)[0] // sizeX, sizeY
             };
             
@@ -120,7 +131,7 @@ public class Wine extends BaseTopDownScroller {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                        WORKING_DIR + "img\\sprites\\Wine.png_player",
                                                        14, 0,      // startX, startY
-                                                       23, 15,     // endX, endY
+                                                       24, 16,     // endX, endY
                                                        10, 16)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -195,7 +206,7 @@ public class Wine extends BaseTopDownScroller {
     @Override
     protected Clip getBackgroundClip() {
         Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\water_background.wav");
-        PlayMusic.setVolume(clip, 0.5F);
+        PlayMusic.setVolume(clip, 0);
         return clip;
     }
     
@@ -209,8 +220,10 @@ public class Wine extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "Wine Wine Wine your glass! <br> Use the left and right arrow keys"
-            + " to avoid the obstacles <br> and collect the coins";
+        return "Fill your wine glass! <br> Use the left and right arrow keys"
+            + " to avoid the sheep <br> and collect the wine drops!";
     }
+    
+    
     
 }
