@@ -25,13 +25,13 @@ import java.io.IOException;
 import javax.sound.sampled.Clip;
 
 
-public class ToRow extends BaseTopDownScroller {
+public class Wine extends BaseTopDownScroller {
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public ToRow(LearningGame lg, Runnable r, long timeOut) {
+    public Wine(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
     
@@ -56,10 +56,10 @@ public class ToRow extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                       WORKING_DIR + "img\\sprites\\Row.png_background",
-                                                       41, 0,         // startX, startY
-                                                       91, 50,        // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
+                                                       WORKING_DIR + "img\\sprites\\Wine.png_background",
+                                                       32, 0,         // startX, startY
+                                                       81, 49,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -76,11 +76,11 @@ public class ToRow extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                    WORKING_DIR + "img\\sprites\\Row.png_obstacle",
-                                                    9, 0,       // startX, startY
-                                                    22, 57,     // endX, endY
-                                                    13, 19)[0]  // sizeX, sizeY
+                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
+                                                    WORKING_DIR + "img\\sprites\\Wine.png_obstacle",
+                                                    0, 0,       // startX, startY
+                                                    13, 12,     // endX, endY
+                                                    14, 13)[0]  // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -97,11 +97,11 @@ public class ToRow extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                        WORKING_DIR + "img\\sprites\\Row.png_collectable",
-                                                        0, 0,    // startX, startY
-                                                        9, 72,   // endX, endY
-                                                        9, 9)[0] // sizeX, sizeY
+                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
+                                                        WORKING_DIR + "img\\sprites\\Wine.png_collectable",
+                                                        24, 0,    // startX, startY
+                                                        31, 9,   // endX, endY
+                                                        8, 10)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -117,11 +117,11 @@ public class ToRow extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                       WORKING_DIR + "img\\sprites\\Row.png_player",
-                                                       22, 0,      // startX, startY
-                                                       41, 26,     // endX, endY
-                                                       19, 13)[0]; // sizeX, sizeY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
+                                                       WORKING_DIR + "img\\sprites\\Wine.png_player",
+                                                       14, 0,      // startX, startY
+                                                       23, 15,     // endX, endY
+                                                       10, 16)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -209,7 +209,7 @@ public class ToRow extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "Row Row Row your boat! <br> Use the left and right arrow keys"
+        return "Wine Wine Wine your glass! <br> Use the left and right arrow keys"
             + " to avoid the obstacles <br> and collect the coins";
     }
     
