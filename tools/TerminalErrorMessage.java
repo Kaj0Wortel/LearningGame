@@ -15,7 +15,7 @@ import learningGame.log.Log2;
 public class TerminalErrorMessage extends Error {
     private static Boolean terminalMessageStarted = false;
     
-    public TerminalErrorMessage (String errorMessage, Object... data) throws TerminalError {
+    public TerminalErrorMessage (String errorMessage, Object... data) {
         super();
         
         // Checks if another thread is has already invoked this method.
