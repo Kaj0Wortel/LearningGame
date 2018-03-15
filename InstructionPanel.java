@@ -32,6 +32,10 @@ import javax.swing.BorderFactory;
 
 
 public class InstructionPanel extends JPanel {
+    final private String text;
+    final private String buttonText;
+    final private Runnable r;
+    
     private JLabel label;
     private Button2 button;
     final private static int BAR_WIDTH = 20;
@@ -39,11 +43,23 @@ public class InstructionPanel extends JPanel {
     public InstructionPanel(String text, String buttonText, Runnable r) {
         super(null);
         
+        this.text = text;
+        this.buttonText = buttonText;
+        this.r = r;
+        
         setBackground(new Color(255, 172, 100));
         setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(),
                                                      BorderFactory.createLoweredBevelBorder()));
         
+        createGUI();
+    }
+    
+    /* 
+     * Creates the GUI of the panel.
+     */
+    private void createGUI() {
         label = new JLabel("<html>" + MultiTool.toHTMLSpace(text) + "</html>");
+        label.setFont(label.getFont().deriveFont(20F));
         add(label);
         
         try {
