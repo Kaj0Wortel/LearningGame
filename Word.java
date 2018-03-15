@@ -38,8 +38,11 @@ public class Word {
     // The random object of this word.
     final private Random rand = new Random();
     
-    // The hash value of this object;
+    // The hash value of this object.
     final private int hashCode;
+    
+    // The supported languages.
+    private static String[] supportedLangs;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -105,7 +108,11 @@ public class Word {
         try (BufferedReaderPlus brp = new BufferedReaderPlus(dataFileName, BufferedReaderPlus.JAVA_COMMENT, true)) {
             // Obtain the languages
             String[] langs = MultiTool.listToArray(brp.readCSVLine(true), String.class, 1);
-            if (langs == null) return null;
+            if (langs == null) {
+                Log2.write(" === Terminated creating word list. No languages available! === ");
+                return null;
+            }
+            supportedLangs = langs;
             
             ArrayList<String> cells;
             while ((cells = brp.readCSVLine(true)) != null) {
@@ -237,6 +244,13 @@ public class Word {
      * Get functions
      * ----------------------------------------------------------------------------------------------------------------
      */
+    /* 
+     * @return the supported languages.
+     */
+    public static String[] getSupportedLangs() {
+        return supportedLangs;
+    }
+    
     /* 
      * @param lang the language of the word
      * @return the word in the given language

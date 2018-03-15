@@ -324,7 +324,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         AffineTransform g2dTrans = g2d.getTransform();
         
         // Draw background
-        drawBackground(g, getBackgroundImage());
+        drawBackground(g2d, getBackgroundImage());
         
         // Restore the g2d transformation.
         g2d.setTransform(g2dTrans);
@@ -388,12 +388,11 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
      * This method draws the background.
      * Override this method to paint something else then the background.
      */
-    protected void drawBackground(Graphics g, BufferedImage background) {
+    protected void drawBackground(Graphics2D g2d, BufferedImage background) {
         if (background != null) {
-            Graphics2D g2d = (Graphics2D) g;
             g2d.scale(((double) getWidth())  / background.getWidth(),
                       ((double) getHeight()) / background.getHeight());
-            g.drawImage(background, 0, 0, null);
+            g2d.drawImage(background, 0, 0, null);
         }
     }
     
