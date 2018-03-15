@@ -480,7 +480,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
             // Damage the player.
             damage();
             
-            if (despawnObstacles()) {
+            if (despawnObstacle()) {
                 // Remove the spawnable from the list.
                 destroySpawnable(spawn);
             }
@@ -500,7 +500,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     /* 
      * Whether to despawn an obstacle when it hits the player
      */
-    protected boolean despawnObstacles() {
+    protected boolean despawnObstacle() {
         return true;
     }
     

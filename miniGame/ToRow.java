@@ -214,13 +214,12 @@ public class ToRow extends BaseTopDownScroller {
             + " to avoid the obstacles <br> and collect the coins";
     }
     
-    
     /* 
      * This function is called to damage the player.
      */
     @Override
     protected void damage() {
-        super.damage(); // only prints debug text
+        //super.damage(); // only prints debug text
     }
     
     /* 
@@ -228,7 +227,15 @@ public class ToRow extends BaseTopDownScroller {
      */
     @Override
     protected void collectedCollectable() {
-        super.collectedCollectable(); // only prints debug text
+        //super.collectedCollectable(); // only prints debug text
+    }
+    
+    /* 
+     * Whether to despawn an obstacle when it hits the player
+     */
+    @Override
+    protected boolean despawnObstacle() {
+        return false;
     }
     
     /* 

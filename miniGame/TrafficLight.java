@@ -214,24 +214,6 @@ public class TrafficLight extends BaseTopDownScroller {
             + " to avoid the traffic lights <br> and collect the coins";
     }
     
-    
-    /* 
-     * This method draws a scrolling background.
-     */
-    @Override
-    protected void drawBackground(Graphics2D g, BufferedImage background) {
-        if (background != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            
-            double widthRatio = ((double) getWidth()) / background.getWidth();
-            double heightRatio = ((double) getHeight()) / background.getHeight();
-            
-            g2d.scale(widthRatio, heightRatio);
-            g2d.drawImage(background, 0, (int) ((curPos - 1.0) * background.getHeight()), null);
-            g2d.drawImage(background, 0, (int) (curPos * background.getHeight()), null);
-        }
-    }
-    
     /* 
      * This function is called to damage the player.
      */

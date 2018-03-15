@@ -213,13 +213,12 @@ public class Present extends BaseTopDownScroller {
             + " to avoid the falling sheep <br> and collect the presents drops";
     }
     
-    
     /* 
      * This function is called to damage the player.
      */
     @Override
     protected void damage() {
-        super.damage(); // only prints debug text
+        //super.damage(); // only prints debug text
     }
     
     /* 
@@ -227,7 +226,7 @@ public class Present extends BaseTopDownScroller {
      */
     @Override
     protected void collectedCollectable() {
-        super.collectedCollectable(); // only prints debug text
+        //super.collectedCollectable(); // only prints debug text
     }
     
     /* 

@@ -218,7 +218,7 @@ public class ToFill extends BaseTopDownScroller {
      */
     @Override
     protected void damage() {
-        super.damage(); // only prints debug text
+        //super.damage(); // only prints debug text
     }
     
     /* 
@@ -226,7 +226,7 @@ public class ToFill extends BaseTopDownScroller {
      */
     @Override
     protected void collectedCollectable() {
-        super.collectedCollectable(); // only prints debug text
+        //super.collectedCollectable(); // only prints debug text
     }
     
     /* 
