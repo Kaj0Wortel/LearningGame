@@ -198,9 +198,8 @@ public class Harvest extends BaseShave {
      */
     @Override
     protected double[] getHairSize() {
-        return new double[] {0.2, 0.04}; // image must be in ratio 5 : 1
+        return new double[] {0.1, 0.1}; // image must be in ratio 5 : 1
     }
-    
     
     /* 
      * @return the height adjustment factor for the hammer image.
@@ -211,7 +210,6 @@ public class Harvest extends BaseShave {
     protected double getTrimmerWidthAdjustmentFactor() {
         return 0.0;
     }
-    
     
     /* 
      * @return the width adjustment factor for the hammer image.
@@ -229,7 +227,7 @@ public class Harvest extends BaseShave {
     @Override
     protected Clip getTrimmerSoundClip() {
         Clip clip = PlayMusic.createClip(LearningGame.WORKING_DIR + "music\\sfx\\slive_sfx.wav");
-        clip.loop(-1);
+        PlayMusic.loop(clip, -1);
         return clip;
     }
     

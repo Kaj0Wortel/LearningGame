@@ -84,6 +84,9 @@ abstract public class BaseTopDownScroller extends MiniGame {
         // The image number that is currently shown.
         protected int animNum = 0;
         
+        // Whether there was a contact between the spawnable and the player.
+        private boolean hasHitPlayer = false;
+        
         /* ----------------------------------------------------------------------------------------------------------------
          * Spawnable constructor
          * ----------------------------------------------------------------------------------------------------------------
@@ -144,9 +147,11 @@ abstract public class BaseTopDownScroller extends MiniGame {
             int pW = player.getWidth();
             int pH = player.getHeight();
             
-            if (pX < getX() + getWidth()  && pX + pW > getX() &&
+            if (!hasHitPlayer && 
+                pX < getX() + getWidth()  && pX + pW > getX() &&
                 pY < getY() + getHeight() && pY + pW > getY())
             {
+                hasHitPlayer = true;
                 intersect(this);
             }
         }
@@ -206,6 +211,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * ----------------------------------------------------------------------------------------------------------------
      */
     protected class Obstacle extends Spawnable {
+        
         /* ----------------------------------------------------------------------------------------------------------------
          * Obstacle constructor
          * ----------------------------------------------------------------------------------------------------------------
