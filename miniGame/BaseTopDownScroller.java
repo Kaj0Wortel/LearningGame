@@ -212,9 +212,9 @@ abstract public class BaseTopDownScroller extends MiniGame {
      */
     protected class Obstacle extends Spawnable {
         
-        /* ----------------------------------------------------------------------------------------------------------------
+        /* ------------------------------------------------------------------------------------------------------------
          * Obstacle constructor
-         * ----------------------------------------------------------------------------------------------------------------
+         * ------------------------------------------------------------------------------------------------------------
          */
         public Obstacle(int type, double loc, int animSpeed) {
             super(type, loc, animSpeed, calcObstacleDims(BaseTopDownScroller.this.getWidth(),
