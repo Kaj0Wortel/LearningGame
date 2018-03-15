@@ -217,6 +217,7 @@ public class Present extends BaseTopDownScroller {
     /* 
      * This function is called to damage the player.
      */
+    @Override
     protected void damage() {
         super.damage(); // only prints debug text
     }
@@ -224,8 +225,17 @@ public class Present extends BaseTopDownScroller {
     /* 
      * This function is called when a collectable was picked up.
      */
+    @Override
     protected void collectedCollectable() {
         super.collectedCollectable(); // only prints debug text
+    }
+    
+    /* 
+     * Whether a moving background should be drawn.
+     */
+    @Override
+    protected boolean moveBackground() {
+        return true;
     }
     
 }
