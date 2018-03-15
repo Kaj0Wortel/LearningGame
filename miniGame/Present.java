@@ -56,11 +56,11 @@ public class Present extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
-                                                       WORKING_DIR + "img\\sprites\\Fill.png_background",
-                                                       38, 0,         // startX, startY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
+                                                       WORKING_DIR + "img\\sprites\\Present.png_background",
+                                                       42, 0,         // startX, startY
                                                        88, 50,        // endX, endY
-                                                       50, 50)[0][0]; // sizeX, sizeY
+                                                       46, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -76,8 +76,8 @@ public class Present extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
-                                                    WORKING_DIR + "img\\sprites\\Fill.png_obstacle",
+                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
+                                                    WORKING_DIR + "img\\sprites\\Present.png_obstacle",
                                                     0, 0,       // startX, startY
                                                     13, 10,     // endX, endY
                                                     13, 10)[0]  // sizeX, sizeY
@@ -97,8 +97,8 @@ public class Present extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
-                                                        WORKING_DIR + "img\\sprites\\Fill.png_collectable",
+                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
+                                                        WORKING_DIR + "img\\sprites\\Present.png_collectable",
                                                         30, 0,    // startX, startY
                                                         37, 10,   // endX, endY
                                                         7, 10)[0] // sizeX, sizeY
@@ -117,11 +117,11 @@ public class Present extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
-                                                       WORKING_DIR + "img\\sprites\\Fill.png_player",
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
+                                                       WORKING_DIR + "img\\sprites\\Present.png_player",
                                                        14, 0,      // startX, startY
-                                                       30, 26,     // endX, endY
-                                                       16, 13)[0]; // sizeX, sizeY
+                                                       28, 40,     // endX, endY
+                                                       14, 20)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
