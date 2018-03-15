@@ -18,6 +18,7 @@ import learningGame.tools.TerminalErrorMessage;
 
 
 // Java packages
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException;
@@ -25,13 +26,13 @@ import java.io.IOException;
 import javax.sound.sampled.Clip;
 
 
-public class Present extends BaseTopDownScroller {
+public class TrafficLight extends BaseTopDownScroller {
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
      * ----------------------------------------------------------------------------------------------------------------
      */
-    public Present(LearningGame lg, Runnable r, long timeOut) {
+    public TrafficLight(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
     
@@ -56,11 +57,11 @@ public class Present extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
-                                                       WORKING_DIR + "img\\sprites\\Present.png_background",
-                                                       42, 0,         // startX, startY
-                                                       88, 50,        // endX, endY
-                                                       46, 50)[0][0]; // sizeX, sizeY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\TrafficLight.png",
+                                                       WORKING_DIR + "img\\sprites\\TrafficLight.png_background",
+                                                       37, 0,         // startX, startY
+                                                       85, 50,        // endX, endY
+                                                       48, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -76,11 +77,11 @@ public class Present extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
-                                                    WORKING_DIR + "img\\sprites\\Present.png_obstacle",
-                                                    0, 0,       // startX, startY
-                                                    13, 10,     // endX, endY
-                                                    13, 10)[0]  // sizeX, sizeY
+                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\TrafficLight.png",
+                                                    WORKING_DIR + "img\\sprites\\Row.png_obstacle",
+                                                    26, 0,       // startX, startY
+                                                    37, 50,     // endX, endY
+                                                    11, 25)[0]  // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -97,11 +98,11 @@ public class Present extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
-                                                        WORKING_DIR + "img\\sprites\\Present.png_collectable",
-                                                        30, 0,    // startX, startY
-                                                        37, 10,   // endX, endY
-                                                        7, 10)[0] // sizeX, sizeY
+                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\TrafficLight.png",
+                                                        WORKING_DIR + "img\\sprites\\TrafficLight.png_collectable",
+                                                        0, 0,    // startX, startY
+                                                        9, 72,   // endX, endY
+                                                        9, 9)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -117,11 +118,11 @@ public class Present extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Present.png",
-                                                       WORKING_DIR + "img\\sprites\\Present.png_player",
-                                                       14, 0,      // startX, startY
-                                                       28, 40,     // endX, endY
-                                                       14, 20)[0]; // sizeX, sizeY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\TrafficLight.png",
+                                                       WORKING_DIR + "img\\sprites\\TrafficLight.png_player",
+                                                       9, 0,      // startX, startY
+                                                       26, 40,     // endX, endY
+                                                       17, 20)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -209,8 +210,26 @@ public class Present extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "Catch the presents! <br> Use the left and right arrow keys"
-            + " to avoid the falling sheep <br> and collect the presents drops";
+        return "Avoid the traffic lights! <br> Use the left and right arrow keys"
+            + " to avoid the traffic lights <br> and collect the coins";
+    }
+    
+    
+    /* 
+     * This method draws a scrolling background.
+     */
+    @Override
+    protected void drawBackground(Graphics2D g, BufferedImage background) {
+        if (background != null) {
+            Graphics2D g2d = (Graphics2D) g;
+            
+            double widthRatio = ((double) getWidth()) / background.getWidth();
+            double heightRatio = ((double) getHeight()) / background.getHeight();
+            
+            g2d.scale(widthRatio, heightRatio);
+            g2d.drawImage(background, 0, (int) ((curPos - 1.0) * background.getHeight()), null);
+            g2d.drawImage(background, 0, (int) (curPos * background.getHeight()), null);
+        }
     }
     
 }
