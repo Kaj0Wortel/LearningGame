@@ -56,10 +56,10 @@ public class ToFill extends BaseTopDownScroller {
     @Override
     protected BufferedImage getBackgroundImage() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                       WORKING_DIR + "img\\sprites\\Row.png_background",
-                                                       41, 0,         // startX, startY
-                                                       91, 50,        // endX, endY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
+                                                       WORKING_DIR + "img\\sprites\\Fill.png_background",
+                                                       38, 0,         // startX, startY
+                                                       88, 50,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -76,11 +76,11 @@ public class ToFill extends BaseTopDownScroller {
     protected BufferedImage[][] getObstacleSheets() {
         try {
             return new BufferedImage[][] {
-                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                    WORKING_DIR + "img\\sprites\\Row.png_obstacle",
-                                                    9, 0,       // startX, startY
-                                                    22, 57,     // endX, endY
-                                                    13, 19)[0]  // sizeX, sizeY
+                LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
+                                                    WORKING_DIR + "img\\sprites\\Fill.png_obstacle",
+                                                    0, 0,       // startX, startY
+                                                    13, 10,     // endX, endY
+                                                    13, 10)[0]  // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -97,11 +97,11 @@ public class ToFill extends BaseTopDownScroller {
     protected BufferedImage[][] getCollectableSheets() {
         try {
             return new BufferedImage[][] {
-                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                        WORKING_DIR + "img\\sprites\\Row.png_collectable",
-                                                        0, 0,    // startX, startY
-                                                        9, 72,   // endX, endY
-                                                        9, 9)[0] // sizeX, sizeY
+                    LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
+                                                        WORKING_DIR + "img\\sprites\\Fill.png_collectable",
+                                                        30, 0,    // startX, startY
+                                                        37, 10,   // endX, endY
+                                                        7, 10)[0] // sizeX, sizeY
             };
             
         } catch (IOException | IllegalArgumentException e) {
@@ -117,11 +117,11 @@ public class ToFill extends BaseTopDownScroller {
     @Override
     protected BufferedImage[] getPlayerSheet() {
         try {
-            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Row.png",
-                                                       WORKING_DIR + "img\\sprites\\Row.png_player",
-                                                       22, 0,      // startX, startY
-                                                       41, 26,     // endX, endY
-                                                       19, 13)[0]; // sizeX, sizeY
+            return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Fill.png",
+                                                       WORKING_DIR + "img\\sprites\\Fill.png_player",
+                                                       14, 0,      // startX, startY
+                                                       30, 26,     // endX, endY
+                                                       16, 13)[0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
             Log2.write(e);
@@ -209,8 +209,8 @@ public class ToFill extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "Row Row Row your boat! <br> Use the left and right arrow keys"
-            + " to avoid the obstacles <br> and collect the coins";
+        return "Fill it! <br> Use the left and right arrow keys"
+            + " to avoid the falling sheep <br> and collect the water drops";
     }
     
 }
