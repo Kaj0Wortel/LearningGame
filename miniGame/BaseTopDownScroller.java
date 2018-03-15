@@ -180,6 +180,27 @@ abstract public class BaseTopDownScroller extends MiniGame {
         abstract protected int getAnimMax();
     }
     
+    /* 
+     * This method draws either a scrolling background or a stationary one,
+     * depending on moveBackground().
+     */
+    @Override
+    protected void drawBackground(Graphics2D g2d, BufferedImage background) {
+        if (moveBackground()) {
+            if (background != null) {
+                double widthRatio = ((double) getWidth()) / background.getWidth();
+                double heightRatio = ((double) getHeight()) / background.getHeight();
+                
+                g2d.scale(widthRatio, heightRatio);
+                g2d.drawImage(background, 0, (int) ((curPos - 1.0) * background.getHeight()), null);
+                g2d.drawImage(background, 0, (int) (curPos * background.getHeight()), null);
+            }
+            
+        } else {
+            super.drawBackground(g2d, background);
+        }
+    }
+    
     /* ----------------------------------------------------------------------------------------------------------------
      * Obstacle class
      * ----------------------------------------------------------------------------------------------------------------
@@ -732,6 +753,11 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * when the right directional button is pressed.
      */
     abstract protected double getPlayerAngle();
+    
+    /* 
+     * Whether a moving background should be drawn.
+     */
+    protected abstract boolean moveBackground();
     
 }
 
