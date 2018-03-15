@@ -59,7 +59,7 @@ public class Wine extends BaseTopDownScroller {
             return LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\Wine.png",
                                                        WORKING_DIR + "img\\sprites\\Wine.png_background",
                                                        32, 0,         // startX, startY
-                                                       81, 49,        // endX, endY
+                                                       82, 49,        // endX, endY
                                                        50, 50)[0][0]; // sizeX, sizeY
             
         } catch (IOException | IllegalArgumentException e) {
@@ -209,8 +209,8 @@ public class Wine extends BaseTopDownScroller {
      */
     @Override
     protected String getInstruction() {
-        return "Wine Wine Wine your glass! <br> Use the left and right arrow keys"
-            + " to avoid the obstacles <br> and collect the coins";
+        return "Fill your wine glass! <br> Use the left and right arrow keys"
+            + " to avoid the sheep <br> and collect the sheep";
     }
     
 }
