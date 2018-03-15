@@ -202,8 +202,8 @@ public class Harvest extends BaseShave {
      */
     @Override
     protected String getInstruction() {
-        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
-            + "<font color='orange'>O</font>: make<br>instruction";
+        return "Harvest time! <br> Move your mouse over the grain while pressing the left mouse-button"
+            + "<br> in order to harvest the grain";
     }
     
 }

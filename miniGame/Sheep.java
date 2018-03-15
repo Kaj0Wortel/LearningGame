@@ -203,8 +203,8 @@ public class Sheep extends BaseShave {
      */
     @Override
     protected String getInstruction() {
-        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
-            + "<font color='orange'>O</font>: make<br>instruction";
+        return "Shave the sheep! <br> Move your mouse over the sheeps fur while pressing the left mouse-button"
+            + "<br> in order to shave the sheep";
     }
     
 }

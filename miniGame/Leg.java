@@ -203,8 +203,8 @@ public class Leg extends BaseShave {
      */
     @Override
     protected String getInstruction() {
-        return "<font color='red'>T</font><font color='green'>O</font><font color='blue'>D</font>"
-            + "<font color='orange'>O</font>: make<br>instruction";
+        return "Shave the leg! <br> Move your mouse over the hair on the leg while pressing <br> the left mouse-button"
+            + " in order to shave the leg";
     }
     
 }
