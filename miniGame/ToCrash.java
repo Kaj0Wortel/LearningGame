@@ -33,7 +33,6 @@ public class ToCrash extends BaseTopDownScroller {
      */
     public ToCrash(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
-       scrollSpeed = 1;
     }
     
     
@@ -196,7 +195,7 @@ public class ToCrash extends BaseTopDownScroller {
      */
     @Override
     protected Clip getBackgroundClip() {
-        Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\water_background.wav");
+        Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\traffic_background.wav");
         PlayMusic.setVolume(clip, 0);
         return clip;
     }

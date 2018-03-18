@@ -10,6 +10,8 @@ import learningGame.font.FontLoader;
 
 import learningGame.log.Log2;
 
+import learningGame.music.PlayMusic;
+
 import learningGame.tools.ImageTools;
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
@@ -187,6 +189,9 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             this.add(ip, 0);
             // Update size and location of the instruction panel.
             setBounds(getX(), getY(), getWidth(), getHeight());
+            resized(getWidth(), getHeight());
+            repaint();
+            update(new Key[0], System.currentTimeMillis());
         }
     }
     
@@ -264,6 +269,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
             stopped = true;
             removeListeners();
             cleanUp();
+            PlayMusic.stopAllMusic();
             if (r != null) r.run();
         }
     }
@@ -278,6 +284,7 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         if (!stopped) {
             stopped = true;
             cleanUp();
+            PlayMusic.stopAllMusic();
         }
     }
     
@@ -297,6 +304,11 @@ abstract public class MiniGame extends JLayeredPane implements MouseMotionListen
         
         if (resized) {
             resized(width, height);
+        }
+        
+        if (!started && !finished && !stopped) {
+            repaint();
+            //update(new Key[0], System.currentTimeMillis());
         }
     }
     

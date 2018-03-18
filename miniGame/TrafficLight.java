@@ -78,7 +78,7 @@ public class TrafficLight extends BaseTopDownScroller {
         try {
             return new BufferedImage[][] {
                 LoadImages2.ensureLoadedAndGetImage(WORKING_DIR + "img\\sprites\\TrafficLight.png",
-                                                    WORKING_DIR + "img\\sprites\\Row.png_obstacle",
+                                                    WORKING_DIR + "img\\sprites\\TrafficLight.png_obstacle",
                                                     26, 0,       // startX, startY
                                                     37, 50,     // endX, endY
                                                     11, 25)[0]  // sizeX, sizeY

@@ -74,7 +74,7 @@ public class Pie extends BaseWhack {
      */
     @Override
     protected double getHammerWidthAdjustmentFactor() {
-        return -0.17;
+        return -0.5;
     }
     
     /* 

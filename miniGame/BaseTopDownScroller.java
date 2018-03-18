@@ -42,7 +42,7 @@ abstract public class BaseTopDownScroller extends MiniGame {
     protected Player player;
     
     // Scroll speed of the background (1.0 = 1 full screen further in 1 sec).
-    protected double scrollSpeed = 1.5;
+    protected double scrollSpeed = 1;
     
     // The current position of the background.
     // It always holds that 0.0 <= curPos < 1.0.
