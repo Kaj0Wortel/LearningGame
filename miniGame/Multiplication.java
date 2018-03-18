@@ -27,12 +27,14 @@ import java.io.IOException;
 
 import java.util.Random;
 
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 
 public class Multiplication extends MiniGame {
     private Random random = new Random();
     private int numberA = random.nextInt(9) + 1;
-    private int numberB = random.nextInt(9 + 1);
+    private int numberB = random.nextInt(9) + 1;
     private int[] result = new int[4];
     private int correctResult = random.nextInt(result.length);
     private String displayText = numberA + " * " + numberB + " = ?";
@@ -41,6 +43,7 @@ public class Multiplication extends MiniGame {
     
     // GUI
     private Button2[] resultButtons = new Button2[result.length];
+    private JLabel labelQ;
     
     /* ----------------------------------------------------------------------------------------------------------------
      * Constructor
@@ -55,7 +58,7 @@ public class Multiplication extends MiniGame {
                 
             } else {
                 int num;
-                while ((num = random.nextInt(99) + 1) == correctResult) {}
+                while ((num = random.nextInt(99) + 1) == numberA * numberB) {}
                 result[i] = num;
             }
         }
@@ -88,6 +91,9 @@ public class Multiplication extends MiniGame {
                 Log2.write(e);
             }
         }
+        
+        labelQ = new JLabel(displayText, SwingConstants.CENTER);
+        add(labelQ);
     }
     
     /* 
@@ -155,7 +161,12 @@ public class Multiplication extends MiniGame {
         for (int i = 0; i < resultButtons.length; i++) {
             resultButtons[i].setLocation(spacing * (i + 1) + buttonWidth * i, buttonY);
             resultButtons[i].setSize(buttonWidth, buttonHeight);
+            resultButtons[i].setTextSize(width / 20F);
         }
+        
+        labelQ.setFont(font.deriveFont(width / 20F));
+        labelQ.setSize(width, height / 2);
+        labelQ.setLocation(0, 0);
     }
     
     /* 
@@ -164,21 +175,6 @@ public class Multiplication extends MiniGame {
     @Override
     protected BufferedImage getBackgroundImage() {
         return null;
-    }
-    
-    @Override
-    protected void drawBackground(Graphics2D g2d, BufferedImage background) {
-        super.drawBackground(g2d, background);
-        
-        g2d.setFont(font.deriveFont(((float) getWidth()) / 40F));
-        Rectangle2D bounds = g2d.getFontMetrics().getStringBounds(displayText, g2d);
-        double textWidth = bounds.getWidth();
-        double textHeight = bounds.getHeight();
-        int ascent = g2d.getFontMetrics().getAscent();
-        g2d.drawString("test", 0, 0);
-        g2d.drawString(displayText,
-                       (int) ((getWidth() - textWidth) / 2),
-                       (int) ((getHeight() / 2 - textHeight) / 2 + ascent));
     }
     
     /* 

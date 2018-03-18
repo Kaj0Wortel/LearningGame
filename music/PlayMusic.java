@@ -81,7 +81,6 @@ public class PlayMusic {
         clipTable.put(fileName, clip);
         listenerTable.put(clip, new ArrayList<LineListener>());
         
-        
         return clip;
     }
     
@@ -271,6 +270,7 @@ public class PlayMusic {
         clip.loop(loopCount);
     }
     
+    // tmp
     public static void main(String[] args) {
         new LearningGame();
     }
