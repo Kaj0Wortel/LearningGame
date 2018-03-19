@@ -5,8 +5,6 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
-import learningGame.Score;
-import learningGame.Word;
 import java.awt.Graphics2D;
 import learningGame.log.Log2;
 
@@ -40,32 +38,6 @@ public class Wine extends BaseTopDownScroller {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
-    /* 
-     * @param the word which has this MiniGame assoiated with it.
-     * @param mistakes the number of wrong buttons that were pressed in the word screen.
-     * @return the score of this miniGame
-     */
-    @Override
-    public Score getScore(Word word, int mistakes) {
-        return new Score(50, 100, word, mistakes);
-    }
-        /* 
-     * This method draws the background.
-     * Override this method to paint something else then the background.
-     */
-    @Override
-    protected void drawBackground(Graphics2D g, BufferedImage background) {
-        if (background != null) {
-            Graphics2D g2d = (Graphics2D) g;
-            
-            double widthRatio = ((double) getWidth()) / background.getWidth();
-            double heightRatio = ((double) getHeight()) / background.getHeight();
-            
-            g2d.scale(widthRatio, heightRatio);
-            g2d.drawImage(background, 0, (int) (curPos), null);
-            g2d.drawImage(background, 0, (int) (curPos), null);
-        }
-    }
     /* 
      * @return the background image.
      */
@@ -231,7 +203,7 @@ public class Wine extends BaseTopDownScroller {
     
     /* 
      * This function is called to damage the player.
-     */
+     *//*
     @Override
     protected void damage() {
         super.damage(); // only prints debug text
@@ -239,7 +211,7 @@ public class Wine extends BaseTopDownScroller {
     
     /* 
      * This function is called when a collectable was picked up.
-     */
+     *//*
     @Override
     protected void collectedCollectable() {
         super.collectedCollectable(); // only prints debug text

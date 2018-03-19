@@ -39,6 +39,10 @@ public class Multiplication extends MiniGame {
     private int correctResult = random.nextInt(result.length);
     private String displayText = numberA + " * " + numberB + " = ?";
     
+    // Whether the answer was correct.
+    private boolean correct;
+    
+    // The used font
     private Font font = FontLoader.getLocalFont("Cooper Black\\Cooper Black Regular.ttf");
     
     // GUI
@@ -81,10 +85,16 @@ public class Multiplication extends MiniGame {
                 resultButtons[i].setFont(font.deriveFont(20F));
                 
                 if (i == correctResult) {
-                    resultButtons[i].addActionListener((e) -> finish(true));
+                    resultButtons[i].addActionListener((e) -> {
+                        correct = true;
+                        finish(true);
+                    });
                     
                 } else {
-                    resultButtons[i].addActionListener((e) -> finish(false));
+                    resultButtons[i].addActionListener((e) -> {
+                        correct = true;
+                        finish(false);
+                    });
                 }
                 
             } catch (IOException e) {
@@ -142,7 +152,7 @@ public class Multiplication extends MiniGame {
      */
     @Override
     public Score getScore(Word word, int mistakes) {
-        return new Score(50, 100, word, mistakes);
+        return new Score(100 * (correct ? 1 : 0), 100, word, mistakes);
     }
     
     /* 

@@ -4,8 +4,6 @@ package learningGame.miniGame;
 
 // Own packages
 import learningGame.LearningGame;
-import learningGame.MiniGame;
-import learningGame.Score;
 import learningGame.Word;
 import java.awt.Graphics2D;
 import learningGame.log.Log2;
@@ -41,17 +39,6 @@ public class Ice extends BaseTopDownScroller {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
-    /* 
-     * @param the word which has this MiniGame assoiated with it.
-     * @param mistakes the number of wrong buttons that were pressed in the word screen.
-     * @return the score of this miniGame
-     */
-    @Override
-    public Score getScore(Word word, int mistakes) {
-        return new Score(50, 100, word, mistakes);
-    }
-        /* 
-    
     /* 
      * @return the background image.
      */
@@ -217,7 +204,7 @@ public class Ice extends BaseTopDownScroller {
     
     /* 
      * This function is called to damage the player.
-     */
+     *//*
     @Override
     protected void damage() {
         //super.damage(); // only prints debug text
@@ -225,7 +212,7 @@ public class Ice extends BaseTopDownScroller {
     
     /* 
      * This function is called when a collectable was picked up.
-     */
+     *//*
     @Override
     protected void collectedCollectable() {
         //super.collectedCollectable(); // only prints debug text

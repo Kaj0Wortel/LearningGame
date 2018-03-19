@@ -6,6 +6,7 @@ package learningGame.miniGame;
 import learningGame.LearningGame;
 import learningGame.MiniGame;
 import learningGame.Score;
+import learningGame.Word;
 
 import learningGame.log.Log2;
 
@@ -15,6 +16,7 @@ import learningGame.tools.ImageTools;
 import learningGame.tools.Key;
 import learningGame.tools.LoadImages2;
 import learningGame.tools.ModCursors;
+import learningGame.tools.MultiTool;
 
 
 // Java packages
@@ -43,7 +45,13 @@ abstract public class BaseWhack extends MiniGame {
     protected Hammer hammer;
     
     // The chance that a whackable spawns in spawns / sec
-    protected double spawnChance = 0.5;
+    protected double spawnChance = 3.0;
+    
+    // The expected number of whackables to be whacked.
+    protected int goalWhack = 8;
+    
+    // The current number of whacked whackables.
+    protected int whacked = 0;
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -339,6 +347,7 @@ abstract public class BaseWhack extends MiniGame {
             {
                 PlayMusic.play(getWhackMusicFile());
                 whackEvent(e.getWhen());
+                whacked();
             }
             
         }
@@ -349,6 +358,28 @@ abstract public class BaseWhack extends MiniGame {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
+    /* 
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
+     */
+    @Override
+    public Score getScore(Word word, int mistakes) {
+        return new Score(100.0 * (((double) whacked) / goalWhack) / (MultiTool.intPow(2, mistakes)),
+            100, word, mistakes);
+    }
+    
+    /*
+     * This function is invoked when a whackable has been whacked.
+     */
+    protected void whacked() {
+        if (!isFinished()) {
+            if (++whacked >= goalWhack) {
+                finish(true);
+            }
+        }
+    }
+    
     @Override
     final protected void createGUI() {
         // Retrieve the width and height to prevent in time changes.
@@ -461,10 +492,8 @@ abstract public class BaseWhack extends MiniGame {
         for (int i = 0; whacks != null && i < whacks.length; i++) {
             for (int j = 0; whacks[i] != null && j < whacks[i].length; j++) {
                 if (whacks[i][j] != null) {
-                    //System.out.println(spawnChance * LearningGame.FPS * whacks.length * whacks[i].length);
-                    if (random.nextDouble() < 1.0 / (spawnChance * LearningGame.FPS * whacks.length * whacks[i].length)) {
+                    if (random.nextDouble() < spawnChance / (LearningGame.FPS * whacks.length * whacks[i].length)) {
                         whacks[i][j].showWhackable(500, 200, timeStamp);
-                        //whacks[i][j].showWhackable(2000, 200, timeStamp);
                     }
                 }
             }

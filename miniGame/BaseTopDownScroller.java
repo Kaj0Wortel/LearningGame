@@ -5,6 +5,8 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
+import learningGame.Score;
+import learningGame.Word;
 
 import learningGame.music.PlayMusic;
 
@@ -54,8 +56,19 @@ abstract public class BaseTopDownScroller extends MiniGame {
     
     // The spawn chance of a collectable in [collectables per second].
     // A value lower then 0 will cause no collectables to be spawned.
-    protected double collectableSpawnChance = 0.5;
+    protected double collectableSpawnChance = 2.75;
     
+    // The expected number of collectables to be collected.
+    int goalCollect = 8;
+    
+    // The current number of collectable collected.
+    int collected = 0;
+    
+    
+    /* ----------------------------------------------------------------------------------------------------------------
+     * Constructor
+     * ----------------------------------------------------------------------------------------------------------------
+     */
     public BaseTopDownScroller(LearningGame lg, Runnable r, long timeOut) {
        super(lg, r, timeOut);
     }
@@ -514,14 +527,20 @@ abstract public class BaseTopDownScroller extends MiniGame {
      * This function is called to damage the player.
      */
     protected void damage() {
-        System.out.println("damaged!");
+        if (!isFinished()) {
+            finish(false);
+        }
     }
     
     /* 
      * This function is called when a collectable was picked up.
      */
     protected void collectedCollectable() {
-        System.out.println("collect!");
+        if (!isFinished()) {
+            if (++collected >= goalCollect) {
+                finish(true);
+            }
+        }
     }
     
     /* 
@@ -689,6 +708,16 @@ abstract public class BaseTopDownScroller extends MiniGame {
                              (int) ((1.0/5.0) * newHeight));
     }
     
+    /* 
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
+     */
+    @Override
+    public Score getScore(Word word, int mistakes) {
+        return new Score(100.0 * (((double) collected) / goalCollect) / (MultiTool.intPow(2, mistakes)),
+            100, word, mistakes);
+    }
     
     
     /* ----------------------------------------------------------------------------------------------------------------

@@ -5,8 +5,6 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
-import learningGame.Score;
-import learningGame.Word;
 
 import learningGame.log.Log2;
 
@@ -41,16 +39,6 @@ public class TrafficLight extends BaseTopDownScroller {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
-    /* 
-     * @param the word which has this MiniGame assoiated with it.
-     * @param mistakes the number of wrong buttons that were pressed in the word screen.
-     * @return the score of this miniGame
-     */
-    @Override
-    public Score getScore(Word word, int mistakes) {
-        return new Score(50, 100, word, mistakes);
-    }
-    
     /* 
      * @return the background image.
      */
@@ -179,7 +167,7 @@ public class TrafficLight extends BaseTopDownScroller {
      */
     @Override
     protected Clip getDamagedClip(int type) {
-        return PlayMusic.createClip(WORKING_DIR + "music\\sfx\\breaking_wood_sfx.wav");
+        return PlayMusic.createClip(WORKING_DIR + "music\\sfx\\car_crash_sfx.wav");
     }
     
     /* 
@@ -195,7 +183,7 @@ public class TrafficLight extends BaseTopDownScroller {
      */
     @Override
     protected Clip getBackgroundClip() {
-        Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\water_background.wav");
+        Clip clip = PlayMusic.createClip(WORKING_DIR + "music\\background\\traffic_background.wav");
         PlayMusic.setVolume(clip, 0.5F);
         return clip;
     }
@@ -216,7 +204,7 @@ public class TrafficLight extends BaseTopDownScroller {
     
     /* 
      * This function is called to damage the player.
-     */
+     *//*
     @Override
     protected void damage() {
         super.damage(); // only prints debug text
@@ -224,7 +212,7 @@ public class TrafficLight extends BaseTopDownScroller {
     
     /* 
      * This function is called when a collectable was picked up.
-     */
+     *//*
     @Override
     protected void collectedCollectable() {
         super.collectedCollectable(); // only prints debug text

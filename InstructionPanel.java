@@ -64,6 +64,7 @@ public class InstructionPanel extends JPanel {
         
         try {
             button = new Button2(0, 0, 15, "Start!");
+            button.setTextSize(30F);
             add(button);
             
             ActionListener al = new ActionListener() {

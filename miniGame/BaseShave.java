@@ -5,6 +5,8 @@ package learningGame.miniGame;
 // Own packages
 import learningGame.LearningGame;
 import learningGame.MiniGame;
+import learningGame.Score;
+import learningGame.Word;
 
 import learningGame.log.Log2;
 
@@ -13,6 +15,7 @@ import learningGame.music.PlayMusic;
 import learningGame.tools.Key;
 import learningGame.tools.KeyDetector;
 import learningGame.tools.ModCursors;
+import learningGame.tools.MultiTool;
 import learningGame.tools.TerminalErrorMessage;
 import learningGame.tools.matrix.Vec;
 
@@ -44,6 +47,12 @@ abstract public class BaseShave extends MiniGame {
     
     // The random object of this object.
     protected Random random = new Random();
+    
+    // The expected number of hair to shave.
+    protected int goalHair = getHairLoc().length;
+    
+    // The current number of hair shaved.
+    protected int shaved = 0;
     
     
     /* ----------------------------------------------------------------------------------------------------------------
@@ -308,6 +317,24 @@ abstract public class BaseShave extends MiniGame {
      * Functions
      * ----------------------------------------------------------------------------------------------------------------
      */
+    /* 
+     * @param the word which has this MiniGame assoiated with it.
+     * @param mistakes the number of wrong buttons that were pressed in the word screen.
+     * @return the score of this miniGame
+     */
+    @Override
+    public Score getScore(Word word, int mistakes) {
+        shaved = 0;
+        for (int i = 0; i < hair.length; i++) {
+            if (hair[i] != null && hair[i].isShaved) {
+                shaved++;
+            }
+        }
+        
+        return new Score(100.0 * (((double) shaved) / goalHair) / (MultiTool.intPow(2, mistakes)),
+            100, word, mistakes);
+    }
+    
     /* 
      * Registers the hair as detatched (fallen off the screen).
      */
