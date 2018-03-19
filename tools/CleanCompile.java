@@ -23,13 +23,12 @@ public class CleanCompile {
         // Delete all class files.
         for (File[] file : filesInDir) {
             String name = file[0].getName();
-            if (name.endsWith(".class") && !name.equals("CleanCompile.class") && !name.equals("MultiTool.class")) {
+            if (name.endsWith(".class") && !name.equals("CleanCompile.class") && !name.contains("MultiTool")) {
                 file[0].delete();
             }
         }
         
         // Compile all files
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         ArrayList<String> filesToCompileList = new ArrayList<String>();
         
         for (File[] file : filesInDir) {
@@ -40,6 +39,7 @@ public class CleanCompile {
         }
         
         String[] filesToCompile = MultiTool.listToArray(filesToCompileList, String.class);
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         compiler.run(null, null, null, filesToCompile);
     }
     
