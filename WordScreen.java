@@ -122,6 +122,7 @@ public class WordScreen extends JPanel {
                 if (wordOptionButtons[i][j] != null) continue;
                 
                 Word nextWord = LearningGame.getRandomWord(wordsSeen);
+                wordsSeen.add(nextWord);
                 
                 // Check if there was a word found
                 if (nextWord == null) {
