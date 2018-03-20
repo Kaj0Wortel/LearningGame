@@ -326,7 +326,7 @@ abstract public class BaseShave extends MiniGame {
     public Score getScore(Word word, int mistakes) {
         shaved = 0;
         for (int i = 0; i < hair.length; i++) {
-            if (hair[i] != null && hair[i].isShaved) {
+            if (hair[i] == null || hair[i].isShaved) {
                 shaved++;
             }
         }

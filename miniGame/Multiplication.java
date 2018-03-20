@@ -14,6 +14,7 @@ import learningGame.log.Log2;
 
 import learningGame.tools.Button2;
 import learningGame.tools.Key;
+import learningGame.tools.MultiTool;
 
 
 // Java pacakges
@@ -152,7 +153,7 @@ public class Multiplication extends MiniGame {
      */
     @Override
     public Score getScore(Word word, int mistakes) {
-        return new Score(100 * (correct ? 1 : 0), 100, word, mistakes);
+        return new Score(100 * (correct ? 1 : 0) / (MultiTool.intPow(2, mistakes)), 100, word, mistakes);
     }
     
     /* 
@@ -192,7 +193,7 @@ public class Multiplication extends MiniGame {
      */
     @Override
     protected String getInstruction() {
-        return "todo";
+        return "Quick mafs!<br>Calculate the multiplication of the two given numbers.";
     }
     
 }
